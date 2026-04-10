@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>敖鑫 | 机械工程师作品集 - 冶金设备与自动化设计专家</title>
+    <title>敖鑫 | 机械工程师作品集 </title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         * { font-family: 'Inter', 'Noto Sans SC', sans-serif; }
         .gradient-text {
-            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #06b6d4 100%);
+            background: linear-gradient(135deg, #60a5fa 0%, #22d3ee 50%, #38bdf8 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
         }
         .hero-bg {
             background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
@@ -106,7 +107,7 @@
         }
         .nav-blur {
             backdrop-filter: blur(12px);
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.9);
         }
         .section-fade {
             opacity: 0;
@@ -120,6 +121,104 @@
         .blueprint-accent {
             border-left: 4px solid #3b82f6;
         }
+        .hero-text-shadow {
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+        .hero-subtitle-shadow {
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Gallery Card Styles */
+        .gallery-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .gallery-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        .gallery-card img {
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .gallery-card:hover img {
+            transform: scale(1.1);
+        }
+
+        /* Gallery Modal Styles */
+        #galleryModal {
+            animation: fadeIn 0.3s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        #modalImage {
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Thumbnail scrollbar styling */
+        #thumbnailContainer::-webkit-scrollbar {
+            height: 6px;
+        }
+        #thumbnailContainer::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+        }
+        #thumbnailContainer::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 3px;
+        }
+        #thumbnailContainer::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.5);
+        }
+
+        /* Thumbnail hover effects */
+        #thumbnailContainer div {
+            position: relative;
+            overflow: hidden;
+        }
+        #thumbnailContainer div::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.3);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        #thumbnailContainer div:hover::after {
+            opacity: 1;
+        }
+        #thumbnailContainer div img {
+            transition: transform 0.3s;
+        }
+        #thumbnailContainer div:hover img {
+            transform: scale(1.1);
+        }
+
+        /* Image counter badge */
+        .image-count-badge {
+            background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+        }
+
+        /* Project Card Click Hint */
+        .project-click-hint {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            opacity: 0;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(2px);
+        }
+        .project-card:hover .project-click-hint {
+            opacity: 1;
+        }
+
         @media print {
             .no-print { display: none !important; }
             .page-break { page-break-before: always; }
@@ -129,7 +228,7 @@
 <body class="bg-slate-50 text-slate-800 antialiased">
 
     <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 nav-blur border-b border-slate-200 no-print">
+    <nav class="fixed top-0 w-full z-50 nav-blur border-b border-slate-200 no-print shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center gap-2">
@@ -137,13 +236,13 @@
                     <span class="font-bold text-xl tracking-tight text-slate-900">敖鑫<span class="text-blue-600">.</span></span>
                 </div>
                 <div class="hidden md:flex space-x-8">
-                    <a href="#about" class="text-slate-600 hover:text-blue-600 transition-colors font-medium">关于我</a>
-                    <a href="#experience" class="text-slate-600 hover:text-blue-600 transition-colors font-medium">工作经历</a>
-                    <a href="#projects" class="text-slate-600 hover:text-blue-600 transition-colors font-medium">项目案例</a>
-                    <a href="#gallery" class="text-slate-600 hover:text-blue-600 transition-colors font-medium">项目图库</a>
-                    <a href="#skills" class="text-slate-600 hover:text-blue-600 transition-colors font-medium">专业技能</a>
+                    <a href="#about" class="text-slate-700 hover:text-blue-600 transition-colors font-medium font-bold">关于我</a>
+                    <a href="#skills" class="text-slate-700 hover:text-blue-600 transition-colors font-medium font-bold">专业技能</a>
+                    <a href="#experience" class="text-slate-700 hover:text-blue-600 transition-colors font-medium font-bold">工作经历</a>
+                    <a href="#projects" class="text-slate-700 hover:text-blue-600 transition-colors font-medium font-bold">项目案例</a>
+                    <a href="#gallery" class="text-slate-700 hover:text-blue-600 transition-colors font-medium font-bold">个人作品集</a>
                 </div>
-                <button onclick="window.print()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 text-sm font-medium">
+                <button onclick="window.print()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 text-sm font-bold shadow-md">
                     <i data-lucide="download" class="w-4 h-4"></i>
                     下载PDF
                 </button>
@@ -156,53 +255,52 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
             <div class="grid md:grid-cols-2 gap-12 items-center">
                 <div class="text-white space-y-6">
-                    <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full border border-white/20">
-                        <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                        <span class="text-sm font-medium">离职 · 随时到岗</span>
+                    <div class="inline-flex items-center gap-2 bg-slate-900/90 backdrop-blur-md px-5 py-2.5 rounded-full border-2 border-green-400 shadow-xl">
+                        <span class="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse shadow-[0_0_12px_rgba(74,222,128,1)] ring-2 ring-green-400/30"></span>
+                        <span class="text-sm font-bold text-white tracking-wider drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">离职 · 随时到岗</span>
                     </div>
-                    <h1 class="text-5xl md:text-7xl font-bold leading-tight">
+                    <h1 class="text-5xl md:text-7xl font-bold leading-tight hero-text-shadow text-white">
                         机械设计岗<br>
-                        <span class="text-blue-400">结构/机械工程师</span>
+                        <span class="text-cyan-300 drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)]">结构/机械工程师</span>
                     </h1>
-                    <p class="text-xl text-slate-300 leading-relaxed max-w-lg">
-                        6年非标机械设计与冶金设备项目全流程经验，专注连铸设备、自动化产线设计与项目管理。
+                    <p class="text-xl text-slate-100 leading-relaxed max-w-lg hero-subtitle-shadow font-medium">
+                        6年机械设计与大型设备项目全流程经验，拥有大型设备、自动化产线设计与项目管理经验。
                     </p>
                     <div class="flex flex-wrap gap-3 pt-4">
-                        <span class="px-4 py-2 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 text-sm font-medium">连铸设备设计</span>
-                        <span class="px-4 py-2 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 text-sm font-medium">自动化产线</span>
-                        <span class="px-4 py-2 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 text-sm font-medium">项目管理</span>
-                        <span class="px-4 py-2 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 text-sm font-medium">SolidWorks/CAD</span>
+                        <span class="px-4 py-2 bg-white/20 backdrop-blur-md rounded-lg border border-white/30 text-sm font-bold text-white shadow-lg">连铸设备设计</span>
+                        <span class="px-4 py-2 bg-white/20 backdrop-blur-md rounded-lg border border-white/30 text-sm font-bold text-white shadow-lg">自动化产线</span>
+                        <span class="px-4 py-2 bg-white/20 backdrop-blur-md rounded-lg border border-white/30 text-sm font-bold text-white shadow-lg">项目管理</span>
+                        <span class="px-4 py-2 bg-white/20 backdrop-blur-md rounded-lg border border-white/30 text-sm font-bold text-white shadow-lg">SolidWorks/CAD</span>
                     </div>
                     <div class="flex gap-4 pt-6">
-                        <a href="#contact" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-medium transition-all transform hover:scale-105 flex items-center gap-2">
+                        <a href="#contact" class="bg-white text-blue-900 px-8 py-3 rounded-lg font-bold transition-all transform hover:scale-105 flex items-center gap-2 shadow-xl hover:shadow-2xl hover:bg-slate-100">
                             <i data-lucide="mail" class="w-5 h-5"></i>
                             联系我
                         </a>
-                        <a href="#gallery" class="bg-white/10 hover:bg-white/20 text-white px-8 py-3 rounded-lg font-medium transition-all backdrop-blur-sm border border-white/30 flex items-center gap-2">
+                        <a href="#gallery" class="bg-blue-600/80 hover:bg-blue-600 text-white px-8 py-3 rounded-lg font-bold transition-all backdrop-blur-md border-2 border-white/40 flex items-center gap-2 shadow-xl hover:shadow-2xl">
                             <i data-lucide="images" class="w-5 h-5"></i>
                             查看作品
                         </a>
                     </div>
                 </div>
                 <div class="relative">
-                    <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-3xl transform rotate-3 opacity-20 blur-2xl"></div>
-                    <div class="relative bg-white/5 backdrop-blur-sm rounded-3xl p-8 border border-white/10 shadow-2xl">
-                        <div class="aspect-[3/4] bg-gradient-to-br from-slate-700 to-slate-800 rounded-2xl overflow-hidden relative">
-                            <!-- 您的证件照 -->
-                            <img src="C:\Users\Administrator\Desktop\作品集\作品集图片\个人职业照.png" alt="敖鑫" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity">
-                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
-                                <p class="text-white font-semibold text-lg">敖鑫</p>
-                                <p class="text-slate-300 text-sm">机械工程师 | 29岁 | 武汉</p>
+                    <div class="absolute inset-0 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-3xl transform rotate-3 opacity-30 blur-2xl"></div>
+                    <div class="relative bg-slate-900/60 backdrop-blur-xl rounded-3xl p-8 border-2 border-white/20 shadow-2xl">
+                        <div class="aspect-[3/4] bg-gradient-to-br from-slate-700 to-slate-800 rounded-2xl overflow-hidden relative border border-white/10">
+                            <img src="C:\\Users\\Administrator\\Desktop\\作品集\\作品集图片\\个人职业照.png" alt="敖鑫" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity">
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-6">
+                                <p class="text-white font-bold text-xl drop-shadow-lg">敖鑫</p>
+                                <p class="text-slate-200 text-sm font-medium drop-shadow-md">机械工程师 | 29岁 | 武汉</p>
                             </div>
                         </div>
                         <div class="mt-6 grid grid-cols-2 gap-4">
-                            <div class="bg-white/5 p-4 rounded-xl border border-white/10">
-                                <p class="text-slate-400 text-xs uppercase tracking-wider">工作经验</p>
-                                <p class="text-2xl font-bold text-white">6年+</p>
+                            <div class="bg-slate-800/80 backdrop-blur p-4 rounded-xl border border-white/10 shadow-lg">
+                                <p class="text-slate-400 text-xs uppercase tracking-wider font-bold mb-1">工作经验</p>
+                                <p class="text-3xl font-bold text-white drop-shadow-lg">6年+</p>
                             </div>
-                            <div class="bg-white/5 p-4 rounded-xl border border-white/10">
-                                <p class="text-slate-400 text-xs uppercase tracking-wider">完成项目</p>
-                                <p class="text-2xl font-bold text-white">10+</p>
+                            <div class="bg-slate-800/80 backdrop-blur p-4 rounded-xl border border-white/10 shadow-lg">
+                                <p class="text-slate-400 text-xs uppercase tracking-wider font-bold mb-1">完成项目</p>
+                                <p class="text-3xl font-bold text-white drop-shadow-lg">10+</p>
                             </div>
                         </div>
                     </div>
@@ -210,7 +308,7 @@
             </div>
         </div>
         <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce no-print">
-            <i data-lucide="chevron-down" class="w-6 h-6 text-white/50"></i>
+            <i data-lucide="chevron-down" class="w-6 h-6 text-white drop-shadow-lg"></i>
         </div>
     </section>
 
@@ -223,33 +321,33 @@
                         <span class="w-12 h-1 bg-blue-600 rounded-full"></span>
                         专业简介
                     </h2>
-                    <div class="prose prose-lg text-slate-600 leading-relaxed">
-                        <p class="text-xl font-medium text-slate-800 mb-4">
+                    <div class="prose prose-lg text-slate-700 leading-relaxed">
+                        <p class="text-xl font-bold text-slate-900 mb-4">
                             拥有6年非标机械设计与冶金设备项目全流程经验，专业技能扎实，可独立完成机械结构设计、方案优化、图纸输出及项目落地。
                         </p>
-                        <p>
+                        <p class="text-slate-600">
                             具备丰富的项目管理与现场技术服务经验，曾主导完成立恒晋南钢铁、吉安市钢铁、广西桂鑫钢铁等多个大型连铸机总包及改造项目。精通回转台、拉矫机、二冷段等核心设备设计。
                         </p>
                     </div>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6">
-                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 text-center">
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 text-center hover:shadow-md transition-shadow">
                             <i data-lucide="graduation-cap" class="w-8 h-8 text-blue-600 mx-auto mb-2"></i>
-                            <p class="font-semibold text-slate-900">本科</p>
+                            <p class="font-bold text-slate-900">本科</p>
                             <p class="text-sm text-slate-600">机械设计制造及其自动化</p>
                         </div>
-                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 text-center">
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 text-center hover:shadow-md transition-shadow">
                             <i data-lucide="badge-check" class="w-8 h-8 text-blue-600 mx-auto mb-2"></i>
-                            <p class="font-semibold text-slate-900">中共党员</p>
+                            <p class="font-bold text-slate-900">中共党员</p>
                             <p class="text-sm text-slate-600">政治面貌</p>
                         </div>
-                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 text-center">
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 text-center hover:shadow-md transition-shadow">
                             <i data-lucide="map-pin" class="w-8 h-8 text-blue-600 mx-auto mb-2"></i>
-                            <p class="font-semibold text-slate-900">武汉</p>
+                            <p class="font-bold text-slate-900">武汉</p>
                             <p class="text-sm text-slate-600">现居地 / 户籍十堰</p>
                         </div>
-                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 text-center">
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 text-center hover:shadow-md transition-shadow">
                             <i data-lucide="car" class="w-8 h-8 text-blue-600 mx-auto mb-2"></i>
-                            <p class="font-semibold text-slate-900">C1驾照</p>
+                            <p class="font-bold text-slate-900">C1驾照</p>
                             <p class="text-sm text-slate-600">可适应出差</p>
                         </div>
                     </div>
@@ -257,31 +355,31 @@
                 <div class="space-y-6 section-fade">
                     <h3 class="text-xl font-bold text-slate-900">联系信息</h3>
                     <div class="space-y-4">
-                        <a href="tel:15172533134" class="flex items-center gap-3 p-4 bg-slate-50 rounded-xl hover:bg-blue-50 transition-colors group">
-                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-600 transition-colors">
+                        <a href="tel:15172533134" class="flex items-center gap-3 p-4 bg-slate-50 rounded-xl hover:bg-blue-50 transition-colors group border border-slate-200 hover:border-blue-300">
+                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-600 transition-colors shadow-sm">
                                 <i data-lucide="phone" class="w-5 h-5 text-blue-600 group-hover:text-white"></i>
                             </div>
                             <div>
-                                <p class="text-sm text-slate-500">电话</p>
-                                <p class="font-medium text-slate-900">151-7253-3134</p>
+                                <p class="text-sm text-slate-500 font-medium">电话</p>
+                                <p class="font-bold text-slate-900">151-7253-3134</p>
                             </div>
                         </a>
-                        <a href="mailto:aluog@foxmail.com" class="flex items-center gap-3 p-4 bg-slate-50 rounded-xl hover:bg-blue-50 transition-colors group">
-                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-600 transition-colors">
+                        <a href="mailto:aluog@foxmail.com" class="flex items-center gap-3 p-4 bg-slate-50 rounded-xl hover:bg-blue-50 transition-colors group border border-slate-200 hover:border-blue-300">
+                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-600 transition-colors shadow-sm">
                                 <i data-lucide="mail" class="w-5 h-5 text-blue-600 group-hover:text-white"></i>
                             </div>
                             <div>
-                                <p class="text-sm text-slate-500">邮箱</p>
-                                <p class="font-medium text-slate-900">aluog@foxmail.com</p>
+                                <p class="text-sm text-slate-500 font-medium">邮箱</p>
+                                <p class="font-bold text-slate-900">aluog@foxmail.com</p>
                             </div>
                         </a>
                     </div>
-                    <div class="p-6 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl text-white">
-                        <h4 class="font-bold text-lg mb-2">求职意向</h4>
+                    <div class="p-6 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl text-white shadow-xl">
+                        <h4 class="font-bold text-lg mb-3">求职意向</h4>
                         <ul class="space-y-2 text-blue-100 text-sm">
-                            <li class="flex items-center gap-2"><i data-lucide="target" class="w-4 h-4"></i>意向岗位：机械相关专业岗位</li>
-                            <li class="flex items-center gap-2"><i data-lucide="factory" class="w-4 h-4"></i>期望行业：精密制造、3C、汽车、通用制造</li>
-                            <li class="flex items-center gap-2"><i data-lucide="banknote" class="w-4 h-4"></i>薪资期望：10K-15薪</li>
+                            <li class="flex items-center gap-2"><i data-lucide="target" class="w-4 h-4 flex-shrink-0"></i>意向岗位：机械相关专业岗位</li>
+                            <li class="flex items-center gap-2"><i data-lucide="factory" class="w-4 h-4 flex-shrink-0"></i>期望行业：精密制造、3C、汽车、通用制造</li>
+                            <li class="flex items-center gap-2"><i data-lucide="banknote" class="w-4 h-4 flex-shrink-0"></i>薪资期望：10K-15薪</li>
                         </ul>
                     </div>
                 </div>
@@ -289,478 +387,79 @@
         </div>
     </section>
 
-    <!-- Experience Timeline -->
-    <section id="experience" class="py-20 bg-slate-50">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16 section-fade">
-                <h2 class="text-3xl font-bold text-slate-900 mb-4">职业经历</h2>
-                <p class="text-slate-600">6年深耕冶金设备与非标机械设计领域</p>
-            </div>
-            <div class="relative space-y-12">
-                <div class="timeline-line"></div>
-                
-                <!-- Job 1 -->
-                <div class="relative pl-16 section-fade">
-                    <div class="absolute left-0 top-0 w-12 h-12 bg-blue-600 rounded-full border-4 border-white shadow-lg flex items-center justify-center z-10">
-                        <i data-lucide="briefcase" class="w-5 h-5 text-white"></i>
-                    </div>
-                    <div class="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 card-hover">
-                        <div class="flex flex-col md:flex-row md:justify-between md:items-start mb-4">
-                            <div>
-                                <h3 class="text-xl font-bold text-slate-900">机械工程师</h3>
-                                <p class="text-blue-600 font-medium text-lg">中基科技（武汉）有限公司 / DIG自动化</p>
-                            </div>
-                            <span class="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium mt-2 md:mt-0">2024.07 - 2025.08</span>
-                        </div>
-                        <p class="text-slate-500 mb-4 text-sm">船舶/航空/航天/火车制造 | 自动化产线、焊接、机加工制造</p>
-                        <div class="grid md:grid-cols-2 gap-4">
-                            <div class="space-y-3">
-                                <div class="flex items-start gap-3">
-                                    <i data-lucide="check-circle" class="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0"></i>
-                                    <div>
-                                        <p class="font-medium text-slate-900">非标设备设计</p>
-                                        <p class="text-sm text-slate-600">负责自动化产线、焊接/机加工非标设备结构设计，独立完成三维建模、2D工程图绘制及BOM编制</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-start gap-3">
-                                    <i data-lucide="check-circle" class="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0"></i>
-                                    <div>
-                                        <p class="font-medium text-slate-900">产品全流程开发</p>
-                                        <p class="text-sm text-slate-600">参与方案设计、关键部件选型、结构优化与图纸审核，保障新产品从设计到量产落地</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="space-y-3">
-                                <div class="flex items-start gap-3">
-                                    <i data-lucide="check-circle" class="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0"></i>
-                                    <div>
-                                        <p class="font-medium text-slate-900">现场技术支持</p>
-                                        <p class="text-sm text-slate-600">对接零件加工、装配调试，解决结构干涉、加工精度等问题，管控质量、降低报废率</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-start gap-3">
-                                    <i data-lucide="check-circle" class="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0"></i>
-                                    <div>
-                                        <p class="font-medium text-slate-900">商务协同配合</p>
-                                        <p class="text-sm text-slate-600">协助技术方案评审、标书编写及客户技术对接，配合销售推进重点项目</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Job 2 -->
-                <div class="relative pl-16 section-fade">
-                    <div class="absolute left-0 top-0 w-12 h-12 bg-cyan-600 rounded-full border-4 border-white shadow-lg flex items-center justify-center z-10">
-                        <i data-lucide="settings" class="w-5 h-5 text-white"></i>
-                    </div>
-                    <div class="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 card-hover">
-                        <div class="flex flex-col md:flex-row md:justify-between md:items-start mb-4">
-                            <div>
-                                <h3 class="text-xl font-bold text-slate-900">机械工程师兼项目经理</h3>
-                                <p class="text-cyan-600 font-medium text-lg">武汉高智达连铸智能科技有限公司</p>
-                            </div>
-                            <span class="inline-flex items-center px-3 py-1 bg-cyan-100 text-cyan-700 rounded-full text-sm font-medium mt-2 md:mt-0">2019.06 - 2024.05</span>
-                        </div>
-                        <p class="text-slate-500 mb-4 text-sm">冶金设备/钢铁智能制造/自动化产线 | 连铸、大型设备制造</p>
-                        <div class="grid md:grid-cols-2 gap-4">
-                            <div class="space-y-3">
-                                <div class="flex items-start gap-3">
-                                    <i data-lucide="check-circle" class="w-5 h-5 text-cyan-600 mt-0.5 flex-shrink-0"></i>
-                                    <div>
-                                        <p class="font-medium text-slate-900">核心结构设计</p>
-                                        <p class="text-sm text-slate-600">主导连铸设备结构设计，回转台、拉矫机、二冷段、辊道及液压润滑配管等核心设备图纸、计算与选型</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-start gap-3">
-                                    <i data-lucide="check-circle" class="w-5 h-5 text-cyan-600 mt-0.5 flex-shrink-0"></i>
-                                    <div>
-                                        <p class="font-medium text-slate-900">项目全流程管理</p>
-                                        <p class="text-sm text-slate-600">统筹工厂制造、安装、调试与甲方对接，协调多方资源，保障10+个冶金项目按期交付</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="space-y-3">
-                                <div class="flex items-start gap-3">
-                                    <i data-lucide="check-circle" class="w-5 h-5 text-cyan-600 mt-0.5 flex-shrink-0"></i>
-                                    <div>
-                                        <p class="font-medium text-slate-900">设备优化改造</p>
-                                        <p class="text-sm text-slate-600">参与高效化、提拉速改造，优化结构与运行方案，降低故障率、提升产线运行效率</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-start gap-3">
-                                    <i data-lucide="check-circle" class="w-5 h-5 text-cyan-600 mt-0.5 flex-shrink-0"></i>
-                                    <div>
-                                        <p class="font-medium text-slate-900">现场调试与服务</p>
-                                        <p class="text-sm text-slate-600">负责现场安装调试、技术指导，处理突发机械问题，配合验收，客户满意度100%</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Projects Section with Images -->
-    <section id="projects" class="py-20 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16 section-fade">
-                <h2 class="text-3xl font-bold text-slate-900 mb-4">重点项目经历</h2>
-                <p class="text-slate-600 max-w-2xl mx-auto">参与多个大型钢铁企业连铸机总包及改造项目，涵盖回转台、拉矫机、二冷系统等核心设备的设计与实施</p>
-            </div>
-
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Project 1 -->
-                <div class="project-card rounded-2xl overflow-hidden shadow-lg card-hover section-fade blueprint-accent bg-white">
-                    <div class="project-image-container h-48 bg-slate-200 relative">
-                        <!-- 项目图片占位 - 替换为实际路径 -->
-                        <img src="C:\Users\Administrator\Desktop\作品集\作品集图片\现场图片\IMG_9305.JPEG"alt="立恒晋南钢铁项目" class="w-full h-full object-cover">
-                        <div class="absolute top-4 right-4">
-                            <span class="px-3 py-1 bg-blue-600 text-white rounded-full text-xs font-bold shadow-lg">总包工程</span>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-slate-400 text-xs">2019.07-2025.08</span>
-                        </div>
-                        <h3 class="text-lg font-bold text-slate-900 mb-2">立恒晋南钢铁3号连铸机</h3>
-                        <p class="text-slate-500 text-sm mb-4">10机10流连铸机总包工程</p>
-                        <div class="space-y-2 mb-4">
-                            <p class="text-sm text-slate-700 flex items-start gap-2">
-                                <i data-lucide="arrow-right" class="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0"></i>
-                                <span>核心设计负责人之一，承担回转台、二冷段、拉矫机、机械手等全流程核心设备设计</span>
-                            </p>
-                            <p class="text-sm text-slate-700 flex items-start gap-2">
-                                <i data-lucide="arrow-right" class="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0"></i>
-                                <span>全程指导制造厂加工、现场安装调试，统筹项目全周期技术管理</span>
-                            </p>
-                        </div>
-                        <div class="flex flex-wrap gap-2 pt-4 border-t border-slate-100">
-                            <span class="px-2 py-1 bg-blue-50 text-blue-700 rounded text-xs font-medium">回转台设计</span>
-                            <span class="px-2 py-1 bg-blue-50 text-blue-700 rounded text-xs font-medium">拉矫机</span>
-                            <span class="px-2 py-1 bg-blue-50 text-blue-700 rounded text-xs font-medium">机械手</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Project 2 -->
-                <div class="project-card rounded-2xl overflow-hidden shadow-lg card-hover section-fade blueprint-accent bg-white">
-                    <div class="project-image-container h-48 bg-slate-200 relative">
-                        <img src="C:\Users\Administrator\Desktop\作品集\作品集图片\现场图片\IMG_1903.JPEG" alt="吉安钢铁项目" class="w-full h-full object-cover">
-                        <div class="absolute top-4 right-4">
-                            <span class="px-3 py-1 bg-cyan-600 text-white rounded-full text-xs font-bold shadow-lg">总包工程</span>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-slate-400 text-xs">2019.07-2025.08</span>
-                        </div>
-                        <h3 class="text-lg font-bold text-slate-900 mb-2">吉安市钢铁有限责任公司</h3>
-                        <p class="text-slate-500 text-sm mb-4">8机8流方坯连铸机总包工程</p>
-                        <div class="space-y-2 mb-4">
-                            <p class="text-sm text-slate-700 flex items-start gap-2">
-                                <i data-lucide="arrow-right" class="w-4 h-4 text-cyan-600 mt-0.5 flex-shrink-0"></i>
-                                <span>全程参与项目各环节，负责机械设计、分包协调、现场技术支持与验收跟进</span>
-                            </p>
-                            <p class="text-sm text-slate-700 flex items-start gap-2">
-                                <i data-lucide="arrow-right" class="w-4 h-4 text-cyan-600 mt-0.5 flex-shrink-0"></i>
-                                <span>统筹从方案设计、图纸输出到投产的全流程管理，保障总包项目顺利落地</span>
-                            </p>
-                        </div>
-                        <div class="flex flex-wrap gap-2 pt-4 border-t border-slate-100">
-                            <span class="px-2 py-1 bg-cyan-50 text-cyan-700 rounded text-xs font-medium">方坯连铸</span>
-                            <span class="px-2 py-1 bg-cyan-50 text-cyan-700 rounded text-xs font-medium">项目管理</span>
-                            <span class="px-2 py-1 bg-cyan-50 text-cyan-700 rounded text-xs font-medium">现场调试</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Project 3 -->
-                <div class="project-card rounded-2xl overflow-hidden shadow-lg card-hover section-fade blueprint-accent bg-white">
-                    <div class="project-image-container h-48 bg-slate-200 relative">
-                        <img src="C:\Users\Administrator\Desktop\作品集\作品集图片\现场图片\IMG_7703.JPEG" alt="广西桂鑫钢铁项目" class="w-full h-full object-cover">
-                        <div class="absolute top-4 right-4">
-                            <span class="px-3 py-1 bg-purple-600 text-white rounded-full text-xs font-bold shadow-lg">高效改造</span>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-slate-400 text-xs">2019.07-2025.08</span>
-                        </div>
-                        <h3 class="text-lg font-bold text-slate-900 mb-2">广西桂鑫钢铁集团</h3>
-                        <p class="text-slate-500 text-sm mb-4">5流连铸高效提拉速改造项目</p>
-                        <div class="space-y-2 mb-4">
-                            <p class="text-sm text-slate-700 flex items-start gap-2">
-                                <i data-lucide="arrow-right" class="w-4 h-4 text-purple-600 mt-0.5 flex-shrink-0"></i>
-                                <span>负责二冷喷淋系统、车间配管设计，与甲方技术沟通，配合电气部门</span>
-                            </p>
-                        </div>
-                        <div class="flex flex-wrap gap-2 pt-4 border-t border-slate-100">
-                            <span class="px-2 py-1 bg-purple-50 text-purple-700 rounded text-xs font-medium">二冷系统</span>
-                            <span class="px-2 py-1 bg-purple-50 text-purple-700 rounded text-xs font-medium">液压配管</span>
-                            <span class="px-2 py-1 bg-purple-50 text-purple-700 rounded text-xs font-medium">提拉速改造</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Project 4 -->
-                <div class="project-card rounded-2xl overflow-hidden shadow-lg card-hover section-fade blueprint-accent bg-white">
-                    <div class="project-image-container h-48 bg-slate-200 relative">
-                        <img src="C:\Users\Administrator\Desktop\作品集\作品集图片\现场图片\IMG_0628.JPEG"alt="晋南钢铁改造项目" class="w-full h-full object-cover">
-                        <div class="absolute top-4 right-4">
-                            <span class="px-3 py-1 bg-orange-600 text-white rounded-full text-xs font-bold shadow-lg">高产量改造</span>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-slate-400 text-xs">2019.07-2025.08</span>
-                        </div>
-                        <h3 class="text-lg font-bold text-slate-900 mb-2">晋南钢铁集团1号机</h3>
-                        <p class="text-slate-500 text-sm mb-4">高产量改造项目（项目经理）</p>
-                        <div class="space-y-2 mb-4">
-                            <p class="text-sm text-slate-700 flex items-start gap-2">
-                                <i data-lucide="arrow-right" class="w-4 h-4 text-orange-600 mt-0.5 flex-shrink-0"></i>
-                                <span>负责图纸设计和参数计算选型，管理分包（回转台、电机减速机选型、二冷系统等）</span>
-                            </p>
-                            <p class="text-sm text-slate-700 flex items-start gap-2">
-                                <i data-lucide="arrow-right" class="w-4 h-4 text-orange-600 mt-0.5 flex-shrink-0"></i>
-                                <span>结晶器、电磁搅拌、机器人、火切机等参数计算选型及分包管理</span>
-                            </p>
-                        </div>
-                        <div class="flex flex-wrap gap-2 pt-4 border-t border-slate-100">
-                            <span class="px-2 py-1 bg-orange-50 text-orange-700 rounded text-xs font-medium">项目管理</span>
-                            <span class="px-2 py-1 bg-orange-50 text-orange-700 rounded text-xs font-medium">结晶器</span>
-                            <span class="px-2 py-1 bg-orange-50 text-orange-700 rounded text-xs font-medium">电磁搅拌</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Project 5 -->
-                <div class="project-card rounded-2xl overflow-hidden shadow-lg card-hover section-fade blueprint-accent bg-white">
-                    <div class="project-image-container h-48 bg-slate-200 relative">
-                        <img src="C:\Users\Administrator\Desktop\作品集\作品集图片\现场图片\01c129795506138af45161750378ae26.jpg"alt="金盛兰改造项目" class="w-full h-full object-cover">
-                        <div class="absolute top-4 right-4">
-                            <span class="px-3 py-1 bg-green-600 text-white rounded-full text-xs font-bold shadow-lg">高效化改造</span>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-slate-400 text-xs">2019.07-2025.08</span>
-                        </div>
-                        <h3 class="text-lg font-bold text-slate-900 mb-2">湖北金盛兰科技有限公司</h3>
-                        <p class="text-slate-500 text-sm mb-4">8机8流连铸机高效化改造项目（项目经理）</p>
-                        <div class="space-y-2 mb-4">
-                            <p class="text-sm text-slate-700 flex items-start gap-2">
-                                <i data-lucide="arrow-right" class="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0"></i>
-                                <span>全面负责项目，推动连铸机改造，提升设备运行效率与稳定性</span>
-                            </p>
-                        </div>
-                        <div class="flex flex-wrap gap-2 pt-4 border-t border-slate-100">
-                            <span class="px-2 py-1 bg-green-50 text-green-700 rounded text-xs font-medium">全面负责</span>
-                            <span class="px-2 py-1 bg-green-50 text-green-700 rounded text-xs font-medium">连铸机改造</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Project 6 -->
-                <div class="project-card rounded-2xl overflow-hidden shadow-lg card-hover section-fade blueprint-accent bg-white">
-                    <div class="project-image-container h-48 bg-slate-200 relative">
-                        <img src="C:\Users\Administrator\Desktop\作品集\作品集图片\现场图片\990c555c096a8f677e2fafcb06ca1d09_u=176986017,2918405010&fm=253&app=138&f=JPEG_w=800&h=1067.jpg" alt="十字操作机系统" class="w-full h-full object-cover">
-                        <div class="absolute top-4 right-4">
-                            <span class="px-3 py-1 bg-indigo-600 text-white rounded-full text-xs font-bold shadow-lg">标准化开发</span>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-slate-400 text-xs">2019.07-2025.08</span>
-                        </div>
-                        <h3 class="text-lg font-bold text-slate-900 mb-2">十字操作机系统</h3>
-                        <p class="text-slate-500 text-sm mb-4">标准化开发设计与制造项目</p>
-                        <div class="space-y-2 mb-4">
-                            <p class="text-sm text-slate-700 flex items-start gap-2">
-                                <i data-lucide="arrow-right" class="w-4 h-4 text-indigo-600 mt-0.5 flex-shrink-0"></i>
-                                <span>主导十字操作机系统的标准化设计、开发与制造，完成产品模块化、系列化开发及系统入库</span>
-                            </p>
-                            <p class="text-sm text-slate-700 flex items-start gap-2">
-                                <i data-lucide="arrow-right" class="w-4 h-4 text-indigo-600 mt-0.5 flex-shrink-0"></i>
-                                <span>成功应用于沈阳飞机工业、北京首都航空等多个项目，实现批量交付</span>
-                            </p>
-                        </div>
-                        <div class="flex flex-wrap gap-2 pt-4 border-t border-slate-100">
-                            <span class="px-2 py-1 bg-indigo-50 text-indigo-700 rounded text-xs font-medium">标准化设计</span>
-                            <span class="px-2 py-1 bg-indigo-50 text-indigo-700 rounded text-xs font-medium">模块化开发</span>
-                            <span class="px-2 py-1 bg-indigo-50 text-indigo-700 rounded text-xs font-medium">航空应用</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Gallery Section - 项目图库 -->
-    <section id="gallery" class="py-20 bg-slate-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12 section-fade">
-                <h2 class="text-3xl font-bold text-slate-900 mb-4">项目图库</h2>
-                <p class="text-slate-600">现场安装、设备调试及三维设计模型展示（点击放大查看）</p>
-            </div>
-
-            <!-- 图片网格画廊 -->
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 section-fade">
-                <!-- 示例图片1 - 替换路径 -->
-                <div class="gallery-item aspect-square bg-white shadow-md" onclick="openLightbox(this)">
-                    <img src="C:\Users\Administrator\Desktop\作品集\作品集图片\现场图片\IMG_0414.JPEG" alt="连铸机现场安装" class="w-full h-full object-cover">
-                    <div class="gallery-overlay">
-                        <p class="text-white font-medium text-sm">连铸机现场安装调试</p>
-                    </div>
-                </div>
-
-                <!-- 示例图片2 -->
-                <div class="gallery-item aspect-square bg-white shadow-md" onclick="openLightbox(this)">
-                    <img src="C:\Users\Administrator\Desktop\作品集\作品集图片\回转台图片\ScreenShot_2026-04-09_234453_636.png" alt="回转台三维模型" class="w-full h-full object-cover">
-                    <div class="gallery-overlay">
-                        <p class="text-white font-medium text-sm">回转台三维设计模型</p>
-                    </div>
-                </div>
-
-                <!-- 示例图片3 -->
-                <div class="gallery-item aspect-square bg-white shadow-md" onclick="openLightbox(this)">
-                    <img src="C:\Users\Administrator\Desktop\作品集\作品集图片\现场图片\IMG_0805.JPEG"alt="拉矫机设备" class="w-full h-full object-cover">
-                    <div class="gallery-overlay">
-                        <p class="text-white font-medium text-sm">拉矫机核心设备</p>
-                    </div>
-                </div>
-
-                <!-- 示例图片4 -->
-                <div class="gallery-item aspect-square bg-white shadow-md" onclick="openLightbox(this)">
-                    <img src="C:\Users\Administrator\Desktop\作品集\作品集图片\二冷系统\二冷系统设计.JPEG" alt="二冷系统设计" class="w-full h-full object-cover">
-                    <div class="gallery-overlay">
-                        <p class="text-white font-medium text-sm">二冷喷淋系统设计</p>
-                    </div>
-                </div>
-
-                <!-- 示例图片5 -->
-                <div class="gallery-item aspect-square bg-white shadow-md" onclick="openLightbox(this)">
-                    <img src="C:\Users\Administrator\Desktop\作品集\作品集图片\现场图片\IMG_8333.JPEG"alt="液压配管系统" class="w-full h-full object-cover">
-                    <div class="gallery-overlay">
-                        <p class="text-white font-medium text-sm">液压润滑配管系统</p>
-                    </div>
-                </div>
-
-                <!-- 示例图片6 -->
-                <div class="gallery-item aspect-square bg-white shadow-md" onclick="openLightbox(this)">
-                    <img src="C:\Users\Administrator\Desktop\作品集\作品集图片\现场图片\23b6944eaa155089d1ba8d1465f6a567.jpg" alt="项目验收" class="w-full h-full object-cover">
-                    <div class="gallery-overlay">
-                        <p class="text-white font-medium text-sm">项目验收现场</p>
-                    </div>
-                </div>
-
-                <!-- 示例图片7 -->
-                <div class="gallery-item aspect-square bg-white shadow-md" onclick="openLightbox(this)">
-                    <img src="C:\Users\Administrator\Desktop\作品集\作品集图片\现场图片\851ff20f93b77cd9d9debe2f3559c2ad.jpg"alt="工程图纸" class="w-full h-full object-cover">
-                    <div class="gallery-overlay">
-                        <p class="text-white font-medium text-sm">工程图纸设计</p>
-                    </div>
-                </div>
-
-                <!-- 示例图片8 -->
-                <div class="gallery-item aspect-square bg-white shadow-md" onclick="openLightbox(this)">
-                    <img src="C:\Users\Administrator\Desktop\作品集\作品集图片\合照.jpg" alt="团队协作" class="w-full h-full object-cover">
-                    <div class="gallery-overlay">
-                        <p class="text-white font-medium text-sm">项目团队协作</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mt-8 text-center">
-                <p class="text-sm text-slate-500">提示：点击图片可查看大图。</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Lightbox 灯箱 -->
-    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
-        <button class="absolute top-4 right-4 text-white p-2 hover:bg-white/10 rounded-full transition-colors">
-            <i data-lucide="x" class="w-8 h-8"></i>
-        </button>
-        <img id="lightbox-img" src="" alt="放大查看">
-        <p id="lightbox-caption" class="absolute bottom-4 left-0 right-0 text-center text-white text-lg font-medium"></p>
-    </div>
-
     <!-- Skills Section -->
     <section id="skills" class="py-20 bg-slate-900 text-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16 section-fade">
-                <h2 class="text-3xl font-bold mb-4">专业技能</h2>
-                <p class="text-slate-400">精通非标机械设计与冶金连铸设备，具备全链路技术能力</p>
+                <h2 class="text-3xl font-bold mb-4 text-white">专业技能</h2>
+                <p class="text-slate-400 font-medium">精通非标机械设计与冶金连铸设备，具备全链路技术能力</p>
             </div>
 
             <div class="grid md:grid-cols-3 gap-8">
-                <!-- Design Software -->
-                <div class="bg-slate-800 rounded-2xl p-8 border border-slate-700 section-fade">
+                <div class="bg-slate-800 rounded-2xl p-8 border border-slate-700 section-fade shadow-lg">
                     <div class="flex items-center gap-3 mb-6">
                         <div class="w-12 h-12 bg-blue-600/20 rounded-xl flex items-center justify-center">
                             <i data-lucide="monitor" class="w-6 h-6 text-blue-400"></i>
                         </div>
-                        <h3 class="text-xl font-bold">设计软件</h3>
+                        <h3 class="text-xl font-bold text-white">设计软件</h3>
                     </div>
                     <div class="space-y-4">
                         <div>
                             <div class="flex justify-between mb-1">
-                                <span class="text-sm font-medium">SolidWorks (3D建模)</span>
-                                <span class="text-sm text-blue-400">精通</span>
+                                <span class="text-sm font-bold text-slate-200">SolidWorks (3D建模)</span>
+                                <span class="text-sm text-blue-400 font-bold">精通</span>
                             </div>
                             <div class="w-full bg-slate-700 rounded-full h-2">
-                                <div class="bg-blue-500 h-2 rounded-full skill-bar" style="width: 95%"></div>
+                                <div class="bg-blue-500 h-2 rounded-full skill-bar shadow-[0_0_10px_rgba(59,130,246,0.5)]" style="width: 95%"></div>
                             </div>
                         </div>
                         <div>
                             <div class="flex justify-between mb-1">
-                                <span class="text-sm font-medium">AutoCAD (2D工程图)</span>
-                                <span class="text-sm text-blue-400">精通</span>
+                                <span class="text-sm font-bold text-slate-200">AutoCAD (2D工程图)</span>
+                                <span class="text-sm text-blue-400 font-bold">精通</span>
                             </div>
                             <div class="w-full bg-slate-700 rounded-full h-2">
-                                <div class="bg-blue-500 h-2 rounded-full skill-bar" style="width: 95%"></div>
+                                <div class="bg-blue-500 h-2 rounded-full skill-bar shadow-[0_0_10px_rgba(59,130,246,0.5)]" style="width: 95%"></div>
                             </div>
                         </div>
                         <div>
                             <div class="flex justify-between mb-1">
-                                <span class="text-sm font-medium">Pro/E</span>
-                                <span class="text-sm text-blue-400">会用</span>
+                                <span class="text-sm font-bold text-slate-200">Pro/E</span>
+                                <span class="text-sm text-blue-400 font-bold">会用</span>
                             </div>
                             <div class="w-full bg-slate-700 rounded-full h-2">
-                                <div class="bg-blue-500 h-2 rounded-full skill-bar" style="width: 65%"></div>
+                                <div class="bg-blue-500 h-2 rounded-full skill-bar shadow-[0_0_10px_rgba(59,130,246,0.5)]" style="width: 65%"></div>
                             </div>
                         </div>
                     </div>
                     <div class="mt-6 pt-6 border-t border-slate-700">
-                        <p class="text-sm text-slate-400 mb-2">专业认证</p>
-                        <div class="flex items-center gap-2 text-sm">
+                        <p class="text-sm text-slate-400 mb-2 font-bold">专业认证</p>
+                        <div class="flex items-center gap-2 text-sm text-slate-300">
                             <i data-lucide="award" class="w-4 h-4 text-yellow-500"></i>
                             <span>CAD 绘图证书</span>
+                              </div>
+                              <div class="flex items-center gap-2 text-sm text-slate-300">
+                                      <i data-lucide="car" class="w-4 h-4 text-green-500"></i>
+                                      <span> C1驾驶证</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Professional Skills -->
-                <div class="bg-slate-800 rounded-2xl p-8 border border-slate-700 section-fade">
+                <div class="bg-slate-800 rounded-2xl p-8 border border-slate-700 section-fade shadow-lg">
                     <div class="flex items-center gap-3 mb-6">
                         <div class="w-12 h-12 bg-cyan-600/20 rounded-xl flex items-center justify-center">
                             <i data-lucide="cpu" class="w-6 h-6 text-cyan-400"></i>
                         </div>
-                        <h3 class="text-xl font-bold">专业能力</h3>
+                        <h3 class="text-xl font-bold text-white">专业能力</h3>
                     </div>
                     <ul class="space-y-3">
                         <li class="flex items-start gap-3">
                             <i data-lucide="check" class="w-5 h-5 text-cyan-400 mt-0.5 flex-shrink-0"></i>
-                            <span class="text-slate-300">精通非标机械设计、冶金连铸设备设计</span>
+                            <span class="text-slate-300">精通机械设计、大型设备结构设计</span>
                         </li>
                         <li class="flex items-start gap-3">
                             <i data-lucide="check" class="w-5 h-5 text-cyan-400 mt-0.5 flex-shrink-0"></i>
-                            <span class="text-slate-300">熟悉液压与气动系统设计</span>
+                            <span class="text-slate-300">了解液压与气动系统设计</span>
                         </li>
                         <li class="flex items-start gap-3">
                             <i data-lucide="check" class="w-5 h-5 text-cyan-400 mt-0.5 flex-shrink-0"></i>
@@ -781,18 +480,17 @@
                     </ul>
                 </div>
 
-                <!-- General Skills -->
-                <div class="bg-slate-800 rounded-2xl p-8 border border-slate-700 section-fade">
+                <div class="bg-slate-800 rounded-2xl p-8 border border-slate-700 section-fade shadow-lg">
                     <div class="flex items-center gap-3 mb-6">
                         <div class="w-12 h-12 bg-purple-600/20 rounded-xl flex items-center justify-center">
                             <i data-lucide="users" class="w-6 h-6 text-purple-400"></i>
                         </div>
-                        <h3 class="text-xl font-bold">综合能力</h3>
+                        <h3 class="text-xl font-bold text-white">综合能力</h3>
                     </div>
                     <ul class="space-y-3">
                         <li class="flex items-start gap-3">
                             <i data-lucide="check" class="w-5 h-5 text-purple-400 mt-0.5 flex-shrink-0"></i>
-                            <span class="text-slate-300">独立推进从方案设计到项目验收的全链路工作</span>
+                            <span class="text-slate-300">拥有从方案设计到项目验收的全链路工作经验</span>
                         </li>
                         <li class="flex items-start gap-3">
                             <i data-lucide="check" class="w-5 h-5 text-purple-400 mt-0.5 flex-shrink-0"></i>
@@ -818,27 +516,26 @@
                 </div>
             </div>
 
-            <!-- Education -->
-            <div class="mt-12 bg-slate-800 rounded-2xl p-8 border border-slate-700 section-fade">
+            <div class="mt-12 bg-slate-800 rounded-2xl p-8 border border-slate-700 section-fade shadow-lg">
                 <div class="flex items-start gap-6">
-                    <div class="w-16 h-16 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-2xl flex items-center justify-center flex-shrink-0">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
                         <i data-lucide="graduation-cap" class="w-8 h-8 text-white"></i>
                     </div>
                     <div class="flex-1">
                         <div class="flex flex-col md:flex-row md:justify-between md:items-start mb-2">
                             <div>
                                 <h3 class="text-xl font-bold text-white">武汉科技大学城市学院</h3>
-                                <p class="text-lg text-slate-300">机械设计制造及其自动化 | 本科</p>
+                                <p class="text-lg text-slate-300 font-medium">机械设计制造及其自动化 | 本科</p>
                             </div>
-                            <span class="text-slate-400 mt-2 md:mt-0">2015.09 - 2019.06</span>
+                            <span class="text-slate-400 mt-2 md:mt-0 font-bold">2015.09 - 2019.06</span>
                         </div>
                         <div class="mt-4 grid md:grid-cols-2 gap-4 text-sm text-slate-400">
                             <div>
-                                <p class="font-medium text-slate-300 mb-1">主修课程：</p>
+                                <p class="font-bold text-slate-300 mb-1">主修课程：</p>
                                 <p>机械设计、机械原理、数控加工、金属工艺学、电脑制图 CAD、Pro/E、液压与气压传动、带式运输机传动系统设计等</p>
                             </div>
                             <div>
-                                <p class="font-medium text-slate-300 mb-1">实训经历：</p>
+                                <p class="font-bold text-slate-300 mb-1">实训经历：</p>
                                 <p>液压与气压传动课程设计、金工实习、数控机床操控等</p>
                             </div>
                         </div>
@@ -848,41 +545,658 @@
         </div>
     </section>
 
+    <!-- Experience Timeline -->
+    <section id="experience" class="py-20 bg-slate-50">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 section-fade">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">职业经历</h2>
+                <p class="text-slate-600 font-medium">6年大型设备与机械设计领域</p>
+            </div>
+            <div class="relative space-y-12">
+                <div class="timeline-line"></div>
+
+                <div class="relative pl-16 section-fade">
+                    <div class="absolute left-0 top-0 w-12 h-12 bg-blue-600 rounded-full border-4 border-white shadow-lg flex items-center justify-center z-10">
+                        <i data-lucide="briefcase" class="w-5 h-5 text-white"></i>
+                    </div>
+                    <div class="bg-white rounded-2xl p-8 shadow-md border border-slate-200 card-hover">
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-start mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-900">机械工程师</h3>
+                                <p class="text-blue-600 font-bold text-lg">中基科技（武汉）有限公司 / DIG自动化</p>
+                            </div>
+                            <span class="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-bold mt-2 md:mt-0 shadow-sm">2024.07 - 2025.08</span>
+                        </div>
+                        <p class="text-slate-500 mb-4 text-sm font-medium">船舶/航空/航天/火车制造 | 自动化产线、焊接、机加工制造</p>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="space-y-3">
+                                <div class="flex items-start gap-3">
+                                    <i data-lucide="check-circle" class="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0"></i>
+                                    <div>
+                                        <p class="font-bold text-slate-900">非标设备设计</p>
+                                        <p class="text-sm text-slate-600 leading-relaxed">负责自动化产线、焊接/机加工非标设备结构设计，独立完成三维建模、2D工程图绘制及BOM编制</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <i data-lucide="check-circle" class="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0"></i>
+                                    <div>
+                                        <p class="font-bold text-slate-900">产品全流程开发</p>
+                                        <p class="text-sm text-slate-600 leading-relaxed">参与方案设计、关键部件选型、结构优化与图纸审核，保障新产品从设计到量产落地</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="flex items-start gap-3">
+                                    <i data-lucide="check-circle" class="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0"></i>
+                                    <div>
+                                        <p class="font-bold text-slate-900">现场技术支持</p>
+                                        <p class="text-sm text-slate-600 leading-relaxed">对接零件加工、装配调试，解决结构干涉、加工精度等问题，管控质量、降低报废率</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <i data-lucide="check-circle" class="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0"></i>
+                                    <div>
+                                        <p class="font-bold text-slate-900">商务协同配合</p>
+                                        <p class="text-sm text-slate-600 leading-relaxed">协助技术方案评审、标书编写及客户技术对接，配合销售推进重点项目</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative pl-16 section-fade">
+                    <div class="absolute left-0 top-0 w-12 h-12 bg-cyan-600 rounded-full border-4 border-white shadow-lg flex items-center justify-center z-10">
+                        <i data-lucide="settings" class="w-5 h-5 text-white"></i>
+                    </div>
+                    <div class="bg-white rounded-2xl p-8 shadow-md border border-slate-200 card-hover">
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-start mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-900">机械工程师兼项目经理</h3>
+                                <p class="text-cyan-600 font-bold text-lg">武汉高智达连铸智能科技有限公司</p>
+                            </div>
+                            <span class="inline-flex items-center px-3 py-1 bg-cyan-100 text-cyan-800 rounded-full text-sm font-bold mt-2 md:mt-0 shadow-sm">2019.06 - 2024.05</span>
+                        </div>
+                        <p class="text-slate-500 mb-4 text-sm font-medium">冶金设备/钢铁智能制造/自动化产线 | 连铸、大型设备制造</p>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="space-y-3">
+                                <div class="flex items-start gap-3">
+                                    <i data-lucide="check-circle" class="w-5 h-5 text-cyan-600 mt-0.5 flex-shrink-0"></i>
+                                    <div>
+                                        <p class="font-bold text-slate-900">核心结构设计</p>
+                                        <p class="text-sm text-slate-600 leading-relaxed">主导连铸设备结构设计，回转台、拉矫机、二冷段、辊道及液压润滑配管等核心设备图纸、计算与选型</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <i data-lucide="check-circle" class="w-5 h-5 text-cyan-600 mt-0.5 flex-shrink-0"></i>
+                                    <div>
+                                        <p class="font-bold text-slate-900">项目全流程管理</p>
+                                        <p class="text-sm text-slate-600 leading-relaxed">统筹工厂制造、安装、调试与甲方对接，协调多方资源，保障10+个冶金项目按期交付</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="flex items-start gap-3">
+                                    <i data-lucide="check-circle" class="w-5 h-5 text-cyan-600 mt-0.5 flex-shrink-0"></i>
+                                    <div>
+                                        <p class="font-bold text-slate-900">设备优化改造</p>
+                                        <p class="text-sm text-slate-600 leading-relaxed">参与高效化、提拉速改造，优化结构与运行方案，降低故障率、提升产线运行效率</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <i data-lucide="check-circle" class="w-5 h-5 text-cyan-600 mt-0.5 flex-shrink-0"></i>
+                                    <div>
+                                        <p class="font-bold text-slate-900">现场调试与服务</p>
+                                        <p class="text-sm text-slate-600 leading-relaxed">负责现场安装调试、技术指导，处理突发机械问题，配合验收，客户满意度100%</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section with Gallery - 8个项目可点击查看多图 -->
+    <section id="projects" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 section-fade">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">重点项目经历</h2>
+                <p class="text-slate-600 max-w-2xl mx-auto font-medium">点击项目卡片查看详细现场照片与设计图纸（每个项目3-4张）</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Project 1: 立恒晋南钢铁 -->
+                <div class="project-card rounded-2xl overflow-hidden shadow-lg card-hover section-fade blueprint-accent bg-white border border-slate-200 cursor-pointer" onclick="openGalleryModal('project101')">
+                    <div class="project-image-container h-48 bg-slate-200 relative">
+                        <img src="C:\\Users\\Administrator\\Desktop\\作品集\\作品集图片\\现场图片\\IMG_9305.JPEG" alt="立恒晋南钢铁项目" class="w-full h-full object-cover">
+                        <div class="absolute top-4 right-4">
+                            <span class="px-3 py-1 bg-blue-600 text-white rounded-full text-xs font-bold shadow-lg">总包工程</span>
+                        </div>
+                        <div class="project-click-hint">
+                            <div class="bg-white/20 backdrop-blur-md border border-white/40 rounded-full p-3 text-white">
+                                <i data-lucide="images" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                        <div class="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-md backdrop-blur-sm flex items-center gap-1">
+                            <i data-lucide="camera" class="w-3 h-3"></i>
+                            <span>4张</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-slate-500 text-xs font-bold">2019.07-2025.08</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">立恒晋南钢铁3号连铸机</h3>
+                        <p class="text-slate-500 text-sm mb-4 font-medium">10机10流连铸机总包工程</p>
+                        <div class="space-y-2 mb-4">
+                            <p class="text-sm text-slate-700 flex items-start gap-2 leading-relaxed">
+                                <i data-lucide="arrow-right" class="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0"></i>
+                                <span>核心设计负责人之一，承担回转台、二冷段、拉矫机、机械手等全流程核心设备设计</span>
+                            </p>
+                        </div>
+                        <div class="flex flex-wrap gap-2 pt-4 border-t border-slate-100">
+                            <span class="px-2 py-1 bg-blue-50 text-blue-800 rounded text-xs font-bold">回转台设计</span>
+                            <span class="px-2 py-1 bg-blue-50 text-blue-800 rounded text-xs font-bold">拉矫机</span>
+                            <span class="px-2 py-1 bg-blue-50 text-blue-800 rounded text-xs font-bold">机械手</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 2: 吉安钢铁 -->
+                <div class="project-card rounded-2xl overflow-hidden shadow-lg card-hover section-fade blueprint-accent bg-white border border-slate-200 cursor-pointer" onclick="openGalleryModal('project102')">
+                    <div class="project-image-container h-48 bg-slate-200 relative">
+                        <img src="C:\\Users\\Administrator\\Desktop\\作品集\\作品集图片\\现场图片\\IMG_1903.JPEG" alt="吉安钢铁项目" class="w-full h-full object-cover">
+                        <div class="absolute top-4 right-4">
+                            <span class="px-3 py-1 bg-cyan-600 text-white rounded-full text-xs font-bold shadow-lg">总包工程</span>
+                        </div>
+                        <div class="project-click-hint">
+                            <div class="bg-white/20 backdrop-blur-md border border-white/40 rounded-full p-3 text-white">
+                                <i data-lucide="images" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                        <div class="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-md backdrop-blur-sm flex items-center gap-1">
+                            <i data-lucide="camera" class="w-3 h-3"></i>
+                            <span>4张</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-slate-500 text-xs font-bold">2019.07-2025.08</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">吉安市钢铁有限责任公司</h3>
+                        <p class="text-slate-500 text-sm mb-4 font-medium">8机8流方坯连铸机总包工程</p>
+                        <div class="space-y-2 mb-4">
+                            <p class="text-sm text-slate-700 flex items-start gap-2 leading-relaxed">
+                                <i data-lucide="arrow-right" class="w-4 h-4 text-cyan-600 mt-0.5 flex-shrink-0"></i>
+                                <span>全程参与项目各环节，负责机械设计、分包协调、现场技术支持与验收跟进</span>
+                            </p>
+                        </div>
+                        <div class="flex flex-wrap gap-2 pt-4 border-t border-slate-100">
+                            <span class="px-2 py-1 bg-cyan-50 text-cyan-800 rounded text-xs font-bold">方坯连铸</span>
+                            <span class="px-2 py-1 bg-cyan-50 text-cyan-800 rounded text-xs font-bold">项目管理</span>
+                            <span class="px-2 py-1 bg-cyan-50 text-cyan-800 rounded text-xs font-bold">现场调试</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 3: 广西桂鑫钢铁 -->
+                <div class="project-card rounded-2xl overflow-hidden shadow-lg card-hover section-fade blueprint-accent bg-white border border-slate-200 cursor-pointer" onclick="openGalleryModal('project103')">
+                    <div class="project-image-container h-48 bg-slate-200 relative">
+                        <img src="C:\\Users\\Administrator\\Desktop\\作品集\\作品集图片\\现场图片\\IMG_7703.JPEG" alt="广西桂鑫钢铁项目" class="w-full h-full object-cover">
+                        <div class="absolute top-4 right-4">
+                            <span class="px-3 py-1 bg-purple-600 text-white rounded-full text-xs font-bold shadow-lg">高效改造</span>
+                        </div>
+                        <div class="project-click-hint">
+                            <div class="bg-white/20 backdrop-blur-md border border-white/40 rounded-full p-3 text-white">
+                                <i data-lucide="images" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                        <div class="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-md backdrop-blur-sm flex items-center gap-1">
+                            <i data-lucide="camera" class="w-3 h-3"></i>
+                            <span>4张</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-slate-500 text-xs font-bold">2019.07-2025.08</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">广西桂鑫钢铁集团</h3>
+                        <p class="text-slate-500 text-sm mb-4 font-medium">5流连铸高效提拉速改造项目</p>
+                        <div class="space-y-2 mb-4">
+                            <p class="text-sm text-slate-700 flex items-start gap-2 leading-relaxed">
+                                <i data-lucide="arrow-right" class="w-4 h-4 text-purple-600 mt-0.5 flex-shrink-0"></i>
+                                <span>负责二冷喷淋系统、车间配管设计，与甲方技术沟通，配合电气部门</span>
+                            </p>
+                        </div>
+                        <div class="flex flex-wrap gap-2 pt-4 border-t border-slate-100">
+                            <span class="px-2 py-1 bg-purple-50 text-purple-800 rounded text-xs font-bold">二冷系统</span>
+                            <span class="px-2 py-1 bg-purple-50 text-purple-800 rounded text-xs font-bold">液压配管</span>
+                            <span class="px-2 py-1 bg-purple-50 text-purple-800 rounded text-xs font-bold">提拉速改造</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 4: 晋南钢铁改造 -->
+                <div class="project-card rounded-2xl overflow-hidden shadow-lg card-hover section-fade blueprint-accent bg-white border border-slate-200 cursor-pointer" onclick="openGalleryModal('project104')">
+                    <div class="project-image-container h-48 bg-slate-200 relative">
+                        <img src="C:\\Users\\Administrator\\Desktop\\作品集\\作品集图片\\现场图片\\IMG_0628.JPEG" alt="晋南钢铁改造项目" class="w-full h-full object-cover">
+                        <div class="absolute top-4 right-4">
+                            <span class="px-3 py-1 bg-orange-600 text-white rounded-full text-xs font-bold shadow-lg">高产量改造</span>
+                        </div>
+                        <div class="project-click-hint">
+                            <div class="bg-white/20 backdrop-blur-md border border-white/40 rounded-full p-3 text-white">
+                                <i data-lucide="images" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                        <div class="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-md backdrop-blur-sm flex items-center gap-1">
+                            <i data-lucide="camera" class="w-3 h-3"></i>
+                            <span>4张</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-slate-500 text-xs font-bold">2019.07-2025.08</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">晋南钢铁集团1号机</h3>
+                        <p class="text-slate-500 text-sm mb-4 font-medium">高产量改造项目（项目经理）</p>
+                        <div class="space-y-2 mb-4">
+                            <p class="text-sm text-slate-700 flex items-start gap-2 leading-relaxed">
+                                <i data-lucide="arrow-right" class="w-4 h-4 text-orange-600 mt-0.5 flex-shrink-0"></i>
+                                <span>负责图纸设计和参数计算选型，管理分包（回转台、电机减速机选型、二冷系统等）</span>
+                            </p>
+                        </div>
+                        <div class="flex flex-wrap gap-2 pt-4 border-t border-slate-100">
+                            <span class="px-2 py-1 bg-orange-50 text-orange-800 rounded text-xs font-bold">项目管理</span>
+                            <span class="px-2 py-1 bg-orange-50 text-orange-800 rounded text-xs font-bold">结晶器</span>
+                            <span class="px-2 py-1 bg-orange-50 text-orange-800 rounded text-xs font-bold">电磁搅拌</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 5: 金盛兰改造 -->
+                <div class="project-card rounded-2xl overflow-hidden shadow-lg card-hover section-fade blueprint-accent bg-white border border-slate-200 cursor-pointer" onclick="openGalleryModal('project105')">
+                    <div class="project-image-container h-48 bg-slate-200 relative">
+                        <img src="C:\\Users\\Administrator\\Desktop\\作品集\\作品集图片\\现场图片\\01c129795506138af45161750378ae26.jpg" alt="金盛兰改造项目" class="w-full h-full object-cover">
+                        <div class="absolute top-4 right-4">
+                            <span class="px-3 py-1 bg-green-600 text-white rounded-full text-xs font-bold shadow-lg">高效化改造</span>
+                        </div>
+                        <div class="project-click-hint">
+                            <div class="bg-white/20 backdrop-blur-md border border-white/40 rounded-full p-3 text-white">
+                                <i data-lucide="images" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                        <div class="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-md backdrop-blur-sm flex items-center gap-1">
+                            <i data-lucide="camera" class="w-3 h-3"></i>
+                            <span>4张</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-slate-500 text-xs font-bold">2019.07-2025.08</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">湖北金盛兰科技有限公司</h3>
+                        <p class="text-slate-500 text-sm mb-4 font-medium">8机8流连铸机高效化改造项目（项目经理）</p>
+                        <div class="space-y-2 mb-4">
+                            <p class="text-sm text-slate-700 flex items-start gap-2 leading-relaxed">
+                                <i data-lucide="arrow-right" class="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0"></i>
+                                <span>全面负责项目，推动连铸机改造，提升设备运行效率与稳定性</span>
+                            </p>
+                        </div>
+                        <div class="flex flex-wrap gap-2 pt-4 border-t border-slate-100">
+                            <span class="px-2 py-1 bg-green-50 text-green-800 rounded text-xs font-bold">全面负责</span>
+                            <span class="px-2 py-1 bg-green-50 text-green-800 rounded text-xs font-bold">连铸机改造</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 6: 十字操作机系统 -->
+                <div class="project-card rounded-2xl overflow-hidden shadow-lg card-hover section-fade blueprint-accent bg-white border border-slate-200 cursor-pointer" onclick="openGalleryModal('project106')">
+                    <div class="project-image-container h-48 bg-slate-200 relative">
+                        <img src="C:\\Users\\Administrator\\Desktop\\作品集\\作品集图片\\现场图片\\990c555c096a8f677e2fafcb06ca1d09_u=176986017,2918405010&fm=253&app=138&f=JPEG_w=800&h=1067.jpg" alt="十字操作机系统" class="w-full h-full object-cover">
+                        <div class="absolute top-4 right-4">
+                            <span class="px-3 py-1 bg-indigo-600 text-white rounded-full text-xs font-bold shadow-lg">标准化开发</span>
+                        </div>
+                        <div class="project-click-hint">
+                            <div class="bg-white/20 backdrop-blur-md border border-white/40 rounded-full p-3 text-white">
+                                <i data-lucide="images" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                        <div class="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-md backdrop-blur-sm flex items-center gap-1">
+                            <i data-lucide="camera" class="w-3 h-3"></i>
+                            <span>3张</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-slate-500 text-xs font-bold">2019.07-2025.08</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">十字操作机系统</h3>
+                        <p class="text-slate-500 text-sm mb-4 font-medium">标准化开发设计与制造项目</p>
+                        <div class="space-y-2 mb-4">
+                            <p class="text-sm text-slate-700 flex items-start gap-2 leading-relaxed">
+                                <i data-lucide="arrow-right" class="w-4 h-4 text-indigo-600 mt-0.5 flex-shrink-0"></i>
+                                <span>主导十字操作机系统的标准化设计、开发与制造，完成产品模块化、系列化开发及系统入库</span>
+                            </p>
+                        </div>
+                        <div class="flex flex-wrap gap-2 pt-4 border-t border-slate-100">
+                            <span class="px-2 py-1 bg-indigo-50 text-indigo-800 rounded text-xs font-bold">标准化设计</span>
+                            <span class="px-2 py-1 bg-indigo-50 text-indigo-800 rounded text-xs font-bold">模块化开发</span>
+                            <span class="px-2 py-1 bg-indigo-50 text-indigo-800 rounded text-xs font-bold">航空应用</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 7: 沈飞小导管自动化焊接项目 -->
+                <div class="project-card rounded-2xl overflow-hidden shadow-lg card-hover section-fade blueprint-accent bg-white border border-slate-200 cursor-pointer" onclick="openGalleryModal('project107')">
+                    <div class="project-image-container h-48 bg-slate-200 relative">
+                        <img src="C:\\Users\\Administrator\\Desktop\\作品集\\作品集图片\\航空项目\\沈飞导管焊接.png" alt="沈飞小导管自动化焊接" class="w-full h-full object-cover">
+                        <div class="absolute top-4 right-4">
+                            <span class="px-3 py-1 bg-red-600 text-white rounded-full text-xs font-bold shadow-lg">航空制造</span>
+                        </div>
+                        <div class="project-click-hint">
+                            <div class="bg-white/20 backdrop-blur-md border border-white/40 rounded-full p-3 text-white">
+                                <i data-lucide="images" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                        <div class="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-md backdrop-blur-sm flex items-center gap-1">
+                            <i data-lucide="camera" class="w-3 h-3"></i>
+                            <span>3张</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-slate-500 text-xs font-bold">2024.07-2025.08</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">沈飞小导管自动化焊接项目</h3>
+                        <p class="text-slate-500 text-sm mb-4 font-medium">航空发动机导管自动焊接设备设计</p>
+                        <div class="space-y-2 mb-4">
+                            <p class="text-sm text-slate-700 flex items-start gap-2 leading-relaxed">
+                                <i data-lucide="arrow-right" class="w-4 h-4 text-red-600 mt-0.5 flex-shrink-0"></i>
+                                <span>负责小导管自动化焊接设备的机械结构设计，包括焊接夹具、旋转机构及保护气体系统</span>
+                            </p>
+                        </div>
+                        <div class="flex flex-wrap gap-2 pt-4 border-t border-slate-100">
+                            <span class="px-2 py-1 bg-red-50 text-red-800 rounded text-xs font-bold">航空导管</span>
+                            <span class="px-2 py-1 bg-red-50 text-red-800 rounded text-xs font-bold">自动焊接</span>
+                            <span class="px-2 py-1 bg-red-50 text-red-800 rounded text-xs font-bold">脉冲TIG</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 8: 天津箭元火箭不锈钢总装环缝焊接设备 -->
+                <div class="project-card rounded-2xl overflow-hidden shadow-lg card-hover section-fade blueprint-accent bg-white border border-slate-200 cursor-pointer" onclick="openGalleryModal('project108')">
+                    <div class="project-image-container h-48 bg-slate-200 relative">
+                        <img src="C:\\Users\\Administrator\\Desktop\\作品集\\作品集图片\\航空项目\\箭元火箭焊接.png" alt="天津箭元火箭焊接设备" class="w-full h-full object-cover">
+                        <div class="absolute top-4 right-4">
+                            <span class="px-3 py-1 bg-rose-600 text-white rounded-full text-xs font-bold shadow-lg">商业航天</span>
+                        </div>
+                        <div class="project-click-hint">
+                            <div class="bg-white/20 backdrop-blur-md border border-white/40 rounded-full p-3 text-white">
+                                <i data-lucide="images" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                        <div class="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-md backdrop-blur-sm flex items-center gap-1">
+                            <i data-lucide="camera" class="w-3 h-3"></i>
+                            <span>3张</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-slate-500 text-xs font-bold">2024.07-2025.08</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">天津箭元火箭不锈钢总装环缝焊接设备</h3>
+                        <p class="text-slate-500 text-sm mb-4 font-medium">火箭贮箱环缝搅拌摩擦焊接系统</p>
+                        <div class="space-y-2 mb-4">
+                            <p class="text-sm text-slate-700 flex items-start gap-2 leading-relaxed">
+                                <i data-lucide="arrow-right" class="w-4 h-4 text-rose-600 mt-0.5 flex-shrink-0"></i>
+                                <span>参与设计火箭不锈钢贮箱总装环缝焊接设备，包括焊接主轴头、恒压力控制系统及工装夹具</span>
+                            </p>
+                        </div>
+                        <div class="flex flex-wrap gap-2 pt-4 border-t border-slate-100">
+                            <span class="px-2 py-1 bg-rose-50 text-rose-800 rounded text-xs font-bold">火箭焊接</span>
+                            <span class="px-2 py-1 bg-rose-50 text-rose-800 rounded text-xs font-bold">环缝焊接</span>
+                            <span class="px-2 py-1 bg-rose-50 text-rose-800 rounded text-xs font-bold">不锈钢</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section - 个人作品集（多图浏览版） -->
+    <section id="gallery" class="py-20 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12 section-fade">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">个人作品集</h2>
+                <p class="text-slate-600 font-medium">机械设计作品、项目现场及三维模型展示（点击项目查看完整图集）</p>
+            </div>
+
+            <!-- Gallery Grid - 每个项目一个卡片 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 section-fade">
+
+                <!-- Gallery Item 1: 连铸机项目现场 -->
+                <div class="gallery-card bg-white rounded-2xl overflow-hidden shadow-lg card-hover cursor-pointer border border-slate-200" onclick="openGalleryModal('project1')">
+                    <div class="relative h-56 overflow-hidden">
+                        <img src="C:\\Users\\Administrator\\Desktop\\作品集\\作品集图片\\现场图片\\IMG_0414.JPEG" alt="连铸机现场" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                        <div class="absolute top-4 right-4 bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                            <span class="flex items-center gap-1">
+                                <i data-lucide="images" class="w-3 h-3"></i>
+                                8张
+                            </span>
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">连铸机项目现场</h3>
+                        <p class="text-slate-600 text-sm">立恒晋南钢铁、吉安钢铁等多个项目的现场安装与调试照片</p>
+                        <div class="mt-4 flex items-center text-blue-600 text-sm font-bold">
+                            <span>查看图集</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 2: 回转台设计 -->
+                <div class="gallery-card bg-white rounded-2xl overflow-hidden shadow-lg card-hover cursor-pointer border border-slate-200" onclick="openGalleryModal('project2')">
+                    <div class="relative h-56 overflow-hidden">
+                        <img src="C:\\Users\\Administrator\\Desktop\\作品集\\作品集图片\\回转台图片\\ScreenShot_2026-04-09_234453_636.png" alt="回转台设计" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                        <div class="absolute top-4 right-4 bg-cyan-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                            <span class="flex items-center gap-1">
+                                <i data-lucide="images" class="w-3 h-3"></i>
+                                6张
+                            </span>
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">回转台三维设计</h3>
+                        <p class="text-slate-600 text-sm">连铸机回转台核心设备的SolidWorks三维建模与工程图纸</p>
+                        <div class="mt-4 flex items-center text-cyan-600 text-sm font-bold">
+                            <span>查看图集</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 3: 拉矫机设备 -->
+                <div class="gallery-card bg-white rounded-2xl overflow-hidden shadow-lg card-hover cursor-pointer border border-slate-200" onclick="openGalleryModal('project3')">
+                    <div class="relative h-56 overflow-hidden">
+                        <img src="C:\\Users\\Administrator\\Desktop\\作品集\\作品集图片\\现场图片\\IMG_0805.JPEG" alt="拉矫机" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                        <div class="absolute top-4 right-4 bg-purple-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                            <span class="flex items-center gap-1">
+                                <i data-lucide="images" class="w-3 h-3"></i>
+                                5张
+                            </span>
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">拉矫机核心设备</h3>
+                        <p class="text-slate-600 text-sm">拉矫机设计图纸、装配过程及现场运行实拍</p>
+                        <div class="mt-4 flex items-center text-purple-600 text-sm font-bold">
+                            <span>查看图集</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 4: 二冷系统设计 -->
+                <div class="gallery-card bg-white rounded-2xl overflow-hidden shadow-lg card-hover cursor-pointer border border-slate-200" onclick="openGalleryModal('project4')">
+                    <div class="relative h-56 overflow-hidden">
+                        <img src="C:\\Users\\Administrator\\Desktop\\作品集\\作品集图片\\二冷系统\\二冷系统设计.JPEG" alt="二冷系统" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                        <div class="absolute top-4 right-4 bg-indigo-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                            <span class="flex items-center gap-1">
+                                <i data-lucide="images" class="w-3 h-3"></i>
+                                7张
+                            </span>
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">二冷喷淋系统设计</h3>
+                        <p class="text-slate-600 text-sm">二次冷却系统管路布局、喷头配置及配管设计图纸</p>
+                        <div class="mt-4 flex items-center text-indigo-600 text-sm font-bold">
+                            <span>查看图集</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 5: 液压配管系统 -->
+                <div class="gallery-card bg-white rounded-2xl overflow-hidden shadow-lg card-hover cursor-pointer border border-slate-200" onclick="openGalleryModal('project5')">
+                    <div class="relative h-56 overflow-hidden">
+                        <img src="C:\\Users\\Administrator\\Desktop\\作品集\\作品集图片\\现场图片\\IMG_8333.JPEG" alt="液压系统" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                        <div class="absolute top-4 right-4 bg-orange-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                            <span class="flex items-center gap-1">
+                                <i data-lucide="images" class="w-3 h-3"></i>
+                                6张
+                            </span>
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">液压润滑配管系统</h3>
+                        <p class="text-slate-600 text-sm">液压站设计、管路布局及现场安装实景</p>
+                        <div class="mt-4 flex items-center text-orange-600 text-sm font-bold">
+                            <span>查看图集</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 6: 航空焊接设备 -->
+                <div class="gallery-card bg-white rounded-2xl overflow-hidden shadow-lg card-hover cursor-pointer border border-slate-200" onclick="openGalleryModal('project6')">
+                    <div class="relative h-56 overflow-hidden">
+                        <img src="C:\\Users\\Administrator\\Desktop\\作品集\\作品集图片\\现场图片\\990c555c096a8f677e2fafcb06ca1d09_u=176986017,2918405010&fm=253&app=138&f=JPEG_w=800&h=1067.jpg" alt="十字操作机" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                        <div class="absolute top-4 right-4 bg-rose-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                            <span class="flex items-center gap-1">
+                                <i data-lucide="images" class="w-3 h-3"></i>
+                                8张
+                            </span>
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">航空焊接设备</h3>
+                        <p class="text-slate-600 text-sm">十字操作机系统、沈飞导管焊接及箭元火箭焊接设备</p>
+                        <div class="mt-4 flex items-center text-rose-600 text-sm font-bold">
+                            <span>查看图集</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="mt-8 text-center">
+                <p class="text-sm text-slate-500 font-medium">💡 提示：点击任意项目卡片可浏览完整图集，支持左右切换查看</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Modal - 图片浏览弹窗（项目案例+个人作品集共用） -->
+    <div id="galleryModal" class="fixed inset-0 bg-black/95 z-[100] hidden flex-col">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between p-4 border-b border-white/10">
+            <div class="flex items-center gap-3">
+                <button onclick="closeGalleryModal()" class="text-white hover:bg-white/10 p-2 rounded-full transition-colors">
+                    <i data-lucide="arrow-left" class="w-6 h-6"></i>
+                </button>
+                <h3 id="modalTitle" class="text-white text-lg font-bold">图集标题</h3>
+                <span id="imageCounter" class="text-slate-400 text-sm">1 / 8</span>
+            </div>
+            <button onclick="closeGalleryModal()" class="text-white hover:bg-white/10 p-2 rounded-full transition-colors">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+        </div>
+
+        <!-- Modal Body - 图片展示区 -->
+        <div class="flex-1 flex items-center justify-center relative p-4">
+            <!-- 上一张按钮 -->
+            <button onclick="prevImage()" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 text-white p-3 rounded-full backdrop-blur-md transition-all z-10">
+                <i data-lucide="chevron-left" class="w-8 h-8"></i>
+            </button>
+
+            <!-- 当前显示的图片 -->
+            <div class="relative max-w-5xl max-h-[70vh] w-full h-full flex items-center justify-center">
+                <img id="modalImage" src="" alt="" class="max-w-full max-h-full object-contain rounded-lg shadow-2xl">
+                <!-- 图片标题 -->
+                <div id="modalImageCaption" class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 rounded-b-lg">
+                    <p class="text-white text-center font-medium"></p>
+                </div>
+            </div>
+
+            <!-- 下一张按钮 -->
+            <button onclick="nextImage()" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 text-white p-3 rounded-full backdrop-blur-md transition-all z-10">
+                <i data-lucide="chevron-right" class="w-8 h-8"></i>
+            </button>
+        </div>
+
+        <!-- Modal Footer - 缩略图导航 -->
+        <div class="p-4 border-t border-white/10 bg-black/50">
+            <div id="thumbnailContainer" class="flex gap-2 overflow-x-auto pb-2 justify-center max-w-4xl mx-auto">
+                <!-- 缩略图将通过JS动态生成 -->
+            </div>
+        </div>
+    </div>
+
     <!-- Contact Section -->
     <section id="contact" class="py-20 bg-white">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center section-fade">
             <h2 class="text-3xl font-bold text-slate-900 mb-4">期待与您合作</h2>
-            <p class="text-slate-600 mb-12">目前在职，积极寻求精密制造、3C、汽车或通用制造领域的机械相关岗位机会</p>
-            
+            <p class="text-slate-600 mb-12 font-medium">目前离职，积极寻求精密制造、3C、汽车或通用制造领域的机械相关岗位机会</p>
+
             <div class="grid md:grid-cols-3 gap-6 mb-12">
                 <a href="tel:15172533134" class="p-6 bg-slate-50 rounded-2xl border border-slate-200 hover:border-blue-500 hover:shadow-lg transition-all group">
-                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-600 transition-colors">
+                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-600 transition-colors shadow-md">
                         <i data-lucide="phone" class="w-6 h-6 text-blue-600 group-hover:text-white"></i>
                     </div>
-                    <p class="font-semibold text-slate-900">电话咨询</p>
-                    <p class="text-slate-600 mt-1">151-7253-3134</p>
+                    <p class="font-bold text-slate-900">电话咨询</p>
+                    <p class="text-slate-600 mt-1 font-medium">151-7253-3134</p>
                 </a>
-                
+
                 <a href="mailto:aluog@foxmail.com" class="p-6 bg-slate-50 rounded-2xl border border-slate-200 hover:border-blue-500 hover:shadow-lg transition-all group">
-                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-600 transition-colors">
+                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-600 transition-colors shadow-md">
                         <i data-lucide="mail" class="w-6 h-6 text-blue-600 group-hover:text-white"></i>
                     </div>
-                    <p class="font-semibold text-slate-900">邮件联系</p>
-                    <p class="text-slate-600 mt-1">aluog@foxmail.com</p>
+                    <p class="font-bold text-slate-900">邮件联系</p>
+                    <p class="text-slate-600 mt-1 font-medium">aluog@foxmail.com</p>
                 </a>
-                
+
                 <div class="p-6 bg-slate-50 rounded-2xl border border-slate-200">
-                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 shadow-md">
                         <i data-lucide="map-pin" class="w-6 h-6 text-blue-600"></i>
                     </div>
-                    <p class="font-semibold text-slate-900">工作地点</p>
-                    <p class="text-slate-600 mt-1">武汉（可出差/ relocation）</p>
+                    <p class="font-bold text-slate-900">工作地点</p>
+                    <p class="text-slate-600 mt-1 font-medium">武汉（可出差/ relocation）</p>
                 </div>
             </div>
-            
+
             <div class="p-8 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-3xl text-white shadow-xl">
-                <p class="text-lg font-medium mb-2">感谢您的时间</p>
-                <p class="text-blue-100">期待能有机会与您详细沟通，展示我如何为贵公司的机械设计团队创造价值。</p>
+                <p class="text-lg font-bold mb-2">感谢您的时间</p>
+                <p class="text-blue-100 font-medium">期待能有机会与您详细沟通，展示我如何为贵公司的机械设计团队创造价值。</p>
             </div>
         </div>
     </section>
@@ -890,22 +1204,22 @@
     <!-- Footer -->
     <footer class="bg-slate-900 text-slate-400 py-8 border-t border-slate-800 no-print">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p class="text-sm">© 2025 敖鑫 · 机械工程师作品集</p>
-            <p class="text-sm">最后更新：2025年4月</p>
+            <p class="text-sm font-bold">© 2026 敖鑫 · 机械工程师作品集</p>
+            <p class="text-sm font-medium">最后更新：2026年4月</p>
         </div>
     </footer>
 
     <script>
         // Initialize Lucide Icons
         lucide.createIcons();
-        
+
         // Intersection Observer for fade-in animations
         const observerOptions = {
             root: null,
             rootMargin: '0px',
             threshold: 0.1
         };
-        
+
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -913,9 +1227,9 @@
                 }
             });
         }, observerOptions);
-        
+
         document.querySelectorAll('.section-fade').forEach((el) => observer.observe(el));
-        
+
         // Smooth scroll for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
@@ -929,34 +1243,292 @@
                 }
             });
         });
-        
-        // Lightbox functionality
-        function openLightbox(element) {
-            const img = element.querySelector('img');
-            const caption = element.querySelector('.gallery-overlay p').textContent;
-            const lightbox = document.getElementById('lightbox');
-            const lightboxImg = document.getElementById('lightbox-img');
-            const lightboxCaption = document.getElementById('lightbox-caption');
+
+        // ==========================================
+        // 图库数据配置 - 包含项目案例 + 个人作品集
+        // ==========================================
+        const galleryData = {
+            // 原有个人作品集数据（6个分类）
+            'project1': {
+                title: '连铸机项目现场',
+                images: [
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\IMG_0414.JPEG', caption: '连铸机整体安装现场' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\IMG_9305.JPEG', caption: '立恒晋南钢铁项目现场' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\IMG_1903.JPEG', caption: '吉安钢铁连铸机安装' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\IMG_7703.JPEG', caption: '广西桂鑫钢铁改造现场' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\IMG_0628.JPEG', caption: '晋南钢铁高产量改造' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\23b6944eaa155089d1ba8d1465f6a567.jpg', caption: '项目验收现场' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\851ff20f93b77cd9d9debe2f3559c2ad.jpg', caption: '设备安装调试' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\合照.jpg', caption: '项目团队合影' }
+                ]
+            },
+            'project2': {
+                title: '回转台三维设计',
+                images: [
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\回转台图片\\\\ScreenShot_2026-04-09_234453_636.png', caption: '回转台整体装配图' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\回转台图片\\\\ScreenShot_2026-04-09_234500_100.png', caption: '回转台俯视图' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\回转台图片\\\\ScreenShot_2026-04-09_234510_200.png', caption: '回转台剖面图' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\回转台图片\\\\ScreenShot_2026-04-09_234520_300.png', caption: '驱动机构细节' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\回转台图片\\\\ScreenShot_2026-04-09_234530_400.png', caption: '轴承座设计' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\回转台图片\\\\ScreenShot_2026-04-09_234540_500.png', caption: '工程图纸输出' }
+                ]
+            },
+            'project3': {
+                title: '拉矫机核心设备',
+                images: [
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\IMG_0805.JPEG', caption: '拉矫机整体装配' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\拉矫机\\\\拉矫机设计1.png', caption: '拉矫机三维模型' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\拉矫机\\\\拉矫机设计2.png', caption: '辊系装配细节' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\拉矫机\\\\拉矫机图纸.JPEG', caption: '拉矫机工程图纸' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\IMG_0806.JPEG', caption: '现场安装实景' }
+                ]
+            },
+            'project4': {
+                title: '二冷喷淋系统设计',
+                images: [
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\二冷系统\\\\二冷系统设计.JPEG', caption: '二冷系统整体布局' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\二冷系统\\\\喷淋管路设计.png', caption: '喷淋管路设计' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\二冷系统\\\\喷头布置图.png', caption: '喷头布置方案' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\二冷系统\\\\水冷系统装配.png', caption: '水冷系统装配' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\二冷系统\\\\配管细节1.png', caption: '配管细节1' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\二冷系统\\\\配管细节2.png', caption: '配管细节2' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\IMG_0415.JPEG', caption: '现场安装效果' }
+                ]
+            },
+            'project5': {
+                title: '液压润滑配管系统',
+                images: [
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\IMG_8333.JPEG', caption: '液压站整体布局' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\液压系统\\\\液压原理图.png', caption: '液压原理图设计' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\液压系统\\\\管路布置图.png', caption: '管路布置方案' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\液压系统\\\\阀组设计.png', caption: '阀组集成设计' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\IMG_8334.JPEG', caption: '现场管路安装' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\IMG_8335.JPEG', caption: '调试运行状态' }
+                ]
+            },
+            'project6': {
+                title: '航空焊接设备',
+                images: [
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\990c555c096a8f677e2fafcb06ca1d09_u=176986017,2918405010&fm=253&app=138&f=JPEG_w=800&h=1067.jpg', caption: '十字操作机系统' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\航空项目\\\\十字操作机设计.png', caption: '十字操作机设计图' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\航空项目\\\\沈飞导管焊接.png', caption: '沈飞小导管焊接设备' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\航空项目\\\\导管焊接夹具.png', caption: '焊接夹具设计' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\航空项目\\\\箭元火箭焊接.png', caption: '箭元火箭焊接设备' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\航空项目\\\\环缝焊接系统.png', caption: '环缝焊接系统' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\航空项目\\\\焊接控制系统.png', caption: '焊接控制系统' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\01c129795506138af45161750378ae26.jpg', caption: '首都航空项目现场' }
+                ]
+            },
             
-            lightboxImg.src = img.src;
-            lightboxCaption.textContent = caption;
-            lightbox.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-        
-        function closeLightbox() {
-            const lightbox = document.getElementById('lightbox');
-            lightbox.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-        
-        // Close lightbox with Escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeLightbox();
+            // 新增：项目案例详细图集（8个项目）
+            'project101': {
+                title: '立恒晋南钢铁3号连铸机项目',
+                images: [
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\IMG_9305.JPEG', caption: '项目现场全景' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\IMG_0414.JPEG', caption: '设备安装现场' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\23b6944eaa155089d1ba8d1465f6a567.jpg', caption: '项目验收阶段' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\851ff20f93b77cd9d9debe2f3559c2ad.jpg', caption: '安装调试细节' }
+                ]
+            },
+            'project102': {
+                title: '吉安钢铁8机8流连铸机项目',
+                images: [
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\IMG_1903.JPEG', caption: '项目现场' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\合照.jpg', caption: '项目团队合影' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\IMG_0805.JPEG', caption: '拉矫机安装' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\IMG_0806.JPEG', caption: '设备调试' }
+                ]
+            },
+            'project103': {
+                title: '广西桂鑫钢铁高效提拉速改造',
+                images: [
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\IMG_7703.JPEG', caption: '改造现场' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\二冷系统\\\\二冷系统设计.JPEG', caption: '二冷系统设计图' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\二冷系统\\\\喷淋管路设计.png', caption: '喷淋管路设计' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\二冷系统\\\\喷头布置图.png', caption: '喷头布置方案' }
+                ]
+            },
+            'project104': {
+                title: '晋南钢铁1号机高产量改造',
+                images: [
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\IMG_0628.JPEG', caption: '改造现场' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\回转台图片\\\\ScreenShot_2026-04-09_234453_636.png', caption: '回转台三维设计' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\拉矫机\\\\拉矫机设计1.png', caption: '拉矫机设计' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\回转台图片\\\\ScreenShot_2026-04-09_234500_100.png', caption: '回转台细节' }
+                ]
+            },
+            'project105': {
+                title: '湖北金盛兰高效化改造项目',
+                images: [
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\01c129795506138af45161750378ae26.jpg', caption: '项目现场' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\IMG_8333.JPEG', caption: '液压站安装' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\液压系统\\\\液压原理图.png', caption: '液压原理图' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\液压系统\\\\管路布置图.png', caption: '管路布置图' }
+                ]
+            },
+            'project106': {
+                title: '十字操作机系统标准化开发',
+                images: [
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\990c555c096a8f677e2fafcb06ca1d09_u=176986017,2918405010&fm=253&app=138&f=JPEG_w=800&h=1067.jpg', caption: '十字操作机现场' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\航空项目\\\\十字操作机设计.png', caption: '十字操作机设计图' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\航空项目\\\\环缝焊接系统.png', caption: '环缝焊接系统' }
+                ]
+            },
+            'project107': {
+                title: '沈飞小导管自动化焊接项目',
+                images: [
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\航空项目\\\\沈飞导管焊接.png', caption: '导管焊接设备' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\航空项目\\\\导管焊接夹具.png', caption: '焊接夹具设计' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\航空项目\\\\焊接控制系统.png', caption: '控制系统' }
+                ]
+            },
+            'project108': {
+                title: '天津箭元火箭焊接设备项目',
+                images: [
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\航空项目\\\\箭元火箭焊接.png', caption: '火箭焊接设备' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\二冷系统\\\\水冷系统装配.png', caption: '冷却系统装配' },
+                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\回转台图片\\\\ScreenShot_2026-04-09_234510_200.png', caption: '精密机械设计' }
+                ]
             }
+        };
+
+        // 当前浏览状态
+        let currentGallery = null;
+        let currentImageIndex = 0;
+
+        // 打开图库弹窗
+        function openGalleryModal(projectId) {
+            currentGallery = galleryData[projectId];
+            currentImageIndex = 0;
+
+            if (!currentGallery) return;
+
+            const modal = document.getElementById('galleryModal');
+            const title = document.getElementById('modalTitle');
+
+            title.textContent = currentGallery.title;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+
+            updateModalImage();
+            generateThumbnails();
+            lucide.createIcons();
+        }
+
+        // 关闭图库弹窗
+        function closeGalleryModal() {
+            const modal = document.getElementById('galleryModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = '';
+            currentGallery = null;
+        }
+
+        // 更新当前显示的图片
+        function updateModalImage() {
+            if (!currentGallery) return;
+
+            const img = document.getElementById('modalImage');
+            const caption = document.querySelector('#modalImageCaption p');
+            const counter = document.getElementById('imageCounter');
+
+            const currentImage = currentGallery.images[currentImageIndex];
+            img.src = currentImage.src;
+            img.alt = currentImage.caption;
+            caption.textContent = currentImage.caption;
+            counter.textContent = `${currentImageIndex + 1} / ${currentGallery.images.length}`;
+
+            // 更新缩略图选中状态
+            updateThumbnailSelection();
+        }
+
+        // 生成缩略图
+        function generateThumbnails() {
+            const container = document.getElementById('thumbnailContainer');
+            container.innerHTML = '';
+
+            currentGallery.images.forEach((image, index) => {
+                const thumb = document.createElement('div');
+                thumb.className = `flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden cursor-pointer border-2 transition-all ${
+                    index === currentImageIndex ? 'border-blue-500 ring-2 ring-blue-500/50' : 'border-transparent hover:border-white/50'
+                }`;
+                thumb.innerHTML = `<img src="${image.src}" alt="${image.caption}" class="w-full h-full object-cover">`;
+                thumb.onclick = () => {
+                    currentImageIndex = index;
+                    updateModalImage();
+                };
+                container.appendChild(thumb);
+            });
+        }
+
+        // 更新缩略图选中状态
+        function updateThumbnailSelection() {
+            const container = document.getElementById('thumbnailContainer');
+            const thumbs = container.children;
+
+            for (let i = 0; i < thumbs.length; i++) {
+                if (i === currentImageIndex) {
+                    thumbs[i].className = 'flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden cursor-pointer border-2 border-blue-500 ring-2 ring-blue-500/50 transition-all';
+                    thumbs[i].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                } else {
+                    thumbs[i].className = 'flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden cursor-pointer border-2 border-transparent hover:border-white/50 transition-all';
+                }
+            }
+        }
+
+        // 上一张图片
+        function prevImage() {
+            if (!currentGallery) return;
+            currentImageIndex = (currentImageIndex - 1 + currentGallery.images.length) % currentGallery.images.length;
+            updateModalImage();
+        }
+
+        // 下一张图片
+        function nextImage() {
+            if (!currentGallery) return;
+            currentImageIndex = (currentImageIndex + 1) % currentGallery.images.length;
+            updateModalImage();
+        }
+
+        // 键盘导航
+        document.addEventListener('keydown', (e) => {
+            if (!currentGallery) return;
+
+            if (e.key === 'ArrowLeft') prevImage();
+            if (e.key === 'ArrowRight') nextImage();
+            if (e.key === 'Escape') closeGalleryModal();
         });
-        
+
+        // 触摸滑动支持
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        const modalBody = document.querySelector('#galleryModal .flex-1');
+        if (modalBody) {
+            modalBody.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+
+            modalBody.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            }, { passive: true });
+        }
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    nextImage(); // 向左滑动，显示下一张
+                } else {
+                    prevImage(); // 向右滑动，显示上一张
+                }
+            }
+        }
+
         // Animate skill bars when visible
         const skillObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -972,7 +1544,7 @@
                 }
             });
         }, { threshold: 0.5 });
-        
+
         document.querySelectorAll('#skills').forEach((el) => skillObserver.observe(el));
     </script>
 </body>
