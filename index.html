@@ -3,12 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>敖鑫 | 机械工程师作品集 </title>
+    <meta name="description" content="敖鑫 - 机械工程师作品集，6年机械设计与大型设备项目经验，精通连铸设备设计、自动化产线、项目管理">
+    <meta name="keywords" content="机械工程师, 机械设计, 连铸设备, 自动化产线, SolidWorks, CAD">
+    <meta name="author" content="敖鑫">
+    <meta property="og:title" content="敖鑫 | 机械工程师作品集">
+    <meta property="og:description" content="6年机械设计与大型设备项目全流程经验">
+    <meta property="og:type" content="website">
+    <title>敖鑫 | 机械工程师作品集</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        * { font-family: 'Inter', 'Noto Sans SC', sans-serif; }
+        * { 
+            font-family: 'Inter', 'Noto Sans SC', sans-serif; 
+            scroll-behavior: smooth;
+        }
+        
+        /* 渐变文字效果 */
         .gradient-text {
             background: linear-gradient(135deg, #60a5fa 0%, #22d3ee 50%, #38bdf8 100%);
             -webkit-background-clip: text;
@@ -16,6 +27,8 @@
             background-clip: text;
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
         }
+        
+        /* Hero背景 */
         .hero-bg {
             background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
             position: relative;
@@ -30,12 +43,16 @@
                 radial-gradient(circle at 80% 80%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
             pointer-events: none;
         }
+        
+        /* 网格背景 */
         .grid-pattern {
             background-image: 
                 linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
             background-size: 50px 50px;
         }
+        
+        /* 卡片悬停效果 */
         .card-hover {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -43,6 +60,8 @@
             transform: translateY(-4px);
             box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
         }
+        
+        /* 时间线 */
         .timeline-line {
             position: absolute;
             left: 24px;
@@ -51,6 +70,8 @@
             width: 2px;
             background: linear-gradient(to bottom, #3b82f6, #06b6d4);
         }
+        
+        /* 项目图片容器 */
         .project-image-container {
             position: relative;
             overflow: hidden;
@@ -61,74 +82,38 @@
         .project-image-container:hover img {
             transform: scale(1.05);
         }
-        .gallery-item {
-            position: relative;
-            overflow: hidden;
-            border-radius: 1rem;
-            cursor: pointer;
-        }
-        .gallery-item img {
-            transition: transform 0.5s ease;
-        }
-        .gallery-item:hover img {
-            transform: scale(1.1);
-        }
-        .gallery-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            display: flex;
-            align-items: flex-end;
-            padding: 1.5rem;
-        }
-        .gallery-item:hover .gallery-overlay {
-            opacity: 1;
-        }
-        .lightbox {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.95);
-            z-index: 100;
-            justify-content: center;
-            align-items: center;
-            padding: 2rem;
-        }
-        .lightbox.active {
-            display: flex;
-        }
-        .lightbox img {
-            max-width: 90%;
-            max-height: 90%;
-            object-fit: contain;
-            border-radius: 0.5rem;
-        }
+        
+        /* 导航栏模糊效果 */
         .nav-blur {
             backdrop-filter: blur(12px);
             background: rgba(255, 255, 255, 0.9);
         }
+        
+        /* 滚动淡入动画 */
         .section-fade {
             opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.6s ease-out;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .section-fade.visible {
             opacity: 1;
             transform: translateY(0);
         }
+        
+        /* 蓝图风格边框 */
         .blueprint-accent {
             border-left: 4px solid #3b82f6;
         }
+        
+        /* 文字阴影 */
         .hero-text-shadow {
             text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
         }
         .hero-subtitle-shadow {
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
         }
-
-        /* Gallery Card Styles */
+        
+        /* 画廊卡片 */
         .gallery-card {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -142,8 +127,8 @@
         .gallery-card:hover img {
             transform: scale(1.1);
         }
-
-        /* Gallery Modal Styles */
+        
+        /* 模态框动画 */
         #galleryModal {
             animation: fadeIn 0.3s ease-out;
         }
@@ -158,8 +143,8 @@
             from { opacity: 0; transform: scale(0.95); }
             to { opacity: 1; transform: scale(1); }
         }
-
-        /* Thumbnail scrollbar styling */
+        
+        /* 缩略图滚动条 */
         #thumbnailContainer::-webkit-scrollbar {
             height: 6px;
         }
@@ -174,36 +159,8 @@
         #thumbnailContainer::-webkit-scrollbar-thumb:hover {
             background: rgba(255,255,255,0.5);
         }
-
-        /* Thumbnail hover effects */
-        #thumbnailContainer div {
-            position: relative;
-            overflow: hidden;
-        }
-        #thumbnailContainer div::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: rgba(0,0,0,0.3);
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-        #thumbnailContainer div:hover::after {
-            opacity: 1;
-        }
-        #thumbnailContainer div img {
-            transition: transform 0.3s;
-        }
-        #thumbnailContainer div:hover img {
-            transform: scale(1.1);
-        }
-
-        /* Image counter badge */
-        .image-count-badge {
-            background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
-        }
-
-        /* Project Card Click Hint */
+        
+        /* 项目点击提示 */
         .project-click-hint {
             position: absolute;
             inset: 0;
@@ -218,17 +175,63 @@
         .project-card:hover .project-click-hint {
             opacity: 1;
         }
-
+        
+        /* 技能条动画 */
+        .skill-bar {
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* 页面加载动画 */
+        .page-loader {
+            position: fixed;
+            inset: 0;
+            background: #0f172a;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        .page-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .loader-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255,255,255,0.1);
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* 打印样式 */
         @media print {
             .no-print { display: none !important; }
             .page-break { page-break-before: always; }
+            .hero-bg { background: white !important; color: black !important; }
+            .hero-bg * { color: black !important; }
+            .section-fade { opacity: 1 !important; transform: none !important; }
+        }
+        
+        /* 响应式优化 */
+        @media (max-width: 768px) {
+            .timeline-line { left: 16px; }
         }
     </style>
+<base target="_blank">
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased">
+    <!-- 页面加载动画 -->
+    <div class="page-loader" id="pageLoader">
+        <div class="loader-spinner"></div>
+    </div>
 
-    <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 nav-blur border-b border-slate-200 no-print shadow-sm">
+    <!-- 导航栏 -->
+    <nav class="fixed top-0 w-full z-50 nav-blur border-b border-slate-200 no-print shadow-sm transition-all duration-300" id="navbar">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center gap-2">
@@ -236,13 +239,13 @@
                     <span class="font-bold text-xl tracking-tight text-slate-900">敖鑫<span class="text-blue-600">.</span></span>
                 </div>
                 <div class="hidden md:flex space-x-8">
-                    <a href="#about" class="text-slate-700 hover:text-blue-600 transition-colors font-medium font-bold">关于我</a>
-                    <a href="#skills" class="text-slate-700 hover:text-blue-600 transition-colors font-medium font-bold">专业技能</a>
-                    <a href="#experience" class="text-slate-700 hover:text-blue-600 transition-colors font-medium font-bold">工作经历</a>
-                    <a href="#projects" class="text-slate-700 hover:text-blue-600 transition-colors font-medium font-bold">项目案例</a>
-                    <a href="#gallery" class="text-slate-700 hover:text-blue-600 transition-colors font-medium font-bold">个人作品集</a>
+                    <a href="#about" class="text-slate-700 hover:text-blue-600 transition-colors font-medium">关于我</a>
+                    <a href="#skills" class="text-slate-700 hover:text-blue-600 transition-colors font-medium">专业技能</a>
+                    <a href="#experience" class="text-slate-700 hover:text-blue-600 transition-colors font-medium">工作经历</a>
+                    <a href="#projects" class="text-slate-700 hover:text-blue-600 transition-colors font-medium">项目案例</a>
+                    <a href="#gallery" class="text-slate-700 hover:text-blue-600 transition-colors font-medium">个人作品集</a>
                 </div>
-                <button onclick="window.print()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 text-sm font-bold shadow-md">
+                <button onclick="window.print()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 text-sm font-medium shadow-md">
                     <i data-lucide="download" class="w-4 h-4"></i>
                     下载PDF
                 </button>
@@ -257,20 +260,22 @@
                 <div class="text-white space-y-6">
                     <div class="inline-flex items-center gap-2 bg-slate-900/90 backdrop-blur-md px-5 py-2.5 rounded-full border-2 border-green-400 shadow-xl">
                         <span class="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse shadow-[0_0_12px_rgba(74,222,128,1)] ring-2 ring-green-400/30"></span>
-                        <span class="text-sm font-bold text-white tracking-wider drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">离职 · 随时到岗</span>
+                        <span class="text-sm font-bold text-white tracking-wider">离职 · 随时到岗</span>
                     </div>
                     <h1 class="text-5xl md:text-7xl font-bold leading-tight hero-text-shadow text-white">
                         机械设计岗<br>
-                        <span class="text-cyan-300 drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)]">结构/机械工程师</span>
+                        <span class="text-cyan-300">结构/机械工程师</span>
                     </h1>
-                    <p class="text-xl text-blue-900 leading-relaxed max-w-lg hero-subtitle-shadow font-medium">
-                        6年机械设计与大型设备项目全流程经验，拥有大型设备、自动化产线设计与项目管理经验。
-                    </p>
-                    <div class="flex flex-wrap gap-3 pt-4">
-                        <span class="px-4 py-2 bg-white/20 backdrop-blur-md rounded-lg border border-white/30 text-sm font-bold text-blue-900 shadow-lg">连铸设备设计</span>
-                        <span class="px-4 py-2 bg-white/20 backdrop-blur-md rounded-lg border border-white/30 text-sm font-bold text-blue-900 shadow-lg">自动化产线</span>
-                        <span class="px-4 py-2 bg-white/20 backdrop-blur-md rounded-lg border border-white/30 text-sm font-bold text-blue-900 shadow-lg">项目管理</span>
-                        <span class="px-4 py-2 bg-white/20 backdrop-blur-md rounded-lg border border-white/30 text-sm font-bold text-blue-900 shadow-lg">SolidWorks/CAD</span>
+                    <div class="bg-white/95 backdrop-blur-sm rounded-xl p-4 shadow-2xl border border-white/50 max-w-lg">
+                        <p class="text-lg text-slate-800 leading-relaxed font-medium">
+                            6年机械设计与大型设备项目全流程经验，拥有大型设备、自动化产线设计与项目管理经验。
+                        </p>
+                    </div>
+                    <div class="flex flex-wrap gap-3 pt-2">
+                        <span class="px-4 py-2 bg-white text-blue-900 rounded-lg text-sm font-bold shadow-lg border border-blue-100">连铸设备设计</span>
+                        <span class="px-4 py-2 bg-white text-blue-900 rounded-lg text-sm font-bold shadow-lg border border-blue-100">自动化产线</span>
+                        <span class="px-4 py-2 bg-white text-blue-900 rounded-lg text-sm font-bold shadow-lg border border-blue-100">项目管理</span>
+                        <span class="px-4 py-2 bg-white text-blue-900 rounded-lg text-sm font-bold shadow-lg border border-blue-100">SolidWorks/CAD</span>
                     </div>
                     <div class="flex gap-4 pt-6">
                         <a href="#contact" class="bg-white text-blue-900 px-8 py-3 rounded-lg font-bold transition-all transform hover:scale-105 flex items-center gap-2 shadow-xl hover:shadow-2xl hover:bg-slate-100">
@@ -286,22 +291,25 @@
                 <div class="relative">
                     <div class="absolute inset-0 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-3xl transform rotate-3 opacity-30 blur-2xl"></div>
                     <div class="relative bg-slate-900/60 backdrop-blur-xl rounded-3xl p-8 border-2 border-white/20 shadow-2xl">
-                        <div class="aspect-[3/4] bg-gradient-to-br from-slate-700 to-slate-800 rounded-2xl overflow-hidden relative border border-white/10">
-                            <img src="images/Professional_profile_photo.png" alt="敖鑫" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity"
-                                loading="lazy">
+                        <div class="aspect-[3/4] bg-gradient-to-br from-slate-700 to-slate-800 rounded-2xl overflow-hidden relative border border-white/10 flex items-center justify-center">
+                            <div class="text-center text-slate-400">
+                                <i data-lucide="user" class="w-24 h-24 mx-auto mb-4 opacity-50"></i>
+                                <p>个人照片</p>
+                                <p class="text-sm opacity-70">images/Professional_profile_photo.png</p>
+                            </div>
                             <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-6">
-                                <p class="text-white font-bold text-xl drop-shadow-lg">敖鑫</p>
-                                <p class="text-slate-200 text-sm font-medium drop-shadow-md">机械工程师 | 29岁 | 武汉</p>
+                                <p class="text-white font-bold text-xl">敖鑫</p>
+                                <p class="text-slate-200 text-sm">机械工程师 | 29岁 | 武汉</p>
                             </div>
                         </div>
                         <div class="mt-6 grid grid-cols-2 gap-4">
                             <div class="bg-slate-800/80 backdrop-blur p-4 rounded-xl border border-white/10 shadow-lg">
                                 <p class="text-slate-400 text-xs uppercase tracking-wider font-bold mb-1">工作经验</p>
-                                <p class="text-3xl font-bold text-white drop-shadow-lg">6年+</p>
+                                <p class="text-3xl font-bold text-white">6年+</p>
                             </div>
                             <div class="bg-slate-800/80 backdrop-blur p-4 rounded-xl border border-white/10 shadow-lg">
                                 <p class="text-slate-400 text-xs uppercase tracking-wider font-bold mb-1">完成项目</p>
-                                <p class="text-3xl font-bold text-white drop-shadow-lg">10+</p>
+                                <p class="text-3xl font-bold text-white">10+</p>
                             </div>
                         </div>
                     </div>
@@ -327,7 +335,7 @@
                             拥有6年非标机械设计与冶金设备项目全流程经验，专业技能扎实，可独立完成机械结构设计、方案优化、图纸输出及项目落地。
                         </p>
                         <p class="text-slate-600">
-                            具备丰富的项目管理与现场技术服务经验，曾主导完成立恒晋南钢铁、吉安市钢铁、广西桂鑫钢铁等多个大型连铸机总包及改造项目。精通回转台、拉矫机、二冷段等核心设备设计。
+                            具备丰富的项目管理与现场技术服务经验，曾主导完成多个大型钢铁集团连铸机总包及改造项目。精通回转台、拉矫机、二冷段等核心设备设计。
                         </p>
                     </div>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6">
@@ -397,7 +405,7 @@
             </div>
 
             <div class="grid md:grid-cols-3 gap-8">
-                <div class="bg-slate-800 rounded-2xl p-8 border border-slate-700 section-fade shadow-lg">
+                <div class="bg-slate-800 rounded-2xl p-8 border border-slate-700 section-fade shadow-lg hover:border-blue-500/50 transition-colors">
                     <div class="flex items-center gap-3 mb-6">
                         <div class="w-12 h-12 bg-blue-600/20 rounded-xl flex items-center justify-center">
                             <i data-lucide="monitor" class="w-6 h-6 text-blue-400"></i>
@@ -411,7 +419,7 @@
                                 <span class="text-sm text-blue-400 font-bold">精通</span>
                             </div>
                             <div class="w-full bg-slate-700 rounded-full h-2">
-                                <div class="bg-blue-500 h-2 rounded-full skill-bar shadow-[0_0_10px_rgba(59,130,246,0.5)]" style="width: 95%"></div>
+                                <div class="bg-blue-500 h-2 rounded-full skill-bar shadow-[0_0_10px_rgba(59,130,246,0.5)]" style="width: 0%" data-width="95%"></div>
                             </div>
                         </div>
                         <div>
@@ -420,7 +428,7 @@
                                 <span class="text-sm text-blue-400 font-bold">精通</span>
                             </div>
                             <div class="w-full bg-slate-700 rounded-full h-2">
-                                <div class="bg-blue-500 h-2 rounded-full skill-bar shadow-[0_0_10px_rgba(59,130,246,0.5)]" style="width: 95%"></div>
+                                <div class="bg-blue-500 h-2 rounded-full skill-bar shadow-[0_0_10px_rgba(59,130,246,0.5)]" style="width: 0%" data-width="95%"></div>
                             </div>
                         </div>
                         <div>
@@ -429,7 +437,7 @@
                                 <span class="text-sm text-blue-400 font-bold">会用</span>
                             </div>
                             <div class="w-full bg-slate-700 rounded-full h-2">
-                                <div class="bg-blue-500 h-2 rounded-full skill-bar shadow-[0_0_10px_rgba(59,130,246,0.5)]" style="width: 65%"></div>
+                                <div class="bg-blue-500 h-2 rounded-full skill-bar shadow-[0_0_10px_rgba(59,130,246,0.5)]" style="width: 0%" data-width="65%"></div>
                             </div>
                         </div>
                     </div>
@@ -438,15 +446,15 @@
                         <div class="flex items-center gap-2 text-sm text-slate-300">
                             <i data-lucide="award" class="w-4 h-4 text-yellow-500"></i>
                             <span>CAD 绘图证书</span>
-                              </div>
-                              <div class="flex items-center gap-2 text-sm text-slate-300">
-                                      <i data-lucide="car" class="w-4 h-4 text-green-500"></i>
-                                      <span> C1驾驶证</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-sm text-slate-300 mt-1">
+                            <i data-lucide="car" class="w-4 h-4 text-green-500"></i>
+                            <span>C1驾驶证</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-slate-800 rounded-2xl p-8 border border-slate-700 section-fade shadow-lg">
+                <div class="bg-slate-800 rounded-2xl p-8 border border-slate-700 section-fade shadow-lg hover:border-cyan-500/50 transition-colors">
                     <div class="flex items-center gap-3 mb-6">
                         <div class="w-12 h-12 bg-cyan-600/20 rounded-xl flex items-center justify-center">
                             <i data-lucide="cpu" class="w-6 h-6 text-cyan-400"></i>
@@ -481,7 +489,7 @@
                     </ul>
                 </div>
 
-                <div class="bg-slate-800 rounded-2xl p-8 border border-slate-700 section-fade shadow-lg">
+                <div class="bg-slate-800 rounded-2xl p-8 border border-slate-700 section-fade shadow-lg hover:border-purple-500/50 transition-colors">
                     <div class="flex items-center gap-3 mb-6">
                         <div class="w-12 h-12 bg-purple-600/20 rounded-xl flex items-center justify-center">
                             <i data-lucide="users" class="w-6 h-6 text-purple-400"></i>
@@ -556,7 +564,7 @@
             <div class="relative space-y-12">
                 <div class="timeline-line"></div>
 
-                <div class="relative pl-16 section-fade">
+                <div class="relative pl-16 md:pl-20 section-fade">
                     <div class="absolute left-0 top-0 w-12 h-12 bg-blue-600 rounded-full border-4 border-white shadow-lg flex items-center justify-center z-10">
                         <i data-lucide="briefcase" class="w-5 h-5 text-white"></i>
                     </div>
@@ -606,7 +614,7 @@
                     </div>
                 </div>
 
-                <div class="relative pl-16 section-fade">
+                <div class="relative pl-16 md:pl-20 section-fade">
                     <div class="absolute left-0 top-0 w-12 h-12 bg-cyan-600 rounded-full border-4 border-white shadow-lg flex items-center justify-center z-10">
                         <i data-lucide="settings" class="w-5 h-5 text-white"></i>
                     </div>
@@ -632,7 +640,7 @@
                                     <i data-lucide="check-circle" class="w-5 h-5 text-cyan-600 mt-0.5 flex-shrink-0"></i>
                                     <div>
                                         <p class="font-bold text-slate-900">项目全流程管理</p>
-                                        <p class="text-sm text-slate-600 leading-relaxed">统筹工厂制造、安装、调试与甲方对接，协调多方资源，保障10+个冶金项目按期交付</p>
+                                        <p class="text-sm text-slate-600 leading-relaxed">统筹工厂制造、安装、调试与客户对接，协调多方资源，保障10+个冶金项目按期交付</p>
                                     </div>
                                 </div>
                             </div>
@@ -659,19 +667,25 @@
         </div>
     </section>
 
-    <!-- Projects Section with Gallery - 8个项目可点击查看多图 -->
+    <!-- Projects Section -->
     <section id="projects" class="py-20 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16 section-fade">
                 <h2 class="text-3xl font-bold text-slate-900 mb-4">重点项目经历</h2>
-                <p class="text-slate-600 max-w-2xl mx-auto font-medium">点击项目卡片查看详细现场照片与设计图纸（每个项目3-4张）</p>
+                <p class="text-slate-600 max-w-2xl mx-auto font-medium">点击项目卡片查看详细现场照片与设计图纸</p>
+                <div class="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-red-50 border border-red-200 rounded-lg">
+                    <i data-lucide="alert-triangle" class="w-4 h-4 text-red-600"></i>
+                    <span class="text-sm text-red-700 font-medium">注意：涉及客户保密协议，以上内容仅用于个人求职展示</span>
+                </div>
             </div>
 
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Project 1: 立恒晋南钢铁 -->
+                <!-- Project 1 -->
                 <div class="project-card rounded-2xl overflow-hidden shadow-lg card-hover section-fade blueprint-accent bg-white border border-slate-200 cursor-pointer" onclick="openGalleryModal('project101')">
                     <div class="project-image-container h-48 bg-slate-200 relative">
-                        <img src="C:\\Users\\Administrator\\Desktop\\作品集\\作品集图片\\现场图片\\IMG_9305.JPEG" alt="立恒晋南钢铁项目" class="w-full h-full object-cover">
+                        <div class="w-full h-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
+                            <i data-lucide="image" class="w-16 h-16 text-blue-400"></i>
+                        </div>
                         <div class="absolute top-4 right-4">
                             <span class="px-3 py-1 bg-blue-600 text-white rounded-full text-xs font-bold shadow-lg">总包工程</span>
                         </div>
@@ -680,16 +694,12 @@
                                 <i data-lucide="images" class="w-6 h-6"></i>
                             </div>
                         </div>
-                        <div class="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-md backdrop-blur-sm flex items-center gap-1">
-                            <i data-lucide="camera" class="w-3 h-3"></i>
-                            <span>4张</span>
-                        </div>
                     </div>
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-slate-500 text-xs font-bold">2019.07-2025.08</span>
                         </div>
-                        <h3 class="text-lg font-bold text-slate-900 mb-2">立恒晋南钢铁3号连铸机</h3>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">某大型钢铁集团3号连铸机</h3>
                         <p class="text-slate-500 text-sm mb-4 font-medium">10机10流连铸机总包工程</p>
                         <div class="space-y-2 mb-4">
                             <p class="text-sm text-slate-700 flex items-start gap-2 leading-relaxed">
@@ -705,10 +715,12 @@
                     </div>
                 </div>
 
-                <!-- Project 2: 吉安钢铁 -->
+                <!-- Project 2 -->
                 <div class="project-card rounded-2xl overflow-hidden shadow-lg card-hover section-fade blueprint-accent bg-white border border-slate-200 cursor-pointer" onclick="openGalleryModal('project102')">
                     <div class="project-image-container h-48 bg-slate-200 relative">
-                        <img src="C:\\Users\\Administrator\\Desktop\\作品集\\作品集图片\\现场图片\\IMG_1903.JPEG" alt="吉安钢铁项目" class="w-full h-full object-cover">
+                        <div class="w-full h-full bg-gradient-to-br from-cyan-100 to-cyan-200 flex items-center justify-center">
+                            <i data-lucide="image" class="w-16 h-16 text-cyan-400"></i>
+                        </div>
                         <div class="absolute top-4 right-4">
                             <span class="px-3 py-1 bg-cyan-600 text-white rounded-full text-xs font-bold shadow-lg">总包工程</span>
                         </div>
@@ -717,16 +729,12 @@
                                 <i data-lucide="images" class="w-6 h-6"></i>
                             </div>
                         </div>
-                        <div class="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-md backdrop-blur-sm flex items-center gap-1">
-                            <i data-lucide="camera" class="w-3 h-3"></i>
-                            <span>4张</span>
-                        </div>
                     </div>
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-slate-500 text-xs font-bold">2019.07-2025.08</span>
                         </div>
-                        <h3 class="text-lg font-bold text-slate-900 mb-2">吉安市钢铁有限责任公司</h3>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">某钢铁有限责任公司</h3>
                         <p class="text-slate-500 text-sm mb-4 font-medium">8机8流方坯连铸机总包工程</p>
                         <div class="space-y-2 mb-4">
                             <p class="text-sm text-slate-700 flex items-start gap-2 leading-relaxed">
@@ -742,10 +750,12 @@
                     </div>
                 </div>
 
-                <!-- Project 3: 广西桂鑫钢铁 -->
+                <!-- Project 3 -->
                 <div class="project-card rounded-2xl overflow-hidden shadow-lg card-hover section-fade blueprint-accent bg-white border border-slate-200 cursor-pointer" onclick="openGalleryModal('project103')">
                     <div class="project-image-container h-48 bg-slate-200 relative">
-                        <img src="C:\\Users\\Administrator\\Desktop\\作品集\\作品集图片\\现场图片\\IMG_7703.JPEG" alt="广西桂鑫钢铁项目" class="w-full h-full object-cover">
+                        <div class="w-full h-full bg-gradient-to-br from-purple-100 to-purple-200 flex items-center justify-center">
+                            <i data-lucide="image" class="w-16 h-16 text-purple-400"></i>
+                        </div>
                         <div class="absolute top-4 right-4">
                             <span class="px-3 py-1 bg-purple-600 text-white rounded-full text-xs font-bold shadow-lg">高效改造</span>
                         </div>
@@ -754,16 +764,12 @@
                                 <i data-lucide="images" class="w-6 h-6"></i>
                             </div>
                         </div>
-                        <div class="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-md backdrop-blur-sm flex items-center gap-1">
-                            <i data-lucide="camera" class="w-3 h-3"></i>
-                            <span>4张</span>
-                        </div>
                     </div>
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-slate-500 text-xs font-bold">2019.07-2025.08</span>
                         </div>
-                        <h3 class="text-lg font-bold text-slate-900 mb-2">广西桂鑫钢铁集团</h3>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">某钢铁集团</h3>
                         <p class="text-slate-500 text-sm mb-4 font-medium">5流连铸高效提拉速改造项目</p>
                         <div class="space-y-2 mb-4">
                             <p class="text-sm text-slate-700 flex items-start gap-2 leading-relaxed">
@@ -779,10 +785,12 @@
                     </div>
                 </div>
 
-                <!-- Project 4: 晋南钢铁改造 -->
+                <!-- Project 4 -->
                 <div class="project-card rounded-2xl overflow-hidden shadow-lg card-hover section-fade blueprint-accent bg-white border border-slate-200 cursor-pointer" onclick="openGalleryModal('project104')">
                     <div class="project-image-container h-48 bg-slate-200 relative">
-                        <img src="C:\\Users\\Administrator\\Desktop\\作品集\\作品集图片\\现场图片\\IMG_0628.JPEG" alt="晋南钢铁改造项目" class="w-full h-full object-cover">
+                        <div class="w-full h-full bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
+                            <i data-lucide="image" class="w-16 h-16 text-orange-400"></i>
+                        </div>
                         <div class="absolute top-4 right-4">
                             <span class="px-3 py-1 bg-orange-600 text-white rounded-full text-xs font-bold shadow-lg">高产量改造</span>
                         </div>
@@ -791,16 +799,12 @@
                                 <i data-lucide="images" class="w-6 h-6"></i>
                             </div>
                         </div>
-                        <div class="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-md backdrop-blur-sm flex items-center gap-1">
-                            <i data-lucide="camera" class="w-3 h-3"></i>
-                            <span>4张</span>
-                        </div>
                     </div>
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-slate-500 text-xs font-bold">2019.07-2025.08</span>
                         </div>
-                        <h3 class="text-lg font-bold text-slate-900 mb-2">晋南钢铁集团1号机</h3>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">某钢铁集团1号机</h3>
                         <p class="text-slate-500 text-sm mb-4 font-medium">高产量改造项目（项目经理）</p>
                         <div class="space-y-2 mb-4">
                             <p class="text-sm text-slate-700 flex items-start gap-2 leading-relaxed">
@@ -816,10 +820,12 @@
                     </div>
                 </div>
 
-                <!-- Project 5: 金盛兰改造 -->
+                <!-- Project 5 -->
                 <div class="project-card rounded-2xl overflow-hidden shadow-lg card-hover section-fade blueprint-accent bg-white border border-slate-200 cursor-pointer" onclick="openGalleryModal('project105')">
                     <div class="project-image-container h-48 bg-slate-200 relative">
-                        <img src="C:\\Users\\Administrator\\Desktop\\作品集\\作品集图片\\现场图片\\01c129795506138af45161750378ae26.jpg" alt="金盛兰改造项目" class="w-full h-full object-cover">
+                        <div class="w-full h-full bg-gradient-to-br from-green-100 to-green-200 flex items-center justify-center">
+                            <i data-lucide="image" class="w-16 h-16 text-green-400"></i>
+                        </div>
                         <div class="absolute top-4 right-4">
                             <span class="px-3 py-1 bg-green-600 text-white rounded-full text-xs font-bold shadow-lg">高效化改造</span>
                         </div>
@@ -828,16 +834,12 @@
                                 <i data-lucide="images" class="w-6 h-6"></i>
                             </div>
                         </div>
-                        <div class="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-md backdrop-blur-sm flex items-center gap-1">
-                            <i data-lucide="camera" class="w-3 h-3"></i>
-                            <span>4张</span>
-                        </div>
                     </div>
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-slate-500 text-xs font-bold">2019.07-2025.08</span>
                         </div>
-                        <h3 class="text-lg font-bold text-slate-900 mb-2">湖北金盛兰科技有限公司</h3>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">某冶金科技有限公司</h3>
                         <p class="text-slate-500 text-sm mb-4 font-medium">8机8流连铸机高效化改造项目（项目经理）</p>
                         <div class="space-y-2 mb-4">
                             <p class="text-sm text-slate-700 flex items-start gap-2 leading-relaxed">
@@ -852,10 +854,12 @@
                     </div>
                 </div>
 
-                <!-- Project 6: 十字操作机系统 -->
+                <!-- Project 6 -->
                 <div class="project-card rounded-2xl overflow-hidden shadow-lg card-hover section-fade blueprint-accent bg-white border border-slate-200 cursor-pointer" onclick="openGalleryModal('project106')">
                     <div class="project-image-container h-48 bg-slate-200 relative">
-                        <img src="C:\\Users\\Administrator\\Desktop\\作品集\\作品集图片\\现场图片\\990c555c096a8f677e2fafcb06ca1d09_u=176986017,2918405010&fm=253&app=138&f=JPEG_w=800&h=1067.jpg" alt="十字操作机系统" class="w-full h-full object-cover">
+                        <div class="w-full h-full bg-gradient-to-br from-indigo-100 to-indigo-200 flex items-center justify-center">
+                            <i data-lucide="image" class="w-16 h-16 text-indigo-400"></i>
+                        </div>
                         <div class="absolute top-4 right-4">
                             <span class="px-3 py-1 bg-indigo-600 text-white rounded-full text-xs font-bold shadow-lg">标准化开发</span>
                         </div>
@@ -863,10 +867,6 @@
                             <div class="bg-white/20 backdrop-blur-md border border-white/40 rounded-full p-3 text-white">
                                 <i data-lucide="images" class="w-6 h-6"></i>
                             </div>
-                        </div>
-                        <div class="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-md backdrop-blur-sm flex items-center gap-1">
-                            <i data-lucide="camera" class="w-3 h-3"></i>
-                            <span>3张</span>
                         </div>
                     </div>
                     <div class="p-6">
@@ -889,10 +889,12 @@
                     </div>
                 </div>
 
-                <!-- Project 7: 沈飞小导管自动化焊接项目 -->
+                <!-- Project 7 -->
                 <div class="project-card rounded-2xl overflow-hidden shadow-lg card-hover section-fade blueprint-accent bg-white border border-slate-200 cursor-pointer" onclick="openGalleryModal('project107')">
                     <div class="project-image-container h-48 bg-slate-200 relative">
-                        <img src="C:\\Users\\Administrator\\Desktop\\作品集\\作品集图片\\航空项目\\沈飞导管焊接.png" alt="沈飞小导管自动化焊接" class="w-full h-full object-cover">
+                        <div class="w-full h-full bg-gradient-to-br from-red-100 to-red-200 flex items-center justify-center">
+                            <i data-lucide="image" class="w-16 h-16 text-red-400"></i>
+                        </div>
                         <div class="absolute top-4 right-4">
                             <span class="px-3 py-1 bg-red-600 text-white rounded-full text-xs font-bold shadow-lg">航空制造</span>
                         </div>
@@ -901,16 +903,12 @@
                                 <i data-lucide="images" class="w-6 h-6"></i>
                             </div>
                         </div>
-                        <div class="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-md backdrop-blur-sm flex items-center gap-1">
-                            <i data-lucide="camera" class="w-3 h-3"></i>
-                            <span>3张</span>
-                        </div>
                     </div>
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-slate-500 text-xs font-bold">2024.07-2025.08</span>
                         </div>
-                        <h3 class="text-lg font-bold text-slate-900 mb-2">沈飞小导管自动化焊接项目</h3>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">某航空企业小导管自动化焊接项目</h3>
                         <p class="text-slate-500 text-sm mb-4 font-medium">航空发动机导管自动焊接设备设计</p>
                         <div class="space-y-2 mb-4">
                             <p class="text-sm text-slate-700 flex items-start gap-2 leading-relaxed">
@@ -926,10 +924,12 @@
                     </div>
                 </div>
 
-                <!-- Project 8: 天津箭元火箭不锈钢总装环缝焊接设备 -->
+                <!-- Project 8 -->
                 <div class="project-card rounded-2xl overflow-hidden shadow-lg card-hover section-fade blueprint-accent bg-white border border-slate-200 cursor-pointer" onclick="openGalleryModal('project108')">
                     <div class="project-image-container h-48 bg-slate-200 relative">
-                        <img src="C:\\Users\\Administrator\\Desktop\\作品集\\作品集图片\\航空项目\\箭元火箭焊接.png" alt="天津箭元火箭焊接设备" class="w-full h-full object-cover">
+                        <div class="w-full h-full bg-gradient-to-br from-rose-100 to-rose-200 flex items-center justify-center">
+                            <i data-lucide="image" class="w-16 h-16 text-rose-400"></i>
+                        </div>
                         <div class="absolute top-4 right-4">
                             <span class="px-3 py-1 bg-rose-600 text-white rounded-full text-xs font-bold shadow-lg">商业航天</span>
                         </div>
@@ -938,16 +938,12 @@
                                 <i data-lucide="images" class="w-6 h-6"></i>
                             </div>
                         </div>
-                        <div class="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-md backdrop-blur-sm flex items-center gap-1">
-                            <i data-lucide="camera" class="w-3 h-3"></i>
-                            <span>3张</span>
-                        </div>
                     </div>
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-slate-500 text-xs font-bold">2024.07-2025.08</span>
                         </div>
-                        <h3 class="text-lg font-bold text-slate-900 mb-2">天津箭元火箭不锈钢总装环缝焊接设备</h3>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">某商业航天公司火箭不锈钢总装环缝焊接设备</h3>
                         <p class="text-slate-500 text-sm mb-4 font-medium">火箭贮箱环缝搅拌摩擦焊接系统</p>
                         <div class="space-y-2 mb-4">
                             <p class="text-sm text-slate-700 flex items-start gap-2 leading-relaxed">
@@ -966,32 +962,35 @@
         </div>
     </section>
 
-    <!-- Gallery Section - 个人作品集（多图浏览版） -->
+    <!-- Gallery Section -->
     <section id="gallery" class="py-20 bg-slate-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12 section-fade">
                 <h2 class="text-3xl font-bold text-slate-900 mb-4">个人作品集</h2>
-                <p class="text-slate-600 font-medium">机械设计作品、项目现场及三维模型展示（点击项目查看完整图集）</p>
+                <p class="text-slate-600 font-medium">机械设计作品、核心设备及项目现场展示（点击项目查看完整图集）</p>
+                <!-- 保密声明 -->
+                <div class="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-red-50 border border-red-200 rounded-lg">
+                    <i data-lucide="alert-triangle" class="w-4 h-4 text-red-600"></i>
+                    <span class="text-sm text-red-700 font-medium">注意：涉及客户保密协议，以上内容仅用于个人求职展示</span>
+                </div>
             </div>
 
-            <!-- Gallery Grid - 每个项目一个卡片 -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 section-fade">
-
-                <!-- Gallery Item 1: 连铸机项目现场 -->
-                <div class="gallery-card bg-white rounded-2xl overflow-hidden shadow-lg card-hover cursor-pointer border border-slate-200" onclick="openGalleryModal('project1')">
-                    <div class="relative h-56 overflow-hidden">
-                        <img src="C:\\Users\\Administrator\\Desktop\\作品集\\作品集图片\\现场图片\\IMG_0414.JPEG" alt="连铸机现场" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                <!-- Gallery Item 1 -->
+                <div class="gallery-card bg-white rounded-2xl overflow-hidden shadow-lg card-hover cursor-pointer border border-slate-200" onclick="openGalleryModal('gallery1')">
+                    <div class="relative h-56 overflow-hidden bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
+                        <i data-lucide="box" class="w-20 h-20 text-blue-400"></i>
                         <div class="absolute top-4 right-4 bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
                             <span class="flex items-center gap-1">
                                 <i data-lucide="images" class="w-3 h-3"></i>
-                                8张
+                                3张
                             </span>
                         </div>
                         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                     </div>
                     <div class="p-5">
-                        <h3 class="text-lg font-bold text-slate-900 mb-2">连铸机项目现场</h3>
-                        <p class="text-slate-600 text-sm">立恒晋南钢铁、吉安钢铁等多个项目的现场安装与调试照片</p>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">碟式钢包回转台</h3>
+                        <p class="text-slate-600 text-sm">连铸机核心设备三维设计、装配图及工程图纸</p>
                         <div class="mt-4 flex items-center text-blue-600 text-sm font-bold">
                             <span>查看图集</span>
                             <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
@@ -999,21 +998,21 @@
                     </div>
                 </div>
 
-                <!-- Gallery Item 2: 回转台设计 -->
-                <div class="gallery-card bg-white rounded-2xl overflow-hidden shadow-lg card-hover cursor-pointer border border-slate-200" onclick="openGalleryModal('project2')">
-                    <div class="relative h-56 overflow-hidden">
-                        <img src="C:\\Users\\Administrator\\Desktop\\作品集\\作品集图片\\回转台图片\\ScreenShot_2026-04-09_234453_636.png" alt="回转台设计" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                <!-- Gallery Item 2 -->
+                <div class="gallery-card bg-white rounded-2xl overflow-hidden shadow-lg card-hover cursor-pointer border border-slate-200" onclick="openGalleryModal('gallery2')">
+                    <div class="relative h-56 overflow-hidden bg-gradient-to-br from-cyan-100 to-cyan-200 flex items-center justify-center">
+                        <i data-lucide="droplets" class="w-20 h-20 text-cyan-400"></i>
                         <div class="absolute top-4 right-4 bg-cyan-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
                             <span class="flex items-center gap-1">
                                 <i data-lucide="images" class="w-3 h-3"></i>
-                                6张
+                                3张
                             </span>
                         </div>
                         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                     </div>
                     <div class="p-5">
-                        <h3 class="text-lg font-bold text-slate-900 mb-2">回转台三维设计</h3>
-                        <p class="text-slate-600 text-sm">连铸机回转台核心设备的SolidWorks三维建模与工程图纸</p>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">二冷喷淋系统</h3>
+                        <p class="text-slate-600 text-sm">二次冷却系统管路布局、喷头配置及配管设计</p>
                         <div class="mt-4 flex items-center text-cyan-600 text-sm font-bold">
                             <span>查看图集</span>
                             <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
@@ -1021,20 +1020,20 @@
                     </div>
                 </div>
 
-                <!-- Gallery Item 3: 拉矫机设备 -->
-                <div class="gallery-card bg-white rounded-2xl overflow-hidden shadow-lg card-hover cursor-pointer border border-slate-200" onclick="openGalleryModal('project3')">
-                    <div class="relative h-56 overflow-hidden">
-                        <img src="C:\\Users\\Administrator\\Desktop\\作品集\\作品集图片\\现场图片\\IMG_0805.JPEG" alt="拉矫机" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                <!-- Gallery Item 3 -->
+                <div class="gallery-card bg-white rounded-2xl overflow-hidden shadow-lg card-hover cursor-pointer border border-slate-200" onclick="openGalleryModal('gallery3')">
+                    <div class="relative h-56 overflow-hidden bg-gradient-to-br from-purple-100 to-purple-200 flex items-center justify-center">
+                        <i data-lucide="wrench" class="w-20 h-20 text-purple-400"></i>
                         <div class="absolute top-4 right-4 bg-purple-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
                             <span class="flex items-center gap-1">
                                 <i data-lucide="images" class="w-3 h-3"></i>
-                                5张
+                                3张
                             </span>
                         </div>
                         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                     </div>
                     <div class="p-5">
-                        <h3 class="text-lg font-bold text-slate-900 mb-2">拉矫机核心设备</h3>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">拉矫机</h3>
                         <p class="text-slate-600 text-sm">拉矫机设计图纸、装配过程及现场运行实拍</p>
                         <div class="mt-4 flex items-center text-purple-600 text-sm font-bold">
                             <span>查看图集</span>
@@ -1043,21 +1042,21 @@
                     </div>
                 </div>
 
-                <!-- Gallery Item 4: 二冷系统设计 -->
-                <div class="gallery-card bg-white rounded-2xl overflow-hidden shadow-lg card-hover cursor-pointer border border-slate-200" onclick="openGalleryModal('project4')">
-                    <div class="relative h-56 overflow-hidden">
-                        <img src="C:\\Users\\Administrator\\Desktop\\作品集\\作品集图片\\二冷系统\\二冷系统设计.JPEG" alt="二冷系统" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                <!-- Gallery Item 4 -->
+                <div class="gallery-card bg-white rounded-2xl overflow-hidden shadow-lg card-hover cursor-pointer border border-slate-200" onclick="openGalleryModal('gallery4')">
+                    <div class="relative h-56 overflow-hidden bg-gradient-to-br from-indigo-100 to-indigo-200 flex items-center justify-center">
+                        <i data-lucide="pipeline" class="w-20 h-20 text-indigo-400"></i>
                         <div class="absolute top-4 right-4 bg-indigo-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
                             <span class="flex items-center gap-1">
                                 <i data-lucide="images" class="w-3 h-3"></i>
-                                7张
+                                3张
                             </span>
                         </div>
                         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                     </div>
                     <div class="p-5">
-                        <h3 class="text-lg font-bold text-slate-900 mb-2">二冷喷淋系统设计</h3>
-                        <p class="text-slate-600 text-sm">二次冷却系统管路布局、喷头配置及配管设计图纸</p>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">车间配管</h3>
+                        <p class="text-slate-600 text-sm">液压润滑配管系统设计、管路布局及安装实景</p>
                         <div class="mt-4 flex items-center text-indigo-600 text-sm font-bold">
                             <span>查看图集</span>
                             <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
@@ -1065,21 +1064,21 @@
                     </div>
                 </div>
 
-                <!-- Gallery Item 5: 液压配管系统 -->
-                <div class="gallery-card bg-white rounded-2xl overflow-hidden shadow-lg card-hover cursor-pointer border border-slate-200" onclick="openGalleryModal('project5')">
-                    <div class="relative h-56 overflow-hidden">
-                        <img src="C:\\Users\\Administrator\\Desktop\\作品集\\作品集图片\\现场图片\\IMG_8333.JPEG" alt="液压系统" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                <!-- Gallery Item 5 -->
+                <div class="gallery-card bg-white rounded-2xl overflow-hidden shadow-lg card-hover cursor-pointer border border-slate-200" onclick="openGalleryModal('gallery5')">
+                    <div class="relative h-56 overflow-hidden bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
+                        <i data-lucide="move" class="w-20 h-20 text-orange-400"></i>
                         <div class="absolute top-4 right-4 bg-orange-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
                             <span class="flex items-center gap-1">
                                 <i data-lucide="images" class="w-3 h-3"></i>
-                                6张
+                                3张
                             </span>
                         </div>
                         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                     </div>
                     <div class="p-5">
-                        <h3 class="text-lg font-bold text-slate-900 mb-2">液压润滑配管系统</h3>
-                        <p class="text-slate-600 text-sm">液压站设计、管路布局及现场安装实景</p>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">十字操作机</h3>
+                        <p class="text-slate-600 text-sm">十字操作机系统标准化设计、航空应用及设备制造</p>
                         <div class="mt-4 flex items-center text-orange-600 text-sm font-bold">
                             <span>查看图集</span>
                             <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
@@ -1087,21 +1086,43 @@
                     </div>
                 </div>
 
-                <!-- Gallery Item 6: 航空焊接设备 -->
-                <div class="gallery-card bg-white rounded-2xl overflow-hidden shadow-lg card-hover cursor-pointer border border-slate-200" onclick="openGalleryModal('project6')">
-                    <div class="relative h-56 overflow-hidden">
-                        <img src="C:\\Users\\Administrator\\Desktop\\作品集\\作品集图片\\现场图片\\990c555c096a8f677e2fafcb06ca1d09_u=176986017,2918405010&fm=253&app=138&f=JPEG_w=800&h=1067.jpg" alt="十字操作机" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
-                        <div class="absolute top-4 right-4 bg-rose-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                <!-- Gallery Item 6 -->
+                <div class="gallery-card bg-white rounded-2xl overflow-hidden shadow-lg card-hover cursor-pointer border border-slate-200" onclick="openGalleryModal('gallery6')">
+                    <div class="relative h-56 overflow-hidden bg-gradient-to-br from-red-100 to-red-200 flex items-center justify-center">
+                        <i data-lucide="flame" class="w-20 h-20 text-red-400"></i>
+                        <div class="absolute top-4 right-4 bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
                             <span class="flex items-center gap-1">
                                 <i data-lucide="images" class="w-3 h-3"></i>
-                                8张
+                                2张
                             </span>
                         </div>
                         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                     </div>
                     <div class="p-5">
-                        <h3 class="text-lg font-bold text-slate-900 mb-2">航空焊接设备</h3>
-                        <p class="text-slate-600 text-sm">十字操作机系统、沈飞导管焊接及箭元火箭焊接设备</p>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">窄间隙TIG焊枪</h3>
+                        <p class="text-slate-600 text-sm">航空级窄间隙TIG焊接枪头设计与精密焊接应用</p>
+                        <div class="mt-4 flex items-center text-red-600 text-sm font-bold">
+                            <span>查看图集</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 7 -->
+                <div class="gallery-card bg-white rounded-2xl overflow-hidden shadow-lg card-hover cursor-pointer border border-slate-200" onclick="openGalleryModal('gallery7')">
+                    <div class="relative h-56 overflow-hidden bg-gradient-to-br from-rose-100 to-rose-200 flex items-center justify-center">
+                        <i data-lucide="rocket" class="w-20 h-20 text-rose-400"></i>
+                        <div class="absolute top-4 right-4 bg-rose-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                            <span class="flex items-center gap-1">
+                                <i data-lucide="images" class="w-3 h-3"></i>
+                                3张
+                            </span>
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">天津总装环缝设备</h3>
+                        <p class="text-slate-600 text-sm">火箭贮箱总装环缝焊接设备与搅拌摩擦焊接系统</p>
                         <div class="mt-4 flex items-center text-rose-600 text-sm font-bold">
                             <span>查看图集</span>
                             <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
@@ -1109,17 +1130,37 @@
                     </div>
                 </div>
 
+                <!-- Gallery Item 8 -->
+                <div class="gallery-card bg-white rounded-2xl overflow-hidden shadow-lg card-hover cursor-pointer border border-slate-200" onclick="openGalleryModal('gallery8')">
+                    <div class="relative h-56 overflow-hidden bg-gradient-to-br from-green-100 to-green-200 flex items-center justify-center">
+                        <i data-lucide="camera" class="w-20 h-20 text-green-400"></i>
+                        <div class="absolute top-4 right-4 bg-green-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                            <span class="flex items-center gap-1">
+                                <i data-lucide="images" class="w-3 h-3"></i>
+                                10张
+                            </span>
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">现场图片</h3>
+                        <p class="text-slate-600 text-sm">多个大型项目的现场安装、调试与验收实景记录</p>
+                        <div class="mt-4 flex items-center text-green-600 text-sm font-bold">
+                            <span>查看图集</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="mt-8 text-center">
-                <p class="text-sm text-slate-500 font-medium">💡 提示：点击任意项目卡片可浏览完整图集，支持左右切换查看</p>
+                <p class="text-sm text-slate-500 font-medium">💡 提示：点击任意项目卡片可浏览完整图集，支持左右切换、键盘导航及触摸滑动</p>
             </div>
         </div>
     </section>
 
-    <!-- Gallery Modal - 图片浏览弹窗（项目案例+个人作品集共用） -->
+    <!-- Gallery Modal -->
     <div id="galleryModal" class="fixed inset-0 bg-black/95 z-[100] hidden flex-col">
-        <!-- Modal Header -->
         <div class="flex items-center justify-between p-4 border-b border-white/10">
             <div class="flex items-center gap-3">
                 <button onclick="closeGalleryModal()" class="text-white hover:bg-white/10 p-2 rounded-full transition-colors">
@@ -1133,29 +1174,29 @@
             </button>
         </div>
 
-        <!-- Modal Body - 图片展示区 -->
         <div class="flex-1 flex items-center justify-center relative p-4">
-            <!-- 上一张按钮 -->
             <button onclick="prevImage()" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 text-white p-3 rounded-full backdrop-blur-md transition-all z-10">
                 <i data-lucide="chevron-left" class="w-8 h-8"></i>
             </button>
 
-            <!-- 当前显示的图片 -->
             <div class="relative max-w-5xl max-h-[70vh] w-full h-full flex items-center justify-center">
-                <img id="modalImage" src="" alt="" class="max-w-full max-h-full object-contain rounded-lg shadow-2xl">
-                <!-- 图片标题 -->
+                <div id="modalImage" class="max-w-full max-h-full flex items-center justify-center bg-slate-800 rounded-lg">
+                    <div class="text-center text-slate-400 p-12">
+                        <i data-lucide="image" class="w-24 h-24 mx-auto mb-4 opacity-50"></i>
+                        <p class="text-lg">图片占位符</p>
+                        <p class="text-sm opacity-70 mt-2">请替换为实际图片路径</p>
+                    </div>
+                </div>
                 <div id="modalImageCaption" class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 rounded-b-lg">
                     <p class="text-white text-center font-medium"></p>
                 </div>
             </div>
 
-            <!-- 下一张按钮 -->
             <button onclick="nextImage()" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 text-white p-3 rounded-full backdrop-blur-md transition-all z-10">
                 <i data-lucide="chevron-right" class="w-8 h-8"></i>
             </button>
         </div>
 
-        <!-- Modal Footer - 缩略图导航 -->
         <div class="p-4 border-t border-white/10 bg-black/50">
             <div id="thumbnailContainer" class="flex gap-2 overflow-x-auto pb-2 justify-center max-w-4xl mx-auto">
                 <!-- 缩略图将通过JS动态生成 -->
@@ -1211,6 +1252,13 @@
     </footer>
 
     <script>
+        // 页面加载完成后隐藏加载动画
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('pageLoader').classList.add('hidden');
+            }, 500);
+        });
+
         // Initialize Lucide Icons
         lucide.createIcons();
 
@@ -1245,159 +1293,160 @@
             });
         });
 
-        // ==========================================
-        // 图库数据配置 - 包含项目案例 + 个人作品集
-        // ==========================================
-        const galleryData = {
-            // 原有个人作品集数据（6个分类）
-            'project1': {
-                title: '连铸机项目现场',
-                images: [
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\IMG_0414.JPEG', caption: '连铸机整体安装现场' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\IMG_9305.JPEG', caption: '立恒晋南钢铁项目现场' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\IMG_1903.JPEG', caption: '吉安钢铁连铸机安装' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\IMG_7703.JPEG', caption: '广西桂鑫钢铁改造现场' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\IMG_0628.JPEG', caption: '晋南钢铁高产量改造' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\23b6944eaa155089d1ba8d1465f6a567.jpg', caption: '项目验收现场' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\851ff20f93b77cd9d9debe2f3559c2ad.jpg', caption: '设备安装调试' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\合照.jpg', caption: '项目团队合影' }
-                ]
-            },
-            'project2': {
-                title: '回转台三维设计',
-                images: [
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\回转台图片\\\\ScreenShot_2026-04-09_234453_636.png', caption: '回转台整体装配图' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\回转台图片\\\\ScreenShot_2026-04-09_234500_100.png', caption: '回转台俯视图' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\回转台图片\\\\ScreenShot_2026-04-09_234510_200.png', caption: '回转台剖面图' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\回转台图片\\\\ScreenShot_2026-04-09_234520_300.png', caption: '驱动机构细节' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\回转台图片\\\\ScreenShot_2026-04-09_234530_400.png', caption: '轴承座设计' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\回转台图片\\\\ScreenShot_2026-04-09_234540_500.png', caption: '工程图纸输出' }
-                ]
-            },
-            'project3': {
-                title: '拉矫机核心设备',
-                images: [
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\IMG_0805.JPEG', caption: '拉矫机整体装配' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\拉矫机\\\\拉矫机设计1.png', caption: '拉矫机三维模型' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\拉矫机\\\\拉矫机设计2.png', caption: '辊系装配细节' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\拉矫机\\\\拉矫机图纸.JPEG', caption: '拉矫机工程图纸' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\IMG_0806.JPEG', caption: '现场安装实景' }
-                ]
-            },
-            'project4': {
-                title: '二冷喷淋系统设计',
-                images: [
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\二冷系统\\\\二冷系统设计.JPEG', caption: '二冷系统整体布局' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\二冷系统\\\\喷淋管路设计.png', caption: '喷淋管路设计' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\二冷系统\\\\喷头布置图.png', caption: '喷头布置方案' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\二冷系统\\\\水冷系统装配.png', caption: '水冷系统装配' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\二冷系统\\\\配管细节1.png', caption: '配管细节1' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\二冷系统\\\\配管细节2.png', caption: '配管细节2' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\IMG_0415.JPEG', caption: '现场安装效果' }
-                ]
-            },
-            'project5': {
-                title: '液压润滑配管系统',
-                images: [
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\IMG_8333.JPEG', caption: '液压站整体布局' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\液压系统\\\\液压原理图.png', caption: '液压原理图设计' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\液压系统\\\\管路布置图.png', caption: '管路布置方案' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\液压系统\\\\阀组设计.png', caption: '阀组集成设计' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\IMG_8334.JPEG', caption: '现场管路安装' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\IMG_8335.JPEG', caption: '调试运行状态' }
-                ]
-            },
-            'project6': {
-                title: '航空焊接设备',
-                images: [
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\990c555c096a8f677e2fafcb06ca1d09_u=176986017,2918405010&fm=253&app=138&f=JPEG_w=800&h=1067.jpg', caption: '十字操作机系统' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\航空项目\\\\十字操作机设计.png', caption: '十字操作机设计图' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\航空项目\\\\沈飞导管焊接.png', caption: '沈飞小导管焊接设备' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\航空项目\\\\导管焊接夹具.png', caption: '焊接夹具设计' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\航空项目\\\\箭元火箭焊接.png', caption: '箭元火箭焊接设备' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\航空项目\\\\环缝焊接系统.png', caption: '环缝焊接系统' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\航空项目\\\\焊接控制系统.png', caption: '焊接控制系统' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\01c129795506138af45161750378ae26.jpg', caption: '首都航空项目现场' }
-                ]
-            },
+        // 导航栏滚动效果
+        let lastScroll = 0;
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            const currentScroll = window.pageYOffset;
             
-            // 新增：项目案例详细图集（8个项目）
-            'project101': {
-                title: '立恒晋南钢铁3号连铸机项目',
+            if (currentScroll > 100) {
+                navbar.classList.add('shadow-md');
+            } else {
+                navbar.classList.remove('shadow-md');
+            }
+            
+            lastScroll = currentScroll;
+        });
+
+        // 图库数据配置
+        const galleryData = {
+            'gallery1': {
+                title: '碟式钢包回转台',
                 images: [
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\IMG_9305.JPEG', caption: '项目现场全景' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\IMG_0414.JPEG', caption: '设备安装现场' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\23b6944eaa155089d1ba8d1465f6a567.jpg', caption: '项目验收阶段' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\851ff20f93b77cd9d9debe2f3559c2ad.jpg', caption: '安装调试细节' }
+                    { src: '', caption: '回转台整体装配图' },
+                    { src: '', caption: '回转台剖面结构' },
+                    { src: '', caption: '驱动与旋转机构' }
+                ]
+            },
+            'gallery2': {
+                title: '二冷喷淋系统',
+                images: [
+                    { src: '', caption: '二冷系统整体布局' },
+                    { src: '', caption: '喷淋管路设计' },
+                    { src: '', caption: '喷头布置方案' }
+                ]
+            },
+            'gallery3': {
+                title: '拉矫机',
+                images: [
+                    { src: '', caption: '拉矫机三维模型' },
+                    { src: '', caption: '辊系装配细节' },
+                    { src: '', caption: '拉矫机工程图纸' }
+                ]
+            },
+            'gallery4': {
+                title: '车间配管',
+                images: [
+                    { src: '', caption: '液压站整体布局' },
+                    { src: '', caption: '管路布置方案' },
+                    { src: '', caption: '现场管路安装' }
+                ]
+            },
+            'gallery5': {
+                title: '十字操作机',
+                images: [
+                    { src: '', caption: '十字操作机整体装配' },
+                    { src: '', caption: '十字操作机设计图' },
+                    { src: '', caption: '标准化模块化设计' }
+                ]
+            },
+            'gallery6': {
+                title: '窄间隙TIG焊枪',
+                images: [
+                    { src: '', caption: '窄间隙TIG焊枪设计' },
+                    { src: '', caption: '焊枪应用实景' }
+                ]
+            },
+            'gallery7': {
+                title: '天津总装环缝设备',
+                images: [
+                    { src: '', caption: '环缝焊接设备整体' },
+                    { src: '', caption: '焊接主轴头设计' },
+                    { src: '', caption: '恒压力控制系统' }
+                ]
+            },
+            'gallery8': {
+                title: '现场图片',
+                images: [
+                    { src: '', caption: '项目现场全景' },
+                    { src: '', caption: '设备安装现场' },
+                    { src: '', caption: '回转台安装调试' },
+                    { src: '', caption: '拉矫机现场装配' },
+                    { src: '', caption: '液压系统调试' },
+                    { src: '', caption: '二冷系统安装' },
+                    { src: '', caption: '项目验收阶段' },
+                    { src: '', caption: '设备运行状态' },
+                    { src: '', caption: '现场技术指导' },
+                    { src: '', caption: '项目团队合影' }
+                ]
+            },
+            'project101': {
+                title: '某大型钢铁集团3号连铸机项目',
+                images: [
+                    { src: '', caption: '项目现场全景' },
+                    { src: '', caption: '设备安装现场' },
+                    { src: '', caption: '项目验收阶段' }
                 ]
             },
             'project102': {
-                title: '吉安钢铁8机8流连铸机项目',
+                title: '某钢铁公司8机8流连铸机项目',
                 images: [
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\IMG_1903.JPEG', caption: '项目现场' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\合照.jpg', caption: '项目团队合影' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\IMG_0805.JPEG', caption: '拉矫机安装' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\IMG_0806.JPEG', caption: '设备调试' }
+                    { src: '', caption: '项目现场' },
+                    { src: '', caption: '项目团队合影' },
+                    { src: '', caption: '拉矫机安装' }
                 ]
             },
             'project103': {
-                title: '广西桂鑫钢铁高效提拉速改造',
+                title: '某钢铁集团高效提拉速改造',
                 images: [
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\IMG_7703.JPEG', caption: '改造现场' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\二冷系统\\\\二冷系统设计.JPEG', caption: '二冷系统设计图' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\二冷系统\\\\喷淋管路设计.png', caption: '喷淋管路设计' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\二冷系统\\\\喷头布置图.png', caption: '喷头布置方案' }
+                    { src: '', caption: '改造现场' },
+                    { src: '', caption: '二冷系统设计图' },
+                    { src: '', caption: '喷淋管路设计' }
                 ]
             },
             'project104': {
-                title: '晋南钢铁1号机高产量改造',
+                title: '某钢铁集团1号机高产量改造',
                 images: [
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\IMG_0628.JPEG', caption: '改造现场' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\回转台图片\\\\ScreenShot_2026-04-09_234453_636.png', caption: '回转台三维设计' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\拉矫机\\\\拉矫机设计1.png', caption: '拉矫机设计' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\回转台图片\\\\ScreenShot_2026-04-09_234500_100.png', caption: '回转台细节' }
+                    { src: '', caption: '改造现场' },
+                    { src: '', caption: '回转台三维设计' },
+                    { src: '', caption: '拉矫机设计' }
                 ]
             },
             'project105': {
-                title: '湖北金盛兰高效化改造项目',
+                title: '某冶金科技有限公司高效化改造项目',
                 images: [
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\01c129795506138af45161750378ae26.jpg', caption: '项目现场' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\IMG_8333.JPEG', caption: '液压站安装' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\液压系统\\\\液压原理图.png', caption: '液压原理图' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\液压系统\\\\管路布置图.png', caption: '管路布置图' }
+                    { src: '', caption: '项目现场' },
+                    { src: '', caption: '液压站安装' },
+                    { src: '', caption: '液压原理图' }
                 ]
             },
             'project106': {
                 title: '十字操作机系统标准化开发',
                 images: [
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\现场图片\\\\990c555c096a8f677e2fafcb06ca1d09_u=176986017,2918405010&fm=253&app=138&f=JPEG_w=800&h=1067.jpg', caption: '十字操作机现场' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\航空项目\\\\十字操作机设计.png', caption: '十字操作机设计图' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\航空项目\\\\环缝焊接系统.png', caption: '环缝焊接系统' }
+                    { src: '', caption: '十字操作机现场' },
+                    { src: '', caption: '十字操作机设计图' },
+                    { src: '', caption: '环缝焊接系统' }
                 ]
             },
             'project107': {
-                title: '沈飞小导管自动化焊接项目',
+                title: '某航空企业小导管自动化焊接项目',
                 images: [
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\航空项目\\\\沈飞导管焊接.png', caption: '导管焊接设备' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\航空项目\\\\导管焊接夹具.png', caption: '焊接夹具设计' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\航空项目\\\\焊接控制系统.png', caption: '控制系统' }
+                    { src: '', caption: '导管焊接设备' },
+                    { src: '', caption: '焊接夹具设计' }
                 ]
             },
             'project108': {
-                title: '天津箭元火箭焊接设备项目',
+                title: '某商业航天公司火箭焊接设备项目',
                 images: [
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\航空项目\\\\箭元火箭焊接.png', caption: '火箭焊接设备' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\二冷系统\\\\水冷系统装配.png', caption: '冷却系统装配' },
-                    { src: 'C:\\\\Users\\\\Administrator\\\\Desktop\\\\作品集\\\\作品集图片\\\\回转台图片\\\\ScreenShot_2026-04-09_234510_200.png', caption: '精密机械设计' }
+                    { src: '', caption: '火箭焊接设备' },
+                    { src: '', caption: '冷却系统装配' }
                 ]
             }
         };
 
-        // 当前浏览状态
         let currentGallery = null;
         let currentImageIndex = 0;
 
-        // 打开图库弹窗
         function openGalleryModal(projectId) {
             currentGallery = galleryData[projectId];
             currentImageIndex = 0;
@@ -1417,7 +1466,6 @@
             lucide.createIcons();
         }
 
-        // 关闭图库弹窗
         function closeGalleryModal() {
             const modal = document.getElementById('galleryModal');
             modal.classList.add('hidden');
@@ -1426,82 +1474,71 @@
             currentGallery = null;
         }
 
-        // 更新当前显示的图片
         function updateModalImage() {
             if (!currentGallery) return;
 
-            const img = document.getElementById('modalImage');
             const caption = document.querySelector('#modalImageCaption p');
             const counter = document.getElementById('imageCounter');
 
             const currentImage = currentGallery.images[currentImageIndex];
-            img.src = currentImage.src;
-            img.alt = currentImage.caption;
             caption.textContent = currentImage.caption;
             counter.textContent = `${currentImageIndex + 1} / ${currentGallery.images.length}`;
 
-            // 更新缩略图选中状态
             updateThumbnailSelection();
         }
 
-        // 生成缩略图
         function generateThumbnails() {
             const container = document.getElementById('thumbnailContainer');
             container.innerHTML = '';
 
             currentGallery.images.forEach((image, index) => {
                 const thumb = document.createElement('div');
-                thumb.className = `flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden cursor-pointer border-2 transition-all ${
+                thumb.className = `flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden cursor-pointer border-2 transition-all bg-slate-700 flex items-center justify-center ${
                     index === currentImageIndex ? 'border-blue-500 ring-2 ring-blue-500/50' : 'border-transparent hover:border-white/50'
                 }`;
-                thumb.innerHTML = `<img src="${image.src}" alt="${image.caption}" class="w-full h-full object-cover">`;
+                thumb.innerHTML = `<i data-lucide="image" class="w-8 h-8 text-slate-400"></i>`;
                 thumb.onclick = () => {
                     currentImageIndex = index;
                     updateModalImage();
                 };
                 container.appendChild(thumb);
             });
+            lucide.createIcons();
         }
 
-        // 更新缩略图选中状态
         function updateThumbnailSelection() {
             const container = document.getElementById('thumbnailContainer');
             const thumbs = container.children;
 
             for (let i = 0; i < thumbs.length; i++) {
                 if (i === currentImageIndex) {
-                    thumbs[i].className = 'flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden cursor-pointer border-2 border-blue-500 ring-2 ring-blue-500/50 transition-all';
+                    thumbs[i].className = 'flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden cursor-pointer border-2 border-blue-500 ring-2 ring-blue-500/50 transition-all bg-slate-700 flex items-center justify-center';
                     thumbs[i].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
                 } else {
-                    thumbs[i].className = 'flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden cursor-pointer border-2 border-transparent hover:border-white/50 transition-all';
+                    thumbs[i].className = 'flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden cursor-pointer border-2 border-transparent hover:border-white/50 transition-all bg-slate-700 flex items-center justify-center';
                 }
             }
         }
 
-        // 上一张图片
         function prevImage() {
             if (!currentGallery) return;
             currentImageIndex = (currentImageIndex - 1 + currentGallery.images.length) % currentGallery.images.length;
             updateModalImage();
         }
 
-        // 下一张图片
         function nextImage() {
             if (!currentGallery) return;
             currentImageIndex = (currentImageIndex + 1) % currentGallery.images.length;
             updateModalImage();
         }
 
-        // 键盘导航
         document.addEventListener('keydown', (e) => {
             if (!currentGallery) return;
-
             if (e.key === 'ArrowLeft') prevImage();
             if (e.key === 'ArrowRight') nextImage();
             if (e.key === 'Escape') closeGalleryModal();
         });
 
-        // 触摸滑动支持
         let touchStartX = 0;
         let touchEndX = 0;
 
@@ -1523,9 +1560,9 @@
 
             if (Math.abs(diff) > swipeThreshold) {
                 if (diff > 0) {
-                    nextImage(); // 向左滑动，显示下一张
+                    nextImage();
                 } else {
-                    prevImage(); // 向右滑动，显示上一张
+                    prevImage();
                 }
             }
         }
@@ -1536,11 +1573,10 @@
                 if (entry.isIntersecting) {
                     const skillBars = entry.target.querySelectorAll('.skill-bar');
                     skillBars.forEach(bar => {
-                        const width = bar.style.width;
-                        bar.style.width = '0';
+                        const width = bar.getAttribute('data-width');
                         setTimeout(() => {
                             bar.style.width = width;
-                        }, 100);
+                        }, 200);
                     });
                 }
             });
