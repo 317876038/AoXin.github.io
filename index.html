@@ -72,14 +72,27 @@
             background: linear-gradient(to bottom, #3b82f6, #06b6d4);
         }
         
-        /* 项目图片容器 */
+        /* 项目图片容器 - 修复遮挡问题 */
         .project-image-container {
             position: relative;
             overflow: hidden;
+            width: 100%;
+            /* 使用padding-bottom实现响应式高度，避免被截断 */
+            padding-bottom: 56.25%; /* 16:9 比例 */
+            height: 0;
         }
+        
         .project-image-container img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top; /* 从顶部开始显示，避免顶部被截断 */
             transition: transform 0.5s ease;
         }
+        
         .project-image-container:hover img {
             transform: scale(1.05);
         }
@@ -172,6 +185,7 @@
             align-items: center;
             justify-content: center;
             backdrop-filter: blur(2px);
+            z-index: 10;
         }
         .project-card:hover .project-click-hint {
             opacity: 1;
@@ -291,6 +305,11 @@
                 opacity: 1 !important;
                 visibility: visible !important;
             }
+            
+            /* 移动端项目图片容器调整 */
+            .project-image-container {
+                padding-bottom: 60%; /* 稍微高一点的比例 */
+            }
         }
         
         /* 超小屏幕优化 */
@@ -307,13 +326,14 @@
                 max-height: 50vh;
             }
             
-            .project-image-container {
-                height: 12rem !important;
-            }
-            
             /* 技能条在小屏幕上的优化 */
             .skill-bar {
                 width: var(--target-width) !important;
+            }
+            
+            /* 小屏幕项目图片 */
+            .project-image-container {
+                padding-bottom: 65%; /* 更高的比例 */
             }
         }
         
@@ -408,8 +428,21 @@
                 transform: translateZ(0);
             }
         }
+        
+        /* 项目标签定位修复 */
+        .project-tag {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            z-index: 20;
+        }
+        
+        /* 确保图片容器内的元素正确层叠 */
+        .project-card {
+            position: relative;
+            overflow: hidden;
+        }
     </style>
-<base target="_blank">
 <base target="_blank">
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased">
@@ -855,7 +888,7 @@
         </div>
     </section>
 
-    <!-- Projects Section -->
+    <!-- Projects Section - 修复图片遮挡问题 -->
     <section id="projects" class="py-20 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16 section-fade">
@@ -868,11 +901,11 @@
             </div>
 
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Project 1 -->
+                <!-- Project 1 - 使用新的图片容器结构 -->
                 <div class="project-card rounded-2xl overflow-hidden shadow-lg card-hover section-fade blueprint-accent bg-white border border-slate-200 cursor-pointer" onclick="openGalleryModal('project101')">
-                    <div class="project-image-container h-48 bg-slate-200 relative">
-                        <img src="images/Project_1_Liheng/1_1.JPEG" alt="项目1" class="w-full h-full object-cover">
-                        <div class="absolute top-4 right-4">
+                    <div class="project-image-container bg-slate-200">
+                        <img src="images/Project_1_Liheng/1_1.JPEG" alt="项目1">
+                        <div class="project-tag">
                             <span class="px-3 py-1 bg-blue-600 text-white rounded-full text-xs font-bold shadow-lg">总包工程</span>
                         </div>
                         <div class="project-click-hint">
@@ -903,9 +936,9 @@
 
                 <!-- Project 2 -->
                 <div class="project-card rounded-2xl overflow-hidden shadow-lg card-hover section-fade blueprint-accent bg-white border border-slate-200 cursor-pointer" onclick="openGalleryModal('project102')">
-                    <div class="project-image-container h-48 bg-slate-200 relative">
-                        <img src="images/Project_2/2_1.JPEG" alt="项目2" class="w-full h-full object-cover">
-                        <div class="absolute top-4 right-4">
+                    <div class="project-image-container bg-slate-200">
+                        <img src="images/Project_2/2_1.JPEG" alt="项目2">
+                        <div class="project-tag">
                             <span class="px-3 py-1 bg-cyan-600 text-white rounded-full text-xs font-bold shadow-lg">总包工程</span>
                         </div>
                         <div class="project-click-hint">
@@ -936,9 +969,9 @@
 
                 <!-- Project 3 -->
                 <div class="project-card rounded-2xl overflow-hidden shadow-lg card-hover section-fade blueprint-accent bg-white border border-slate-200 cursor-pointer" onclick="openGalleryModal('project103')">
-                    <div class="project-image-container h-48 bg-slate-200 relative">
-                        <img src="images/Project_3/3_1.JPEG" alt="项目3" class="w-full h-full object-cover">
-                        <div class="absolute top-4 right-4">
+                    <div class="project-image-container bg-slate-200">
+                        <img src="images/Project_3/3_1.JPEG" alt="项目3">
+                        <div class="project-tag">
                             <span class="px-3 py-1 bg-purple-600 text-white rounded-full text-xs font-bold shadow-lg">高效改造</span>
                         </div>
                         <div class="project-click-hint">
@@ -969,9 +1002,9 @@
 
                 <!-- Project 4 -->
                 <div class="project-card rounded-2xl overflow-hidden shadow-lg card-hover section-fade blueprint-accent bg-white border border-slate-200 cursor-pointer" onclick="openGalleryModal('project104')">
-                    <div class="project-image-container h-48 bg-slate-200 relative">
-                        <img src="images/Project_4/4_1.JPEG" alt="项目4" class="w-full h-full object-cover">
-                        <div class="absolute top-4 right-4">
+                    <div class="project-image-container bg-slate-200">
+                        <img src="images/Project_4/4_1.JPEG" alt="项目4">
+                        <div class="project-tag">
                             <span class="px-3 py-1 bg-orange-600 text-white rounded-full text-xs font-bold shadow-lg">高产量改造</span>
                         </div>
                         <div class="project-click-hint">
@@ -1002,9 +1035,9 @@
 
                 <!-- Project 5 -->
                 <div class="project-card rounded-2xl overflow-hidden shadow-lg card-hover section-fade blueprint-accent bg-white border border-slate-200 cursor-pointer" onclick="openGalleryModal('project105')">
-                    <div class="project-image-container h-48 bg-slate-200 relative">
-                        <img src="images/Project_5/5_1.JPEG" alt="项目5" class="w-full h-full object-cover">
-                        <div class="absolute top-4 right-4">
+                    <div class="project-image-container bg-slate-200">
+                        <img src="images/Project_5/5_1.JPEG" alt="项目5">
+                        <div class="project-tag">
                             <span class="px-3 py-1 bg-green-600 text-white rounded-full text-xs font-bold shadow-lg">高效化改造</span>
                         </div>
                         <div class="project-click-hint">
@@ -1034,9 +1067,9 @@
 
                 <!-- Project 6 -->
                 <div class="project-card rounded-2xl overflow-hidden shadow-lg card-hover section-fade blueprint-accent bg-white border border-slate-200 cursor-pointer" onclick="openGalleryModal('project106')">
-                    <div class="project-image-container h-48 bg-slate-200 relative">
-                        <img src="images/Project_6/6_1.jpg" alt="项目6" class="w-full h-full object-cover">
-                        <div class="absolute top-4 right-4">
+                    <div class="project-image-container bg-slate-200">
+                        <img src="images/Project_6/6_1.jpg" alt="项目6">
+                        <div class="project-tag">
                             <span class="px-3 py-1 bg-indigo-600 text-white rounded-full text-xs font-bold shadow-lg">标准化开发</span>
                         </div>
                         <div class="project-click-hint">
@@ -1067,9 +1100,9 @@
 
                 <!-- Project 7 -->
                 <div class="project-card rounded-2xl overflow-hidden shadow-lg card-hover section-fade blueprint-accent bg-white border border-slate-200 cursor-pointer" onclick="openGalleryModal('project107')">
-                    <div class="project-image-container h-48 bg-slate-200 relative">
-                        <img src="images/Project_7/7_1.jpg" alt="项目7" class="w-full h-full object-cover">
-                        <div class="absolute top-4 right-4">
+                    <div class="project-image-container bg-slate-200">
+                        <img src="images/Project_7/7_1.jpg" alt="项目7">
+                        <div class="project-tag">
                             <span class="px-3 py-1 bg-red-600 text-white rounded-full text-xs font-bold shadow-lg">航空制造</span>
                         </div>
                         <div class="project-click-hint">
@@ -1100,9 +1133,9 @@
 
                 <!-- Project 8 -->
                 <div class="project-card rounded-2xl overflow-hidden shadow-lg card-hover section-fade blueprint-accent bg-white border border-slate-200 cursor-pointer" onclick="openGalleryModal('project108')">
-                    <div class="project-image-container h-48 bg-slate-200 relative">
-                        <img src="images/Project_8/8_1.jpg" alt="项目8" class="w-full h-full object-cover">
-                        <div class="absolute top-4 right-4">
+                    <div class="project-image-container bg-slate-200">
+                        <img src="images/Project_8/8_1.jpg" alt="项目8">
+                        <div class="project-tag">
                             <span class="px-3 py-1 bg-rose-600 text-white rounded-full text-xs font-bold shadow-lg">商业航天</span>
                         </div>
                         <div class="project-click-hint">
