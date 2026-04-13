@@ -239,6 +239,7 @@
 </style>
 <base target="_blank">
 <base target="_blank">
+<base target="_blank">
 </head>
 <body class="antialiased">
     <!-- 页面加载器 -->
@@ -1662,40 +1663,36 @@
 
         // 触摸滑动支持
         let touchStartX = 0;
+        let touchStartY = 0;
         let touchEndX = 0;
+        let touchEndY = 0;
         const modalBody = document.getElementById('modalBody');
 
         modalBody?.addEventListener('touchstart', (e) => {
             touchStartX = e.changedTouches[0].screenX;
             touchStartY = e.changedTouches[0].screenY;
-            isDraggingForSwipe = false;
-            dragStartX = touchStartX;
-            dragStartY = touchStartY;
         }, { passive: true });
 
         modalBody?.addEventListener('touchend', (e) => {
             touchEndX = e.changedTouches[0].screenX;
-            const touchEndY = e.changedTouches[0].screenY;
-
-            // 计算移动距离
-            const moveX = Math.abs(touchEndX - dragStartX);
-            const moveY = Math.abs(touchEndY - dragStartY);
-
-            // 如果移动距离超过阈值，标记为拖拽，不切换图片
-            if (moveX > dragThreshold || moveY > dragThreshold) {
-                isDraggingForSwipe = true;
-            }
-
-            // 只有在非拖拽状态且未缩放时才允许滑动切换
-            if (!isDraggingForSwipe && currentScale <= 1) {
-                handleSwipe();
-            }
+            touchEndY = e.changedTouches[0].screenY;
+            handleSwipe();
         }, { passive: true });
 
         function handleSwipe() {
-            const diff = touchStartX - touchEndX;
-            if (Math.abs(diff) > 50) {
-                diff > 0 ? nextImage() : prevImage();
+            // 如果图片已缩放，不处理滑动切换
+            if (currentScale > 1) return;
+
+            const diffX = touchStartX - touchEndX;
+            const diffY = touchStartY - touchEndY;
+
+            // 水平滑动距离大于垂直滑动，且水平滑动超过50px才切换
+            if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+                if (diffX > 0) {
+                    nextImage();
+                } else {
+                    prevImage();
+                }
             }
         }
 
@@ -1708,27 +1705,23 @@
             if (e.target === e.currentTarget) closeGallery();
         });
 
-        // 阻止图片区域的点击事件冒泡到导航按钮
+        // 点击左右区域切换图片（仅在未缩放时）
         document.getElementById('imageWrapper')?.addEventListener('click', (e) => {
-            // 只有在非拖拽状态下才允许切换
-            if (!isDraggingForSwipe && currentScale <= 1) {
-                // 点击左半边上一张，右半边下一张
-                const rect = e.currentTarget.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                if (x < rect.width / 3) {
-                    prevImage();
-                } else if (x > rect.width * 2 / 3) {
-                    nextImage();
-                }
+            // 如果图片已缩放，不处理点击切换
+            if (currentScale > 1) return;
+
+            // 点击左半边上一张，右半边下一张
+            const rect = e.currentTarget.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            if (x < rect.width / 3) {
+                prevImage();
+            } else if (x > rect.width * 2 / 3) {
+                nextImage();
             }
             e.stopPropagation();
         });
 
-        // 拖拽检测变量 - 防止误触切换
-        let isDraggingForSwipe = false;
-        let dragStartX = 0;
-        let dragStartY = 0;
-        const dragThreshold = 10; // 拖拽阈值，超过此距离视为拖拽而非点击
+        // 触摸起始位置记录
 
         // PDF下载功能 - 移动端使用html2pdf，桌面端使用原生打印
         function downloadPDF() {
