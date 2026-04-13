@@ -20,158 +20,113 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" as="style">
     
-    <!-- Tailwind CSS -->
+    <!-- 关键CSS内联（首屏渲染优化） -->
+    <style>
+        /* 关键CSS - 首屏内容 */
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+        body{font-family:'Inter','Noto Sans SC',system-ui,-apple-system,sans-serif;background:#f8fafc;color:#1e293b;line-height:1.6;overflow-x:hidden}
+        .hero-bg{background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 100%);min-height:100vh;position:relative;overflow:hidden}
+        .page-loader{position:fixed;inset:0;background:#0f172a;z-index:9999;display:flex;align-items:center;justify-content:center;transition:opacity .5s,visibility .5s}
+        .page-loader.hidden{opacity:0;visibility:hidden;pointer-events:none}
+        .loader-spinner{width:50px;height:50px;border:3px solid rgba(255,255,255,.1);border-top-color:#3b82f6;border-radius:50%;animation:spin 1s linear infinite}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        .gradient-text{background:linear-gradient(135deg,#60a5fa 0%,#22d3ee 50%,#38bdf8 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        
+        /* 骨架屏优化CLS */
+        .skeleton{background:linear-gradient(90deg,#e2e8f0 25%,#cbd5e1 50%,#e2e8f0 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}
+        @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+        
+        /* 内容可见性优化（长列表性能） */
+        .content-visibility-auto{content-visibility:auto;contain-intrinsic-size:0 500px}
+        
+        /* 技能条动画优化 - GPU加速 */
+        .skill-track{background:#334155;height:8px;border-radius:9999px;overflow:hidden;transform:translateZ(0)}
+        .skill-fill{height:100%;background:linear-gradient(90deg,#3b82f6,#06b6d4);width:0;transform:translateZ(0);will-change:width;transition:width 1.2s cubic-bezier(0.22,1,0.36,1)}
+        .skill-fill.animate{width:var(--target-width)}
+        
+        /* 图片容器优化（防止CLS） */
+        .img-wrapper{position:relative;background:#e2e8f0;overflow:hidden}
+        .img-wrapper img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .3s,transform .5s}
+        .img-wrapper img.loaded{opacity:1}
+        .img-wrapper:hover img{transform:scale(1.05)}
+    
+        /* 图片缩放相关样式 */
+        #modalImageContainer {
+            will-change: transform;
+            touch-action: none;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        #modalImageContainer.grabbing {
+            cursor: grabbing !important;
+        }
+
+        #modalImageContainer.grabbing {
+            cursor: grabbing !important;
+        }
+
+        #modalImage {
+            user-select: none;
+            -webkit-user-drag: none;
+            -webkit-user-select: none;
+            max-width: 90vw;
+            max-height: 80vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+        }
+
+        /* 缩放按钮动画 */
+        .zoom-btn-active {
+            background: rgba(59, 130, 246, 0.5) !important;
+        }
+
+        /* 提示文字动画 */
+        @keyframes hintFade {
+            0%, 100% { opacity: 0; }
+            20%, 80% { opacity: 1; }
+        }
+
+        .hint-show {
+            animation: hintFade 3s ease-in-out;
+        }
+</style>
+    
+    <!-- 非关键CSS异步加载 -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap"></noscript>
+    
     <script src="https://cdn.tailwindcss.com" defer></script>
     <script src="https://unpkg.com/lucide@latest" defer></script>
+    <!-- html2pdf.js for mobile PDF generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
     
-    <!-- 关键CSS内联 -->
+    <!-- 扩展样式 -->
     <style>
+        /* 设计系统变量 */
         :root {
             --primary: #3b82f6;
             --secondary: #06b6d4;
             --bg-dark: #0f172a;
             --bg-card: #1e293b;
-            --transition-smooth: cubic-bezier(0.22, 1, 0.36, 1);
         }
         
-        *, *::before, *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+        /* 滚动行为优化 */
+        @media (prefers-reduced-motion: reduce) {
+            * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
         }
         
-        html {
-            scroll-behavior: smooth;
-            -webkit-text-size-adjust: 100%;
-        }
+        /* 滚动触发动画 - 性能优化版 */
+        .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1); will-change: opacity, transform; }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
         
-        body {
-            font-family: 'Inter', 'Noto Sans SC', system-ui, -apple-system, sans-serif;
-            background: #f8fafc;
-            color: #1e293b;
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-        
-        /* 加载动画 */
-        .page-loader {
-            position: fixed;
-            inset: 0;
-            background: #0f172a;
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.5s, visibility 0.5s;
-        }
-        
-        .page-loader.hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-        
-        .loader-spinner {
-            width: 50px;
-            height: 50px;
-            border: 3px solid rgba(255,255,255,0.1);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        /* 渐变文字 */
-        .gradient-text {
-            background: linear-gradient(135deg, #60a5fa 0%, #22d3ee 50%, #38bdf8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        /* 骨架屏 */
-        .skeleton {
-            background: linear-gradient(90deg, #e2e8f0 25%, #cbd5e1 50%, #e2e8f0 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-        }
-        
-        @keyframes shimmer {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-        
-        /* 性能优化：内容可见性 */
-        .content-visibility-auto {
-            content-visibility: auto;
-            contain-intrinsic-size: 0 500px;
-        }
-        
-        /* 技能条动画 */
-        .skill-track {
-            background: #334155;
-            height: 8px;
-            border-radius: 9999px;
-            overflow: hidden;
-            transform: translateZ(0);
-        }
-        
-        .skill-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            width: 0;
-            transform: translateZ(0);
-            will-change: width;
-            transition: width 1.2s var(--transition-smooth);
-        }
-        
-        .skill-fill.animate {
-            width: var(--target-width);
-        }
-        
-        /* 图片容器优化（防止CLS） */
-        .img-wrapper {
-            position: relative;
-            background: #e2e8f0;
-            overflow: hidden;
-        }
-        
-        .img-wrapper img {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0;
-            transition: opacity 0.3s, transform 0.5s;
-        }
-        
-        .img-wrapper img.loaded {
-            opacity: 1;
-        }
-        
-        .img-wrapper:hover img {
-            transform: scale(1.05);
-        }
-        
-        /* 滚动触发动画 */
-        .reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s var(--transition-smooth), transform 0.6s var(--transition-smooth);
-            will-change: opacity, transform;
-        }
-        
-        .reveal.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        /* 玻璃拟态效果 */
+        /* 玻璃拟态效果优化 */
         .glass {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(12px) saturate(180%);
@@ -183,24 +138,17 @@
         .project-card {
             contain: layout style paint;
             transform: translateZ(0);
-            transition: transform 0.3s var(--transition-smooth), box-shadow 0.3s ease;
+            transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
         }
+        .project-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.2); }
+        .project-card .img-wrapper { padding-bottom: 56.25%; }
         
-        .project-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.2);
-        }
+        /* 模态框动画优化 */
+        .modal-enter { opacity: 0; transform: scale(0.95); }
+        .modal-enter-active { opacity: 1; transform: scale(1); transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1); }
         
-        .project-card .img-wrapper {
-            padding-bottom: 56.25%;
-        }
-        
-        /* 时间线 */
-        .timeline-item {
-            position: relative;
-            padding-left: 2rem;
-        }
-        
+        /* 时间线优化 */
+        .timeline-item { position: relative; padding-left: 2rem; }
         .timeline-item::before {
             content: '';
             position: absolute;
@@ -210,7 +158,6 @@
             width: 2px;
             background: linear-gradient(to bottom, var(--primary), var(--secondary));
         }
-        
         .timeline-dot {
             position: absolute;
             left: -5px;
@@ -223,42 +170,10 @@
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
         }
         
-        /* 图片缩放功能 */
-        #modalImageContainer {
-            will-change: transform;
-            touch-action: none;
-            cursor: grab;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            height: 100%;
-            transition: transform 0.2s ease-out;
-        }
-        
-        #modalImageContainer.grabbing {
-            cursor: grabbing !important;
-        }
-        
-        #modalImage {
-            user-select: none;
-            -webkit-user-drag: none;
-            -webkit-user-select: none;
-            max-width: 90vw;
-            max-height: 80vh;
-            width: auto;
-            height: auto;
-            object-fit: contain;
-        }
-        
-        /* 提示文字动画 */
-        @keyframes hintFade {
-            0%, 100% { opacity: 0; }
-            20%, 80% { opacity: 1; }
-        }
-        
-        .hint-show {
-            animation: hintFade 3s ease-in-out;
+        /* 触摸设备优化 */
+        @media (hover: none) {
+            .project-card:hover { transform: none; }
+            .hover-lift:active { transform: scale(0.98); }
         }
         
         /* 打印样式 */
@@ -275,44 +190,56 @@
             .safe-top { padding-top: env(safe-area-inset-top); }
             .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
         }
-        
-        /* 滚动条样式 */
-        .scrollbar-thin::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+    
+        /* 图片缩放相关样式 */
+        #modalImageContainer {
+            will-change: transform;
+            touch-action: none;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
         }
-        
-        .scrollbar-thin::-webkit-scrollbar-track {
-            background: transparent;
+
+        #modalImageContainer.grabbing {
+            cursor: grabbing !important;
         }
-        
-        .scrollbar-thin::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,0.2);
-            border-radius: 3px;
+
+        #modalImageContainer.grabbing {
+            cursor: grabbing !important;
         }
-        
-        /* 减少动画（可访问性） */
-        @media (prefers-reduced-motion: reduce) {
-            * { 
-                animation-duration: 0.01ms !important; 
-                animation-iteration-count: 1 !important; 
-                transition-duration: 0.01ms !important; 
-                scroll-behavior: auto !important; 
-            }
+
+        #modalImage {
+            user-select: none;
+            -webkit-user-drag: none;
+            -webkit-user-select: none;
+            max-width: 90vw;
+            max-height: 80vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
         }
-        
-        /* 触摸设备优化 */
-        @media (hover: none) {
-            .project-card:hover { transform: none; }
-            .hover-lift:active { transform: scale(0.98); }
+
+        /* 缩放按钮动画 */
+        .zoom-btn-active {
+            background: rgba(59, 130, 246, 0.5) !important;
         }
-        
-        /* 高对比度模式支持 */
-        @media (prefers-contrast: high) {
-            .skill-fill { background: #000 !important; }
-            .gradient-text { background: none; -webkit-text-fill-color: #000; color: #000; }
+
+        /* 提示文字动画 */
+        @keyframes hintFade {
+            0%, 100% { opacity: 0; }
+            20%, 80% { opacity: 1; }
         }
-    </style>
+
+        .hint-show {
+            animation: hintFade 3s ease-in-out;
+        }
+</style>
+<base target="_blank">
+<base target="_blank">
+<base target="_blank">
 </head>
 <body class="antialiased">
     <!-- 页面加载器 -->
@@ -337,7 +264,7 @@
                     <a href="#gallery" class="text-slate-700 hover:text-blue-600 transition-colors font-medium relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-blue-600 after:transition-all hover:after:w-full">作品集</a>
                 </div>
                 
-                <button id="downloadPdfBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all flex items-center gap-2 text-sm font-medium shadow-md hover:shadow-lg active:scale-95 no-print" aria-label="下载PDF简历">
+                <button onclick="downloadPDF()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all flex items-center gap-2 text-sm font-medium shadow-md hover:shadow-lg active:scale-95 no-print" aria-label="下载PDF简历">
                     <i data-lucide="download" class="w-4 h-4"></i>
                     <span class="hidden sm:inline">下载PDF</span>
                 </button>
@@ -786,8 +713,269 @@
                 </div>
             </div>
 
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="projectsGrid">
-                <!-- Projects will be generated by JavaScript -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Project 1 -->
+                <article class="project-card rounded-2xl overflow-hidden shadow-lg bg-white border border-slate-200 cursor-pointer group reveal" onclick="openGallery('project101')" role="button" tabindex="0" aria-label="查看某大型钢铁集团3号连铸机项目详情">
+                    <div class="img-wrapper">
+                        <img src="images/Project_1_Liheng/1_1.JPEG" 
+                             alt="某大型钢铁集团3号连铸机项目现场" 
+                             loading="lazy" 
+                             decoding="async"
+                             onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton')"
+                             onerror="this.parentElement.classList.remove('skeleton'); this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22600%22 height=%22338%22%3E%3Crect width=%22600%22 height=%22338%22 fill=%22%23e2e8f0%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%2364748b%22 font-size=%2216%22%3E项目图片%3C/text%3E%3C/svg%3E'">
+                        <span class="absolute top-4 right-4 px-3 py-1 bg-blue-600 text-white rounded-full text-xs font-bold shadow-lg z-10">总包工程</span>
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
+                            <div class="bg-white/20 border border-white/40 rounded-full p-3 text-white transform scale-0 group-hover:scale-100 transition-transform duration-300">
+                                <i data-lucide="images" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-slate-500 text-xs font-bold">2019.07-2025.08</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-blue-600 transition-colors">某大型钢铁集团3号连铸机</h3>
+                        <p class="text-slate-500 text-sm mb-4 font-medium">10机10流连铸机总包工程</p>
+                        <p class="text-sm text-slate-700 leading-relaxed mb-4">
+                            核心设计负责人之一，承担回转台、二冷段、拉矫机、机械手等全流程核心设备设计
+                        </p>
+                        <div class="flex flex-wrap gap-2 pt-4 border-t border-slate-100">
+                            <span class="px-2.5 py-1 bg-blue-50 text-blue-800 rounded-md text-xs font-bold">回转台设计</span>
+                            <span class="px-2.5 py-1 bg-blue-50 text-blue-800 rounded-md text-xs font-bold">拉矫机</span>
+                            <span class="px-2.5 py-1 bg-blue-50 text-blue-800 rounded-md text-xs font-bold">机械手</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Project 2 -->
+                <article class="project-card rounded-2xl overflow-hidden shadow-lg bg-white border border-slate-200 cursor-pointer group reveal" onclick="openGallery('project102')" role="button" tabindex="0" aria-label="查看某钢铁有限责任公司项目详情" style="transition-delay: 100ms">
+                    <div class="img-wrapper">
+                        <img src="images/Project_2/2_1.JPEG" 
+                             alt="某钢铁有限责任公司项目现场" 
+                             loading="lazy" 
+                             decoding="async"
+                             onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton')"
+                             onerror="this.parentElement.classList.remove('skeleton'); this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22600%22 height=%22338%22%3E%3Crect width=%22600%22 height=%22338%22 fill=%22%23e2e8f0%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%2364748b%22 font-size=%2216%22%3E项目图片%3C/text%3E%3C/svg%3E'">
+                        <span class="absolute top-4 right-4 px-3 py-1 bg-cyan-600 text-white rounded-full text-xs font-bold shadow-lg z-10">总包工程</span>
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
+                            <div class="bg-white/20 border border-white/40 rounded-full p-3 text-white transform scale-0 group-hover:scale-100 transition-transform duration-300">
+                                <i data-lucide="images" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-slate-500 text-xs font-bold">2019.07-2025.08</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-cyan-600 transition-colors">某钢铁有限责任公司</h3>
+                        <p class="text-slate-500 text-sm mb-4 font-medium">8机8流方坯连铸机总包工程</p>
+                        <p class="text-sm text-slate-700 leading-relaxed mb-4">
+                            全程参与项目各环节，负责机械设计、分包协调、现场技术支持与验收跟进
+                        </p>
+                        <div class="flex flex-wrap gap-2 pt-4 border-t border-slate-100">
+                            <span class="px-2.5 py-1 bg-cyan-50 text-cyan-800 rounded-md text-xs font-bold">方坯连铸</span>
+                            <span class="px-2.5 py-1 bg-cyan-50 text-cyan-800 rounded-md text-xs font-bold">项目管理</span>
+                            <span class="px-2.5 py-1 bg-cyan-50 text-cyan-800 rounded-md text-xs font-bold">现场调试</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Project 3 -->
+                <article class="project-card rounded-2xl overflow-hidden shadow-lg bg-white border border-slate-200 cursor-pointer group reveal" onclick="openGallery('project103')" role="button" tabindex="0" aria-label="查看高效提拉速改造项目详情" style="transition-delay: 200ms">
+                    <div class="img-wrapper">
+                        <img src="images/Project_3/3_1.JPEG" 
+                             alt="某钢铁集团高效提拉速改造项目" 
+                             loading="lazy" 
+                             decoding="async"
+                             onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton')"
+                             onerror="this.parentElement.classList.remove('skeleton'); this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22600%22 height=%22338%22%3E%3Crect width=%22600%22 height=%22338%22 fill=%22%23e2e8f0%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%2364748b%22 font-size=%2216%22%3E项目图片%3C/text%3E%3C/svg%3E'">
+                        <span class="absolute top-4 right-4 px-3 py-1 bg-purple-600 text-white rounded-full text-xs font-bold shadow-lg z-10">高效改造</span>
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
+                            <div class="bg-white/20 border border-white/40 rounded-full p-3 text-white transform scale-0 group-hover:scale-100 transition-transform duration-300">
+                                <i data-lucide="images" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-slate-500 text-xs font-bold">2019.07-2025.08</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-purple-600 transition-colors">某钢铁集团</h3>
+                        <p class="text-slate-500 text-sm mb-4 font-medium">5流连铸高效提拉速改造项目</p>
+                        <p class="text-sm text-slate-700 leading-relaxed mb-4">
+                            负责二冷喷淋系统、车间配管设计，与甲方技术沟通，配合电气部门
+                        </p>
+                        <div class="flex flex-wrap gap-2 pt-4 border-t border-slate-100">
+                            <span class="px-2.5 py-1 bg-purple-50 text-purple-800 rounded-md text-xs font-bold">二冷系统</span>
+                            <span class="px-2.5 py-1 bg-purple-50 text-purple-800 rounded-md text-xs font-bold">液压配管</span>
+                            <span class="px-2.5 py-1 bg-purple-50 text-purple-800 rounded-md text-xs font-bold">提拉速改造</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Project 4 -->
+                <article class="project-card rounded-2xl overflow-hidden shadow-lg bg-white border border-slate-200 cursor-pointer group reveal" onclick="openGallery('project104')" role="button" tabindex="0" aria-label="查看高产量改造项目详情">
+                    <div class="img-wrapper">
+                        <img src="images/Project_4/4_1.JPEG" 
+                             alt="某钢铁集团1号机高产量改造项目" 
+                             loading="lazy" 
+                             decoding="async"
+                             onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton')"
+                             onerror="this.parentElement.classList.remove('skeleton'); this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22600%22 height=%22338%22%3E%3Crect width=%22600%22 height=%22338%22 fill=%22%23e2e8f0%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%2364748b%22 font-size=%2216%22%3E项目图片%3C/text%3E%3C/svg%3E'">
+                        <span class="absolute top-4 right-4 px-3 py-1 bg-orange-600 text-white rounded-full text-xs font-bold shadow-lg z-10">高产量改造</span>
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
+                            <div class="bg-white/20 border border-white/40 rounded-full p-3 text-white transform scale-0 group-hover:scale-100 transition-transform duration-300">
+                                <i data-lucide="images" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-slate-500 text-xs font-bold">2019.07-2025.08</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-orange-600 transition-colors">某钢铁集团1号机</h3>
+                        <p class="text-slate-500 text-sm mb-4 font-medium">高产量改造项目（项目经理）</p>
+                        <p class="text-sm text-slate-700 leading-relaxed mb-4">
+                            负责图纸设计和参数计算选型，管理分包（回转台、电机减速机选型、二冷系统等）
+                        </p>
+                        <div class="flex flex-wrap gap-2 pt-4 border-t border-slate-100">
+                            <span class="px-2.5 py-1 bg-orange-50 text-orange-800 rounded-md text-xs font-bold">项目管理</span>
+                            <span class="px-2.5 py-1 bg-orange-50 text-orange-800 rounded-md text-xs font-bold">结晶器</span>
+                            <span class="px-2.5 py-1 bg-orange-50 text-orange-800 rounded-md text-xs font-bold">电磁搅拌</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Project 5 -->
+                <article class="project-card rounded-2xl overflow-hidden shadow-lg bg-white border border-slate-200 cursor-pointer group reveal" onclick="openGallery('project105')" role="button" tabindex="0" aria-label="查看高效化改造项目详情" style="transition-delay: 100ms">
+                    <div class="img-wrapper">
+                        <img src="images/Project_5/5_1.JPEG" 
+                             alt="某冶金科技有限公司高效化改造项目" 
+                             loading="lazy" 
+                             decoding="async"
+                             onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton')"
+                             onerror="this.parentElement.classList.remove('skeleton'); this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22600%22 height=%22338%22%3E%3Crect width=%22600%22 height=%22338%22 fill=%22%23e2e8f0%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%2364748b%22 font-size=%2216%22%3E项目图片%3C/text%3E%3C/svg%3E'">
+                        <span class="absolute top-4 right-4 px-3 py-1 bg-green-600 text-white rounded-full text-xs font-bold shadow-lg z-10">高效化改造</span>
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
+                            <div class="bg-white/20 border border-white/40 rounded-full p-3 text-white transform scale-0 group-hover:scale-100 transition-transform duration-300">
+                                <i data-lucide="images" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-slate-500 text-xs font-bold">2019.07-2025.08</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-green-600 transition-colors">某冶金科技有限公司</h3>
+                        <p class="text-slate-500 text-sm mb-4 font-medium">8机8流连铸机高效化改造项目（项目经理）</p>
+                        <p class="text-sm text-slate-700 leading-relaxed mb-4">
+                            全面负责项目，推动连铸机改造，提升设备运行效率与稳定性
+                        </p>
+                        <div class="flex flex-wrap gap-2 pt-4 border-t border-slate-100">
+                            <span class="px-2.5 py-1 bg-green-50 text-green-800 rounded-md text-xs font-bold">全面负责</span>
+                            <span class="px-2.5 py-1 bg-green-50 text-green-800 rounded-md text-xs font-bold">连铸机改造</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Project 6 -->
+                <article class="project-card rounded-2xl overflow-hidden shadow-lg bg-white border border-slate-200 cursor-pointer group reveal" onclick="openGallery('project106')" role="button" tabindex="0" aria-label="查看十字操作机系统项目详情" style="transition-delay: 200ms">
+                    <div class="img-wrapper">
+                        <img src="images/Project_6/6_1.jpg" 
+                             alt="十字操作机系统标准化开发项目" 
+                             loading="lazy" 
+                             decoding="async"
+                             onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton')"
+                             onerror="this.parentElement.classList.remove('skeleton'); this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22600%22 height=%22338%22%3E%3Crect width=%22600%22 height=%22338%22 fill=%22%23e2e8f0%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%2364748b%22 font-size=%2216%22%3E项目图片%3C/text%3E%3C/svg%3E'">
+                        <span class="absolute top-4 right-4 px-3 py-1 bg-indigo-600 text-white rounded-full text-xs font-bold shadow-lg z-10">标准化开发</span>
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
+                            <div class="bg-white/20 border border-white/40 rounded-full p-3 text-white transform scale-0 group-hover:scale-100 transition-transform duration-300">
+                                <i data-lucide="images" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-slate-500 text-xs font-bold">2019.07-2025.08</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-indigo-600 transition-colors">十字操作机系统</h3>
+                        <p class="text-slate-500 text-sm mb-4 font-medium">标准化开发设计与制造项目</p>
+                        <p class="text-sm text-slate-700 leading-relaxed mb-4">
+                            主导十字操作机系统的标准化设计、开发与制造，完成产品模块化、系列化开发及系统入库
+                        </p>
+                        <div class="flex flex-wrap gap-2 pt-4 border-t border-slate-100">
+                            <span class="px-2.5 py-1 bg-indigo-50 text-indigo-800 rounded-md text-xs font-bold">标准化设计</span>
+                            <span class="px-2.5 py-1 bg-indigo-50 text-indigo-800 rounded-md text-xs font-bold">模块化开发</span>
+                            <span class="px-2.5 py-1 bg-indigo-50 text-indigo-800 rounded-md text-xs font-bold">航空应用</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Project 7 -->
+                <article class="project-card rounded-2xl overflow-hidden shadow-lg bg-white border border-slate-200 cursor-pointer group reveal" onclick="openGallery('project107')" role="button" tabindex="0" aria-label="查看小导管自动化焊接项目详情">
+                    <div class="img-wrapper">
+                        <img src="images/Project_7/7_1.jpg" 
+                             alt="某航空企业小导管自动化焊接项目" 
+                             loading="lazy" 
+                             decoding="async"
+                             onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton')"
+                             onerror="this.parentElement.classList.remove('skeleton'); this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22600%22 height=%22338%22%3E%3Crect width=%22600%22 height=%22338%22 fill=%22%23e2e8f0%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%2364748b%22 font-size=%2216%22%3E项目图片%3C/text%3E%3C/svg%3E'">
+                        <span class="absolute top-4 right-4 px-3 py-1 bg-red-600 text-white rounded-full text-xs font-bold shadow-lg z-10">航空制造</span>
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
+                            <div class="bg-white/20 border border-white/40 rounded-full p-3 text-white transform scale-0 group-hover:scale-100 transition-transform duration-300">
+                                <i data-lucide="images" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-slate-500 text-xs font-bold">2024.07-2025.08</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-red-600 transition-colors">某航空企业小导管自动化焊接项目</h3>
+                        <p class="text-slate-500 text-sm mb-4 font-medium">航空发动机导管自动焊接设备设计</p>
+                        <p class="text-sm text-slate-700 leading-relaxed mb-4">
+                            负责小导管自动化焊接设备的机械结构设计，包括焊接夹具、旋转机构及保护气体系统
+                        </p>
+                        <div class="flex flex-wrap gap-2 pt-4 border-t border-slate-100">
+                            <span class="px-2.5 py-1 bg-red-50 text-red-800 rounded-md text-xs font-bold">航空导管</span>
+                            <span class="px-2.5 py-1 bg-red-50 text-red-800 rounded-md text-xs font-bold">自动焊接</span>
+                            <span class="px-2.5 py-1 bg-red-50 text-red-800 rounded-md text-xs font-bold">脉冲TIG</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Project 8 -->
+                <article class="project-card rounded-2xl overflow-hidden shadow-lg bg-white border border-slate-200 cursor-pointer group reveal" onclick="openGallery('project108')" role="button" tabindex="0" aria-label="查看火箭焊接设备项目详情" style="transition-delay: 100ms">
+                    <div class="img-wrapper">
+                        <img src="images/Project_8/8_1.jpg" 
+                             alt="某商业航天公司火箭不锈钢总装环缝焊接设备" 
+                             loading="lazy" 
+                             decoding="async"
+                             onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton')"
+                             onerror="this.parentElement.classList.remove('skeleton'); this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22600%22 height=%22338%22%3E%3Crect width=%22600%22 height=%22338%22 fill=%22%23e2e8f0%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%2364748b%22 font-size=%2216%22%3E项目图片%3C/text%3E%3C/svg%3E'">
+                        <span class="absolute top-4 right-4 px-3 py-1 bg-rose-600 text-white rounded-full text-xs font-bold shadow-lg z-10">商业航天</span>
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
+                            <div class="bg-white/20 border border-white/40 rounded-full p-3 text-white transform scale-0 group-hover:scale-100 transition-transform duration-300">
+                                <i data-lucide="images" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-slate-500 text-xs font-bold">2024.07-2025.08</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-rose-600 transition-colors">某商业航天公司火箭不锈钢总装环缝焊接设备</h3>
+                        <p class="text-slate-500 text-sm mb-4 font-medium">火箭贮箱环缝搅拌摩擦焊接系统</p>
+                        <p class="text-sm text-slate-700 leading-relaxed mb-4">
+                            参与设计火箭不锈钢贮箱总装环缝焊接设备，包括焊接主轴头、恒压力控制系统及工装夹具
+                        </p>
+                        <div class="flex flex-wrap gap-2 pt-4 border-t border-slate-100">
+                            <span class="px-2.5 py-1 bg-rose-50 text-rose-800 rounded-md text-xs font-bold">火箭焊接</span>
+                            <span class="px-2.5 py-1 bg-rose-50 text-rose-800 rounded-md text-xs font-bold">环缝焊接</span>
+                            <span class="px-2.5 py-1 bg-rose-50 text-rose-800 rounded-md text-xs font-bold">不锈钢</span>
+                        </div>
+                    </div>
+                </article>
             </div>
         </div>
     </section>
@@ -804,8 +992,206 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 reveal" id="galleryGrid">
-                <!-- Gallery items will be generated by JavaScript -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 reveal">
+                <!-- Gallery Item 1 -->
+                <article class="gallery-card bg-white rounded-2xl overflow-hidden shadow-lg cursor-pointer border border-slate-200 group hover:shadow-2xl transition-all hover:-translate-y-2" onclick="openGallery('gallery1')" role="button" tabindex="0" aria-label="查看碟式钢包回转台图集">
+                    <div class="relative h-56 overflow-hidden img-wrapper skeleton">
+                        <img src="images/Gallery1/G1_4.png" 
+                             alt="碟式钢包回转台设计" 
+                             class="group-hover:scale-110 transition-transform duration-700"
+                             loading="lazy"
+                             decoding="async"
+                             onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton')"
+                             onerror="this.parentElement.classList.remove('skeleton')">
+                        <div class="absolute top-4 right-4 bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg flex items-center gap-1 z-10">
+                            <i data-lucide="images" class="w-3 h-3"></i> 3张
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60"></div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-blue-600 transition-colors">碟式钢包回转台</h3>
+                        <p class="text-slate-600 text-sm">连铸机核心设备三维设计、装配图及工程图纸</p>
+                        <div class="mt-4 flex items-center text-blue-600 text-sm font-bold group-hover:gap-3 transition-all">
+                            <span>查看图集</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4 transform group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Gallery Item 2 -->
+                <article class="gallery-card bg-white rounded-2xl overflow-hidden shadow-lg cursor-pointer border border-slate-200 group hover:shadow-2xl transition-all hover:-translate-y-2" onclick="openGallery('gallery2')" role="button" tabindex="0" aria-label="查看二冷喷淋系统图集">
+                    <div class="relative h-56 overflow-hidden img-wrapper skeleton">
+                        <img src="images/ Gallery2/G2_4.png" 
+                             alt="二冷喷淋系统设计" 
+                             class="group-hover:scale-110 transition-transform duration-700"
+                             loading="lazy"
+                             decoding="async"
+                             onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton')"
+                             onerror="this.parentElement.classList.remove('skeleton')">
+                        <div class="absolute top-4 right-4 bg-cyan-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg flex items-center gap-1 z-10">
+                            <i data-lucide="images" class="w-3 h-3"></i> 3张
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60"></div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-cyan-600 transition-colors">二冷喷淋系统</h3>
+                        <p class="text-slate-600 text-sm">二次冷却系统管路布局、喷头配置及配管设计</p>
+                        <div class="mt-4 flex items-center text-cyan-600 text-sm font-bold group-hover:gap-3 transition-all">
+                            <span>查看图集</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4 transform group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Gallery Item 3 -->
+                <article class="gallery-card bg-white rounded-2xl overflow-hidden shadow-lg cursor-pointer border border-slate-200 group hover:shadow-2xl transition-all hover:-translate-y-2" onclick="openGallery('gallery3')" role="button" tabindex="0" aria-label="查看拉矫机图集">
+                    <div class="relative h-56 overflow-hidden img-wrapper skeleton">
+                        <img src="images/ Gallery3/G3_4.png" 
+                             alt="拉矫机设计" 
+                             class="group-hover:scale-110 transition-transform duration-700"
+                             loading="lazy"
+                             decoding="async"
+                             onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton')"
+                             onerror="this.parentElement.classList.remove('skeleton')">
+                        <div class="absolute top-4 right-4 bg-purple-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg flex items-center gap-1 z-10">
+                            <i data-lucide="images" class="w-3 h-3"></i> 3张
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60"></div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-purple-600 transition-colors">拉矫机</h3>
+                        <p class="text-slate-600 text-sm">拉矫机设计图纸、装配过程及现场运行实拍</p>
+                        <div class="mt-4 flex items-center text-purple-600 text-sm font-bold group-hover:gap-3 transition-all">
+                            <span>查看图集</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4 transform group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Gallery Item 4 -->
+                <article class="gallery-card bg-white rounded-2xl overflow-hidden shadow-lg cursor-pointer border border-slate-200 group hover:shadow-2xl transition-all hover:-translate-y-2" onclick="openGallery('gallery4')" role="button" tabindex="0" aria-label="查看车间配管图集">
+                    <div class="relative h-56 overflow-hidden img-wrapper skeleton">
+                        <img src="images/ Gallery4/G4_4.png" 
+                             alt="车间配管设计" 
+                             class="group-hover:scale-110 transition-transform duration-700"
+                             loading="lazy"
+                             decoding="async"
+                             onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton')"
+                             onerror="this.parentElement.classList.remove('skeleton')">
+                        <div class="absolute top-4 right-4 bg-indigo-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg flex items-center gap-1 z-10">
+                            <i data-lucide="images" class="w-3 h-3"></i> 3张
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60"></div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-indigo-600 transition-colors">车间配管</h3>
+                        <p class="text-slate-600 text-sm">液压润滑配管系统设计、管路布局及安装实景</p>
+                        <div class="mt-4 flex items-center text-indigo-600 text-sm font-bold group-hover:gap-3 transition-all">
+                            <span>查看图集</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4 transform group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Gallery Item 5 -->
+                <article class="gallery-card bg-white rounded-2xl overflow-hidden shadow-lg cursor-pointer border border-slate-200 group hover:shadow-2xl transition-all hover:-translate-y-2" onclick="openGallery('gallery5')" role="button" tabindex="0" aria-label="查看十字操作机图集">
+                    <div class="relative h-56 overflow-hidden img-wrapper skeleton">
+                        <img src="images/ Gallery5/G5_4.png" 
+                             alt="十字操作机设计" 
+                             class="group-hover:scale-110 transition-transform duration-700"
+                             loading="lazy"
+                             decoding="async"
+                             onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton')"
+                             onerror="this.parentElement.classList.remove('skeleton')">
+                        <div class="absolute top-4 right-4 bg-orange-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg flex items-center gap-1 z-10">
+                            <i data-lucide="images" class="w-3 h-3"></i> 3张
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60"></div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-orange-600 transition-colors">十字操作机</h3>
+                        <p class="text-slate-600 text-sm">十字操作机系统标准化设计、航空应用及设备制造</p>
+                        <div class="mt-4 flex items-center text-orange-600 text-sm font-bold group-hover:gap-3 transition-all">
+                            <span>查看图集</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4 transform group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Gallery Item 6 -->
+                <article class="gallery-card bg-white rounded-2xl overflow-hidden shadow-lg cursor-pointer border border-slate-200 group hover:shadow-2xl transition-all hover:-translate-y-2" onclick="openGallery('gallery6')" role="button" tabindex="0" aria-label="查看窄间隙TIG焊枪图集">
+                    <div class="relative h-56 overflow-hidden img-wrapper skeleton">
+                        <img src="images/ Gallery6/G6_1.jpg" 
+                             alt="窄间隙TIG焊枪设计" 
+                             class="group-hover:scale-110 transition-transform duration-700"
+                             loading="lazy"
+                             decoding="async"
+                             onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton')"
+                             onerror="this.parentElement.classList.remove('skeleton')">
+                        <div class="absolute top-4 right-4 bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg flex items-center gap-1 z-10">
+                            <i data-lucide="images" class="w-3 h-3"></i> 2张
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60"></div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-red-600 transition-colors">窄间隙TIG焊枪</h3>
+                        <p class="text-slate-600 text-sm">航空级窄间隙TIG焊接枪头设计与精密焊接应用</p>
+                        <div class="mt-4 flex items-center text-red-600 text-sm font-bold group-hover:gap-3 transition-all">
+                            <span>查看图集</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4 transform group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Gallery Item 7 -->
+                <article class="gallery-card bg-white rounded-2xl overflow-hidden shadow-lg cursor-pointer border border-slate-200 group hover:shadow-2xl transition-all hover:-translate-y-2" onclick="openGallery('gallery7')" role="button" tabindex="0" aria-label="查看天津总装环缝设备图集">
+                    <div class="relative h-56 overflow-hidden img-wrapper skeleton">
+                        <img src="images/ Gallery7/G7_1.jpg" 
+                             alt="天津总装环缝设备" 
+                             class="group-hover:scale-110 transition-transform duration-700"
+                             loading="lazy"
+                             decoding="async"
+                             onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton')"
+                             onerror="this.parentElement.classList.remove('skeleton')">
+                        <div class="absolute top-4 right-4 bg-rose-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg flex items-center gap-1 z-10">
+                            <i data-lucide="images" class="w-3 h-3"></i> 3张
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60"></div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-rose-600 transition-colors">天津总装环缝设备</h3>
+                        <p class="text-slate-600 text-sm">火箭贮箱总装环缝焊接设备与搅拌摩擦焊接系统</p>
+                        <div class="mt-4 flex items-center text-rose-600 text-sm font-bold group-hover:gap-3 transition-all">
+                            <span>查看图集</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4 transform group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Gallery Item 8 -->
+                <article class="gallery-card bg-white rounded-2xl overflow-hidden shadow-lg cursor-pointer border border-slate-200 group hover:shadow-2xl transition-all hover:-translate-y-2 md:col-span-2 lg:col-span-1" onclick="openGallery('gallery8')" role="button" tabindex="0" aria-label="查看现场图片图集">
+                    <div class="relative h-56 overflow-hidden img-wrapper skeleton">
+                        <img src="images/ Gallery8/G8_1.JPEG" 
+                             alt="项目现场图片" 
+                             class="group-hover:scale-110 transition-transform duration-700"
+                             loading="lazy"
+                             decoding="async"
+                             onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton')"
+                             onerror="this.parentElement.classList.remove('skeleton')">
+                        <div class="absolute top-4 right-4 bg-green-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg flex items-center gap-1 z-10">
+                            <i data-lucide="images" class="w-3 h-3"></i> 10张
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60"></div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-green-600 transition-colors">现场图片</h3>
+                        <p class="text-slate-600 text-sm">多个大型项目的现场安装、调试与验收实景记录</p>
+                        <div class="mt-4 flex items-center text-green-600 text-sm font-bold group-hover:gap-3 transition-all">
+                            <span>查看图集</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4 transform group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </div>
+                </article>
             </div>
 
             <div class="mt-8 text-center reveal">
@@ -866,50 +1252,52 @@
         <div class="flex flex-col h-full">
             <div class="flex items-center justify-between p-4 border-b border-white/10 bg-black/50 backdrop-blur-md">
                 <div class="flex items-center gap-3">
-                    <button id="closeModalBtn" class="text-white hover:bg-white/10 p-2 rounded-full transition-colors" aria-label="关闭">
+                    <button onclick="closeGallery()" class="text-white hover:bg-white/10 p-2 rounded-full transition-colors" aria-label="关闭">
                         <i data-lucide="arrow-left" class="w-6 h-6"></i>
                     </button>
                     <h3 id="modalTitle" class="text-white text-lg font-bold truncate max-w-[200px] md:max-w-md">图集标题</h3>
                     <span id="imageCounter" class="text-slate-400 text-sm font-mono">1 / 8</span>
                 </div>
 
+                <!-- 缩放控制按钮组 -->
                 <div class="flex items-center gap-2">
                     <div class="flex items-center gap-1 bg-white/10 rounded-lg p-1 mr-2">
-                        <button id="zoomOutBtn" class="text-white hover:bg-white/20 p-2 rounded-md transition-colors" aria-label="缩小" title="缩小">
+                        <button onclick="zoomOut()" class="text-white hover:bg-white/20 p-2 rounded-md transition-colors" aria-label="缩小" title="缩小">
                             <i data-lucide="zoom-out" class="w-5 h-5"></i>
                         </button>
                         <span id="zoomLevel" class="text-white text-sm font-mono w-12 text-center">100%</span>
-                        <button id="zoomInBtn" class="text-white hover:bg-white/20 p-2 rounded-md transition-colors" aria-label="放大" title="放大">
+                        <button onclick="zoomIn()" class="text-white hover:bg-white/20 p-2 rounded-md transition-colors" aria-label="放大" title="放大">
                             <i data-lucide="zoom-in" class="w-5 h-5"></i>
                         </button>
-                        <button id="resetZoomBtn" class="text-white hover:bg-white/20 p-2 rounded-md transition-colors" aria-label="重置" title="重置">
+                        <button onclick="resetZoom()" class="text-white hover:bg-white/20 p-2 rounded-md transition-colors" aria-label="重置" title="重置">
                             <i data-lucide="maximize" class="w-5 h-5"></i>
                         </button>
                     </div>
-                    <button id="closeModalX" class="text-white hover:bg-white/10 p-2 rounded-full transition-colors" aria-label="关闭">
+                    <button onclick="closeGallery()" class="text-white hover:bg-white/10 p-2 rounded-full transition-colors" aria-label="关闭">
                         <i data-lucide="x" class="w-6 h-6"></i>
                     </button>
                 </div>
             </div>
 
             <div class="flex-1 flex items-center justify-center relative overflow-hidden" id="modalBody">
-                <button id="prevImageBtn" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 text-white p-3 rounded-full backdrop-blur-md transition-all z-20 hidden md:flex hover:scale-110 active:scale-95" aria-label="上一张">
+                <button onclick="prevImage()" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 text-white p-3 rounded-full backdrop-blur-md transition-all z-20 hidden md:flex hover:scale-110 active:scale-95" aria-label="上一张">
                     <i data-lucide="chevron-left" class="w-8 h-8"></i>
                 </button>
 
                 <div class="relative w-full h-full flex items-center justify-center overflow-hidden" id="imageWrapper">
-                    <div id="modalImageContainer" class="relative cursor-grab active:cursor-grabbing" style="transform-origin: center center;">
-                        <img id="modalImage" src="" alt="" class="max-w-[90vw] max-h-[80vh] object-contain opacity-0 transition-opacity duration-300 select-none" draggable="false">
+                    <div id="modalImageContainer" class="relative cursor-grab active:cursor-grabbing transition-transform duration-200 ease-out" style="transform-origin: center center;">
+                        <img id="modalImage" src="" alt="" class="max-w-[90vw] max-h-[80vh] object-contain opacity-0 transition-opacity duration-300 select-none" onload="this.style.opacity=1; initImageDimensions();" draggable="false">
                     </div>
                     <div id="modalCaption" class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-6 transform translate-y-full transition-transform duration-300 pointer-events-none">
                         <p class="text-white text-center font-medium text-lg"></p>
                     </div>
                 </div>
 
-                <button id="nextImageBtn" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 text-white p-3 rounded-full backdrop-blur-md transition-all z-20 hidden md:flex hover:scale-110 active:scale-95" aria-label="下一张">
+                <button onclick="nextImage()" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 text-white p-3 rounded-full backdrop-blur-md transition-all z-20 hidden md:flex hover:scale-110 active:scale-95" aria-label="下一张">
                     <i data-lucide="chevron-right" class="w-8 h-8"></i>
                 </button>
 
+                <!-- 操作提示 -->
                 <div id="zoomHint" class="absolute bottom-20 left-1/2 -translate-x-1/2 bg-black/70 text-white px-4 py-2 rounded-full text-sm opacity-0 transition-opacity duration-500 pointer-events-none">
                     滚轮缩放 · 拖拽移动 · 双击放大
                 </div>
@@ -917,64 +1305,90 @@
 
             <div class="p-4 border-t border-white/10 bg-black/50 backdrop-blur-md safe-bottom">
                 <div id="thumbnailContainer" class="flex gap-2 overflow-x-auto pb-2 justify-center max-w-4xl mx-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
-                    <!-- Thumbnails will be generated by JavaScript -->
+                    <!-- 缩略图将通过JS动态生成 -->
                 </div>
             </div>
         </div>
     </dialog>
 
     <script>
-    /**
-     * Portfolio Application Module
-     * Optimized, modular, and performance-focused implementation
-     */
-    const PortfolioApp = (function() {
-        'use strict';
+        // 页面加载完成后隐藏加载器
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('pageLoader').classList.add('hidden');
+                // 初始化Lucide图标
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+            }, 300);
+        });
 
-        // Configuration
-        const config = {
-            animation: {
-                duration: 600,
-                easing: 'cubic-bezier(0.22, 1, 0.36, 1)'
-            },
-            zoom: {
-                min: 0.5,
-                max: 5,
-                step: 0.25,
-                defaultScale: 1
-            },
-            touch: {
-                threshold: 50
+        // 懒加载优化 - Intersection Observer
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.dataset.src || img.src;
+                    observer.unobserve(img);
+                }
+            });
+        }, { rootMargin: '50px' });
+
+        // 滚动触发动画
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    
+                    // 如果是技能部分，触发动画
+                    if (entry.target.querySelector('.skill-fill')) {
+                        entry.target.querySelectorAll('.skill-fill').forEach((bar, index) => {
+                            setTimeout(() => {
+                                bar.classList.add('animate');
+                            }, index * 100);
+                        });
+                    }
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+        // 观察所有需要动画的元素
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+        
+        // 观察技能部分
+        const skillsSection = document.getElementById('skills');
+        if (skillsSection) {
+            revealObserver.observe(skillsSection);
+        }
+
+        // 导航栏滚动效果
+        let lastScroll = 0;
+        const navbar = document.getElementById('navbar');
+        
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            
+            if (currentScroll > 100) {
+                navbar.classList.add('shadow-md');
+            } else {
+                navbar.classList.remove('shadow-md');
             }
-        };
+            
+            lastScroll = currentScroll;
+        }, { passive: true });
 
-        // State
-        let state = {
-            currentGallery: null,
-            currentImageIndex: 0,
-            zoom: {
-                scale: 1,
-                isDragging: false,
-                translateX: 0,
-                translateY: 0,
-                startX: 0,
-                startY: 0,
-                lastX: 0,
-                lastY: 0,
-                isPinching: false,
-                initialDistance: 0,
-                initialScale: 1
-            },
-            touch: {
-                startX: 0,
-                startY: 0,
-                endX: 0,
-                endY: 0
-            },
-            isInitialized: false
-        };
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
 
-        // Data
+        // 图库数据配置 - 保留所有原始路径
         const galleryData = {
             'gallery1': {
                 title: '碟式钢包回转台',
@@ -987,63 +1401,63 @@
             'gallery2': {
                 title: '二冷喷淋系统',
                 images: [
-                    { src: 'images/Gallery2/G2_1.png', caption: '作品展示' },
-                    { src: 'images/Gallery2/G2_2.png', caption: '工作内容' },
-                    { src: 'images/Gallery2/G2_3.png', caption: '个人收获' }
+                    { src: 'images/ Gallery2/G2_1.png', caption: '作品展示' },
+                    { src: 'images/ Gallery2/G2_2.png', caption: '工作内容' },
+                    { src: 'images/ Gallery2/G2_3.png', caption: '个人收获' }
                 ]
             },
             'gallery3': {
                 title: '拉矫机',
                 images: [
-                    { src: 'images/Gallery3/G3_1.png', caption: '作品展示' },
-                    { src: 'images/Gallery3/G3_2.png', caption: '价值成果' },
-                    { src: 'images/Gallery3/G3_3.png', caption: '工作内容' }
+                    { src: 'images/ Gallery3/G3_1.png', caption: '作品展示' },
+                    { src: 'images/ Gallery3/G3_2.png', caption: '价值成果' },
+                    { src: 'images/ Gallery3/G3_3.png', caption: '工作内容' }
                 ]
             },
             'gallery4': {
                 title: '车间配管',
                 images: [
-                    { src: 'images/Gallery4/G4_1.png', caption: '核心职责' },
-                    { src: 'images/Gallery4/G4_2.png', caption: '工作流程' },
-                    { src: 'images/Gallery4/G4_3.png', caption: '个人价值' }
+                    { src: 'images/ Gallery4/G4_1.png', caption: '核心职责' },
+                    { src: 'images/ Gallery4/G4_2.png', caption: '工作流程' },
+                    { src: 'images/ Gallery4/G4_3.png', caption: '个人价值' }
                 ]
             },
             'gallery5': {
                 title: '十字操作机',
                 images: [
-                    { src: 'images/Gallery5/G5_1.png', caption: '个人工作' },
-                    { src: 'images/Gallery5/G5_2.png', caption: '体现价值' },
-                    { src: 'images/Gallery5/G5_3.png', caption: '收获成长' }
+                    { src: 'images/ Gallery5/G5_1.png', caption: '个人工作' },
+                    { src: 'images/ Gallery5/G5_2.png', caption: '体现价值' },
+                    { src: 'images/ Gallery5/G5_3.png', caption: '收获成长' }
                 ]
             },
             'gallery6': {
                 title: '窄间隙TIG焊枪',
                 images: [
-                    { src: 'images/Gallery6/G6_1.jpg', caption: '窄间隙TIG焊枪成品' },
-                    { src: 'images/Gallery6/G6_2.jpg', caption: '焊枪研发阶段' }
+                    { src: 'images/ Gallery6/G6_1.jpg', caption: '窄间隙TIG焊枪成品' },
+                    { src: 'images/ Gallery6/G6_2.jpg', caption: '焊枪研发阶段' }
                 ]
             },
             'gallery7': {
                 title: '天津总装环缝设备',
                 images: [
-                    { src: 'images/Gallery7/G7_1.jpg', caption: '环缝焊接设备整体' },
-                    { src: 'images/Gallery7/G7_2.png', caption: '作品阶段' },
-                    { src: 'images/Gallery7/G7_3.png', caption: '项目收获' }
+                    { src: 'images/ Gallery7/G7_1.jpg', caption: '环缝焊接设备整体' },
+                    { src: 'images/ Gallery7/G7_2.png', caption: '作品阶段' },
+                    { src: 'images/ Gallery7/G7_3.png', caption: '项目收获' }
                 ]
             },
             'gallery8': {
                 title: '现场图片',
                 images: [
-                    { src: 'images/Gallery8/G8_1.JPEG', caption: '项目现场全景' },
-                    { src: 'images/Gallery8/G8_2.JPEG', caption: '项目液压站系统' },
-                    { src: 'images/Gallery8/G8_3.JPEG', caption: '设备安装现场' },
-                    { src: 'images/Gallery8/G8_4.jpg', caption: '项目经理工作证' },
-                    { src: 'images/Gallery8/G8_5.jpg', caption: '公司代表证' },
-                    { src: 'images/Gallery8/G8_6.jpg', caption: '现场技术指导' },
-                    { src: 'images/Gallery8/G8_7.jpg', caption: '项目负责人工作证' },
-                    { src: 'images/Gallery8/G8_8.jpg', caption: '设备热试' },
-                    { src: 'images/Gallery8/G8_9.JPEG', caption: '设备改造安装' },
-                    { src: 'images/Gallery8/G8_10.jpg', caption: '技术答疑' }
+                    { src: 'images/ Gallery8/G8_1.JPEG', caption: '项目现场全景' },
+                    { src: 'images/ Gallery8/G8_2.JPEG', caption: '项目液压站系统' },
+                    { src: 'images/ Gallery8/G8_3.JPEG', caption: '设备安装现场' },
+                    { src: 'images/ Gallery8/G8_4.jpg', caption: '项目经理工作证' },
+                    { src: 'images/ Gallery8/G8_5.jpg', caption: '公司代表证' },
+                    { src: 'images/ Gallery8/G8_6.jpg', caption: '现场技术指导' },
+                    { src: 'images/ Gallery8/G8_7.jpg', caption: '项目负责人工作证' },
+                    { src: 'images/ Gallery8/G8_8.jpg', caption: '设备热试' },
+                    { src: 'images/ Gallery8/G8_9.JPEG', caption: '设备改造安装' },
+                    { src: 'images/ Gallery8/G8_10.jpg', caption: '技术答疑' }
                 ]
             },
             'project101': {
@@ -1110,381 +1524,80 @@
             }
         };
 
-        // DOM Elements Cache
-        const elements = {};
+        let currentGallery = null;
+        let currentImageIndex = 0;
 
-        function cacheElements() {
-            elements.pageLoader = document.getElementById('pageLoader');
-            elements.navbar = document.getElementById('navbar');
-            elements.modal = document.getElementById('galleryModal');
-            elements.modalTitle = document.getElementById('modalTitle');
-            elements.modalImage = document.getElementById('modalImage');
-            elements.modalCaption = document.querySelector('#modalCaption p');
-            elements.imageCounter = document.getElementById('imageCounter');
-            elements.thumbnailContainer = document.getElementById('thumbnailContainer');
-            elements.imageWrapper = document.getElementById('imageWrapper');
-            elements.modalImageContainer = document.getElementById('modalImageContainer');
-            elements.zoomLevel = document.getElementById('zoomLevel');
-            elements.zoomHint = document.getElementById('zoomHint');
-            elements.projectsGrid = document.getElementById('projectsGrid');
-            elements.galleryGrid = document.getElementById('galleryGrid');
-        }
-
-        // Utility Functions
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
-
-        function throttle(func, limit) {
-            let inThrottle;
-            return function(...args) {
-                if (!inThrottle) {
-                    func.apply(this, args);
-                    inThrottle = true;
-                    setTimeout(() => inThrottle = false, limit);
-                }
-            };
-        }
-
-        // Initialization
-        function init() {
-            if (state.isInitialized) return;
-            
-            cacheElements();
-            initIntersectionObservers();
-            initEventListeners();
-            generateStaticContent();
-            
-            // Hide loader
-            window.addEventListener('load', () => {
-                setTimeout(() => {
-                    elements.pageLoader?.classList.add('hidden');
-                    if (typeof lucide !== 'undefined') {
-                        lucide.createIcons();
-                    }
-                }, 300);
-            });
-
-            state.isInitialized = true;
-        }
-
-        function initIntersectionObservers() {
-            // Image lazy loading
-            const imageObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const img = entry.target;
-                        if (img.dataset.src) {
-                            img.src = img.dataset.src;
-                            delete img.dataset.src;
-                        }
-                        observer.unobserve(img);
-                    }
-                });
-            }, { rootMargin: '50px' });
-
-            document.querySelectorAll('img[data-src]').forEach(img => imageObserver.observe(img));
-
-            // Scroll animations
-            const revealObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                        
-                        // Animate skill bars
-                        if (entry.target.querySelector('.skill-fill')) {
-                            entry.target.querySelectorAll('.skill-fill').forEach((bar, index) => {
-                                setTimeout(() => bar.classList.add('animate'), index * 100);
-                            });
-                        }
-                    }
-                });
-            }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-
-            document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
-            
-            const skillsSection = document.getElementById('skills');
-            if (skillsSection) revealObserver.observe(skillsSection);
-        }
-
-        function initEventListeners() {
-            // Navbar scroll effect
-            let lastScroll = 0;
-            const handleScroll = throttle(() => {
-                const currentScroll = window.pageYOffset;
-                if (currentScroll > 100) {
-                    elements.navbar?.classList.add('shadow-md');
-                } else {
-                    elements.navbar?.classList.remove('shadow-md');
-                }
-                lastScroll = currentScroll;
-            }, 100);
-
-            window.addEventListener('scroll', handleScroll, { passive: true });
-
-            // Smooth scroll for anchor links
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const target = document.querySelector(this.getAttribute('href'));
-                    if (target) {
-                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                });
-            });
-
-            // PDF Download
-            document.getElementById('downloadPdfBtn')?.addEventListener('click', downloadPDF);
-
-            // Modal controls
-            document.getElementById('closeModalBtn')?.addEventListener('click', closeGallery);
-            document.getElementById('closeModalX')?.addEventListener('click', closeGallery);
-            document.getElementById('prevImageBtn')?.addEventListener('click', prevImage);
-            document.getElementById('nextImageBtn')?.addEventListener('click', nextImage);
-            document.getElementById('zoomInBtn')?.addEventListener('click', zoomIn);
-            document.getElementById('zoomOutBtn')?.addEventListener('click', zoomOut);
-            document.getElementById('resetZoomBtn')?.addEventListener('click', resetZoom);
-
-            // Keyboard navigation
-            document.addEventListener('keydown', handleKeydown);
-
-            // Modal zoom/pan interactions
-            initZoomInteractions();
-        }
-
-        function generateStaticContent() {
-            // Generate project cards
-            const projects = [
-                { id: 'project101', title: '某大型钢铁集团3号连铸机', date: '2019.07-2025.08', desc: '10机10流连铸机总包工程', detail: '核心设计负责人之一，承担回转台、二冷段、拉矫机、机械手等全流程核心设备设计', tags: ['回转台设计', '拉矫机', '机械手'], color: 'blue', img: 'images/Project_1_Liheng/1_1.JPEG', badge: '总包工程' },
-                { id: 'project102', title: '某钢铁有限责任公司', date: '2019.07-2025.08', desc: '8机8流方坯连铸机总包工程', detail: '全程参与项目各环节，负责机械设计、分包协调、现场技术支持与验收跟进', tags: ['方坯连铸', '项目管理', '现场调试'], color: 'cyan', img: 'images/Project_2/2_1.JPEG', badge: '总包工程' },
-                { id: 'project103', title: '某钢铁集团', date: '2019.07-2025.08', desc: '5流连铸高效提拉速改造项目', detail: '负责二冷喷淋系统、车间配管设计，与甲方技术沟通，配合电气部门', tags: ['二冷系统', '液压配管', '提拉速改造'], color: 'purple', img: 'images/Project_3/3_1.JPEG', badge: '高效改造' },
-                { id: 'project104', title: '某钢铁集团1号机', date: '2019.07-2025.08', desc: '高产量改造项目（项目经理）', detail: '负责图纸设计和参数计算选型，管理分包（回转台、电机减速机选型、二冷系统等）', tags: ['项目管理', '结晶器', '电磁搅拌'], color: 'orange', img: 'images/Project_4/4_1.JPEG', badge: '高产量改造' },
-                { id: 'project105', title: '某冶金科技有限公司', date: '2019.07-2025.08', desc: '8机8流连铸机高效化改造项目（项目经理）', detail: '全面负责项目，推动连铸机改造，提升设备运行效率与稳定性', tags: ['全面负责', '连铸机改造'], color: 'green', img: 'images/Project_5/5_1.JPEG', badge: '高效化改造' },
-                { id: 'project106', title: '十字操作机系统', date: '2019.07-2025.08', desc: '标准化开发设计与制造项目', detail: '主导十字操作机系统的标准化设计、开发与制造，完成产品模块化、系列化开发及系统入库', tags: ['标准化设计', '模块化开发', '航空应用'], color: 'indigo', img: 'images/Project_6/6_1.jpg', badge: '标准化开发' },
-                { id: 'project107', title: '某航空企业小导管自动化焊接项目', date: '2024.07-2025.08', desc: '航空发动机导管自动焊接设备设计', detail: '负责小导管自动化焊接设备的机械结构设计，包括焊接夹具、旋转机构及保护气体系统', tags: ['航空导管', '自动焊接', '脉冲TIG'], color: 'red', img: 'images/Project_7/7_1.jpg', badge: '航空制造' },
-                { id: 'project108', title: '某商业航天公司火箭不锈钢总装环缝焊接设备', date: '2024.07-2025.08', desc: '火箭贮箱环缝搅拌摩擦焊接系统', detail: '参与设计火箭不锈钢贮箱总装环缝焊接设备，包括焊接主轴头、恒压力控制系统及工装夹具', tags: ['火箭焊接', '环缝焊接', '不锈钢'], color: 'rose', img: 'images/Project_8/8_1.jpg', badge: '商业航天' }
-            ];
-
-            if (elements.projectsGrid) {
-                elements.projectsGrid.innerHTML = projects.map((p, i) => createProjectCard(p, i)).join('');
-            }
-
-            // Generate gallery cards
-            const galleries = [
-                { id: 'gallery1', title: '碟式钢包回转台', desc: '连铸机核心设备三维设计、装配图及工程图纸', img: 'images/Gallery1/G1_4.png', count: 3, color: 'blue' },
-                { id: 'gallery2', title: '二冷喷淋系统', desc: '二次冷却系统管路布局、喷头配置及配管设计', img: 'images/Gallery2/G2_4.png', count: 3, color: 'cyan' },
-                { id: 'gallery3', title: '拉矫机', desc: '拉矫机设计图纸、装配过程及现场运行实拍', img: 'images/Gallery3/G3_4.png', count: 3, color: 'purple' },
-                { id: 'gallery4', title: '车间配管', desc: '液压润滑配管系统设计、管路布局及安装实景', img: 'images/Gallery4/G4_4.png', count: 3, color: 'indigo' },
-                { id: 'gallery5', title: '十字操作机', desc: '十字操作机系统标准化设计、航空应用及设备制造', img: 'images/Gallery5/G5_4.png', count: 3, color: 'orange' },
-                { id: 'gallery6', title: '窄间隙TIG焊枪', desc: '航空级窄间隙TIG焊接枪头设计与精密焊接应用', img: 'images/Gallery6/G6_1.jpg', count: 2, color: 'red' },
-                { id: 'gallery7', title: '天津总装环缝设备', desc: '火箭贮箱总装环缝焊接设备与搅拌摩擦焊接系统', img: 'images/Gallery7/G7_1.jpg', count: 3, color: 'rose' },
-                { id: 'gallery8', title: '现场图片', desc: '多个大型项目的现场安装、调试与验收实景记录', img: 'images/Gallery8/G8_1.JPEG', count: 10, color: 'green' }
-            ];
-
-            if (elements.galleryGrid) {
-                elements.galleryGrid.innerHTML = galleries.map((g, i) => createGalleryCard(g, i)).join('');
-            }
-
-            // Re-initialize Lucide icons for new content
-            if (typeof lucide !== 'undefined') {
-                lucide.createIcons();
-            }
-        }
-
-        function createProjectCard(project, index) {
-            const colorClasses = {
-                blue: 'bg-blue-600 text-blue-800 hover:text-blue-600',
-                cyan: 'bg-cyan-600 text-cyan-800 hover:text-cyan-600',
-                purple: 'bg-purple-600 text-purple-800 hover:text-purple-600',
-                orange: 'bg-orange-600 text-orange-800 hover:text-orange-600',
-                green: 'bg-green-600 text-green-800 hover:text-green-600',
-                indigo: 'bg-indigo-600 text-indigo-800 hover:text-indigo-600',
-                red: 'bg-red-600 text-red-800 hover:text-red-600',
-                rose: 'bg-rose-600 text-rose-800 hover:text-rose-600'
-            };
-            
-            const tagColors = {
-                blue: 'bg-blue-50 text-blue-800',
-                cyan: 'bg-cyan-50 text-cyan-800',
-                purple: 'bg-purple-50 text-purple-800',
-                orange: 'bg-orange-50 text-orange-800',
-                green: 'bg-green-50 text-green-800',
-                indigo: 'bg-indigo-50 text-indigo-800',
-                red: 'bg-red-50 text-red-800',
-                rose: 'bg-rose-50 text-rose-800'
-            };
-
-            const delay = index % 3 * 100;
-            
-            return `
-                <article class="project-card rounded-2xl overflow-hidden shadow-lg bg-white border border-slate-200 cursor-pointer group reveal" 
-                         onclick="PortfolioApp.openGallery('${project.id}')" 
-                         role="button" 
-                         tabindex="0" 
-                         aria-label="查看${project.title}项目详情"
-                         style="transition-delay: ${delay}ms">
-                    <div class="img-wrapper">
-                        <img src="${project.img}" 
-                             alt="${project.title}项目现场" 
-                             loading="lazy" 
-                             decoding="async"
-                             onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton')"
-                             onerror="this.parentElement.classList.remove('skeleton'); this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22600%22 height=%22338%22%3E%3Crect width=%22600%22 height=%22338%22 fill=%22%23e2e8f0%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%2364748b%22 font-size=%2216%22%3E项目图片%3C/text%3E%3C/svg%3E'">
-                        <span class="absolute top-4 right-4 px-3 py-1 ${colorClasses[project.color].split(' ')[0]} text-white rounded-full text-xs font-bold shadow-lg z-10">${project.badge}</span>
-                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
-                            <div class="bg-white/20 border border-white/40 rounded-full p-3 text-white transform scale-0 group-hover:scale-100 transition-transform duration-300">
-                                <i data-lucide="images" class="w-6 h-6"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-slate-500 text-xs font-bold">${project.date}</span>
-                        </div>
-                        <h3 class="text-lg font-bold text-slate-900 mb-2 ${colorClasses[project.color].split(' ').slice(1).join(' ')} transition-colors">${project.title}</h3>
-                        <p class="text-slate-500 text-sm mb-4 font-medium">${project.desc}</p>
-                        <p class="text-sm text-slate-700 leading-relaxed mb-4">${project.detail}</p>
-                        <div class="flex flex-wrap gap-2 pt-4 border-t border-slate-100">
-                            ${project.tags.map(tag => `<span class="px-2.5 py-1 ${tagColors[project.color]} rounded-md text-xs font-bold">${tag}</span>`).join('')}
-                        </div>
-                    </div>
-                </article>
-            `;
-        }
-
-        function createGalleryCard(gallery, index) {
-            const colorClasses = {
-                blue: 'text-blue-600',
-                cyan: 'text-cyan-600',
-                purple: 'text-purple-600',
-                indigo: 'text-indigo-600',
-                orange: 'text-orange-600',
-                red: 'text-red-600',
-                rose: 'text-rose-600',
-                green: 'text-green-600'
-            };
-
-            const badgeColors = {
-                blue: 'bg-blue-600',
-                cyan: 'bg-cyan-600',
-                purple: 'bg-purple-600',
-                indigo: 'bg-indigo-600',
-                orange: 'bg-orange-600',
-                red: 'bg-red-600',
-                rose: 'bg-rose-600',
-                green: 'bg-green-600'
-            };
-
-            const isLarge = index === 7; // Last item spans full width on mobile
-            
-            return `
-                <article class="gallery-card bg-white rounded-2xl overflow-hidden shadow-lg cursor-pointer border border-slate-200 group hover:shadow-2xl transition-all hover:-translate-y-2 ${isLarge ? 'md:col-span-2 lg:col-span-1' : ''}" 
-                         onclick="PortfolioApp.openGallery('${gallery.id}')" 
-                         role="button" 
-                         tabindex="0" 
-                         aria-label="查看${gallery.title}图集">
-                    <div class="relative h-56 overflow-hidden img-wrapper skeleton">
-                        <img src="${gallery.img}" 
-                             alt="${gallery.title}设计" 
-                             class="group-hover:scale-110 transition-transform duration-700"
-                             loading="lazy"
-                             decoding="async"
-                             onload="this.classList.add('loaded'); this.parentElement.classList.remove('skeleton')"
-                             onerror="this.parentElement.classList.remove('skeleton')">
-                        <div class="absolute top-4 right-4 ${badgeColors[gallery.color]} text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg flex items-center gap-1 z-10">
-                            <i data-lucide="images" class="w-3 h-3"></i> ${gallery.count}张
-                        </div>
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60"></div>
-                    </div>
-                    <div class="p-5">
-                        <h3 class="text-lg font-bold text-slate-900 mb-2 ${colorClasses[gallery.color]} transition-colors">${gallery.title}</h3>
-                        <p class="text-slate-600 text-sm">${gallery.desc}</p>
-                        <div class="mt-4 flex items-center ${colorClasses[gallery.color]} text-sm font-bold group-hover:gap-3 transition-all">
-                            <span>查看图集</span>
-                            <i data-lucide="arrow-right" class="w-4 h-4 transform group-hover:translate-x-1 transition-transform"></i>
-                        </div>
-                    </div>
-                </article>
-            `;
-        }
-
-        // Gallery Functions
         function openGallery(projectId) {
-            state.currentGallery = galleryData[projectId];
-            if (!state.currentGallery) return;
+            currentGallery = galleryData[projectId];
+            if (!currentGallery) return;
             
-            state.currentImageIndex = 0;
-            resetZoom();
+            currentImageIndex = 0;
+            const modal = document.getElementById('galleryModal');
             
-            elements.modalTitle.textContent = state.currentGallery.title;
-            elements.modal.classList.remove('hidden');
-            elements.modal.showModal?.();
+            document.getElementById('modalTitle').textContent = currentGallery.title;
+            modal.classList.remove('hidden');
+            modal.showModal?.();
             document.body.style.overflow = 'hidden';
             
             updateModalImage();
             generateThumbnails();
-            showZoomHint();
         }
 
         function closeGallery() {
-            elements.modal.classList.add('hidden');
-            elements.modal.close?.();
+            const modal = document.getElementById('galleryModal');
+            modal.classList.add('hidden');
+            modal.close?.();
             document.body.style.overflow = '';
-            state.currentGallery = null;
+            currentGallery = null;
         }
 
         function updateModalImage() {
-            if (!state.currentGallery) return;
+            if (!currentGallery) return;
             
-            const image = state.currentGallery.images[state.currentImageIndex];
+            const image = currentGallery.images[currentImageIndex];
+            const modalImg = document.getElementById('modalImage');
+            const caption = document.querySelector('#modalCaption p');
+            const counter = document.getElementById('imageCounter');
             
-            elements.modalImage.style.opacity = '0';
+            modalImg.style.opacity = '0';
             
             setTimeout(() => {
-                elements.modalImage.src = image.src;
-                elements.modalImage.alt = image.caption;
-                elements.modalCaption.textContent = image.caption;
-                elements.imageCounter.textContent = `${state.currentImageIndex + 1} / ${state.currentGallery.images.length}`;
+                modalImg.src = image.src;
+                modalImg.alt = image.caption;
+                caption.textContent = image.caption;
+                counter.textContent = `${currentImageIndex + 1} / ${currentGallery.images.length}`;
             }, 150);
             
+            // 显示标题
             setTimeout(() => {
                 document.getElementById('modalCaption').style.transform = 'translateY(0)';
             }, 300);
             
             updateThumbnails();
-            preloadNextImage();
         }
 
         function generateThumbnails() {
-            if (!elements.thumbnailContainer) return;
+            const container = document.getElementById('thumbnailContainer');
+            container.innerHTML = '';
             
-            elements.thumbnailContainer.innerHTML = state.currentGallery.images.map((image, index) => `
-                <button class="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${index === state.currentImageIndex ? 'border-blue-500 ring-2 ring-blue-500/50' : 'border-transparent opacity-60 hover:opacity-100'}"
-                        onclick="PortfolioApp.goToImage(${index})"
-                        aria-label="查看第${index + 1}张图片">
-                    <img src="${image.src}" 
-                         alt="" 
-                         class="w-full h-full object-cover"
-                         loading="lazy"
-                         onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\\'w-full h-full bg-slate-700 flex items-center justify-center\\'><span class=\\'text-xs text-slate-400\\'>${index + 1}</span></div>'">
-                </button>
-            `).join('');
+            currentGallery.images.forEach((image, index) => {
+                const btn = document.createElement('button');
+                btn.className = `flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${index === currentImageIndex ? 'border-blue-500 ring-2 ring-blue-500/50' : 'border-transparent opacity-60 hover:opacity-100'}`;
+                btn.onclick = () => {
+                    currentImageIndex = index;
+                    updateModalImage();
+                };
+                btn.innerHTML = `<img src="${image.src}" alt="" class="w-full h-full object-cover" loading="lazy" onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\\'w-full h-full bg-slate-700 flex items-center justify-center\\'><span class=\\'text-xs text-slate-400\\'>${index + 1}</span></div>'">`;
+                container.appendChild(btn);
+            });
         }
 
         function updateThumbnails() {
-            const buttons = elements.thumbnailContainer?.children;
-            if (!buttons) return;
+            const container = document.getElementById('thumbnailContainer');
+            const buttons = container.children;
             
             for (let i = 0; i < buttons.length; i++) {
-                if (i === state.currentImageIndex) {
+                if (i === currentImageIndex) {
                     buttons[i].className = 'flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 border-blue-500 ring-2 ring-blue-500/50 transition-all';
                     buttons[i].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
                 } else {
@@ -1493,315 +1606,162 @@
             }
         }
 
-        function goToImage(index) {
-            state.currentImageIndex = index;
-            resetZoom();
-            updateModalImage();
-        }
-
         function prevImage() {
-            if (!state.currentGallery) return;
-            state.currentImageIndex = (state.currentImageIndex - 1 + state.currentGallery.images.length) % state.currentGallery.images.length;
-            resetZoom();
+            if (!currentGallery) return;
+            currentImageIndex = (currentImageIndex - 1 + currentGallery.images.length) % currentGallery.images.length;
             updateModalImage();
         }
 
         function nextImage() {
-            if (!state.currentGallery) return;
-            state.currentImageIndex = (state.currentImageIndex + 1) % state.currentGallery.images.length;
-            resetZoom();
+            if (!currentGallery) return;
+            currentImageIndex = (currentImageIndex + 1) % currentGallery.images.length;
             updateModalImage();
         }
 
-        function preloadNextImage() {
-            if (!state.currentGallery) return;
-            const nextIndex = (state.currentImageIndex + 1) % state.currentGallery.images.length;
-            const img = new Image();
-            img.src = state.currentGallery.images[nextIndex].src;
-        }
+        // 键盘导航
+        document.addEventListener('keydown', (e) => {
+            if (!currentGallery) return;
 
-        // Zoom Functions
-        function initZoomInteractions() {
-            if (!elements.imageWrapper) return;
-
-            // Wheel zoom
-            elements.imageWrapper.addEventListener('wheel', handleWheel, { passive: false });
-
-            // Double click
-            elements.modalImageContainer?.addEventListener('dblclick', handleDoubleClick);
-
-            // Mouse drag
-            elements.modalImageContainer?.addEventListener('mousedown', handleMouseDown);
-            document.addEventListener('mousemove', handleMouseMove);
-            document.addEventListener('mouseup', handleMouseUp);
-
-            // Touch events
-            elements.modalImageContainer?.addEventListener('touchstart', handleTouchStart, { passive: false });
-            elements.modalImageContainer?.addEventListener('touchmove', handleTouchMove, { passive: false });
-            elements.modalImageContainer?.addEventListener('touchend', handleTouchEnd);
-
-            // Modal background click
-            elements.modal?.addEventListener('click', (e) => {
-                if (e.target === e.currentTarget) closeGallery();
-            });
-
-            // Image wrapper click for navigation
-            elements.imageWrapper.addEventListener('click', (e) => {
-                if (state.zoom.scale > 1) return;
-                
-                const rect = e.currentTarget.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                
-                if (x < rect.width / 3) {
-                    prevImage();
-                } else if (x > rect.width * 2 / 3) {
-                    nextImage();
-                }
-            });
-        }
-
-        function handleWheel(e) {
-            e.preventDefault();
-            const delta = e.deltaY > 0 ? -config.zoom.step : config.zoom.step;
-            const newScale = Math.min(Math.max(state.zoom.scale + delta, config.zoom.min), config.zoom.max);
-
-            if (newScale !== state.zoom.scale) {
-                const rect = e.currentTarget.getBoundingClientRect();
-                const x = e.clientX - rect.left - rect.width / 2;
-                const y = e.clientY - rect.top - rect.height / 2;
-
-                if (state.zoom.scale === 1) {
-                    state.zoom.translateX = -x * (newScale - 1);
-                    state.zoom.translateY = -y * (newScale - 1);
-                } else {
-                    const scaleRatio = newScale / state.zoom.scale;
-                    state.zoom.translateX *= scaleRatio;
-                    state.zoom.translateY *= scaleRatio;
-                }
-
-                state.zoom.scale = newScale;
-                updateTransform();
-            }
-        }
-
-        function handleDoubleClick(e) {
-            e.preventDefault();
-            if (state.zoom.scale > 1) {
-                resetZoom();
-            } else {
-                const rect = e.currentTarget.getBoundingClientRect();
-                const x = e.clientX - rect.left - rect.width / 2;
-                const y = e.clientY - rect.top - rect.height / 2;
-
-                state.zoom.scale = 2;
-                state.zoom.translateX = -x;
-                state.zoom.translateY = -y;
-                updateTransform();
-            }
-        }
-
-        function handleMouseDown(e) {
-            if (state.zoom.scale <= 1) return;
-            
-            state.zoom.isDragging = true;
-            state.zoom.startX = e.clientX - state.zoom.translateX;
-            state.zoom.startY = e.clientY - state.zoom.translateY;
-            elements.modalImageContainer?.classList.add('grabbing');
-            e.preventDefault();
-        }
-
-        function handleMouseMove(e) {
-            if (!state.zoom.isDragging) return;
-            
-            state.zoom.translateX = e.clientX - state.zoom.startX;
-            state.zoom.translateY = e.clientY - state.zoom.startY;
-            limitPan();
-            updateTransform();
-        }
-
-        function handleMouseUp() {
-            state.zoom.isDragging = false;
-            elements.modalImageContainer?.classList.remove('grabbing');
-        }
-
-        function handleTouchStart(e) {
-            if (e.touches.length === 2) {
-                state.zoom.isPinching = true;
-                state.zoom.initialDistance = getDistance(e.touches[0], e.touches[1]);
-                state.zoom.initialScale = state.zoom.scale;
-            } else if (e.touches.length === 1 && state.zoom.scale > 1) {
-                state.zoom.isDragging = true;
-                state.zoom.startX = e.touches[0].clientX - state.zoom.translateX;
-                state.zoom.startY = e.touches[0].clientY - state.zoom.translateY;
-            }
-        }
-
-        function handleTouchMove(e) {
-            if (state.zoom.isPinching && e.touches.length === 2) {
-                e.preventDefault();
-                const distance = getDistance(e.touches[0], e.touches[1]);
-                const scale = (distance / state.zoom.initialDistance) * state.zoom.initialScale;
-                state.zoom.scale = Math.min(Math.max(scale, config.zoom.min), config.zoom.max);
-                updateTransform();
-            } else if (state.zoom.isDragging && e.touches.length === 1 && state.zoom.scale > 1) {
-                e.preventDefault();
-                state.zoom.translateX = e.touches[0].clientX - state.zoom.startX;
-                state.zoom.translateY = e.touches[0].clientY - state.zoom.startY;
-                limitPan();
-                updateTransform();
-            }
-        }
-
-        function handleTouchEnd(e) {
-            if (e.touches.length < 2) {
-                state.zoom.isPinching = false;
-            }
-            if (e.touches.length === 0) {
-                state.zoom.isDragging = false;
-            }
-        }
-
-        function getDistance(touch1, touch2) {
-            const dx = touch1.clientX - touch2.clientX;
-            const dy = touch1.clientY - touch2.clientY;
-            return Math.sqrt(dx * dx + dy * dy);
-        }
-
-        function limitPan() {
-            if (!elements.modalImageContainer) return;
-            
-            const rect = elements.modalImageContainer.getBoundingClientRect();
-            const maxTranslateX = (rect.width * (state.zoom.scale - 1)) / 2;
-            const maxTranslateY = (rect.height * (state.zoom.scale - 1)) / 2;
-
-            state.zoom.translateX = Math.max(-maxTranslateX, Math.min(maxTranslateX, state.zoom.translateX));
-            state.zoom.translateY = Math.max(-maxTranslateY, Math.min(maxTranslateY, state.zoom.translateY));
-        }
-
-        function updateTransform() {
-            if (elements.modalImageContainer) {
-                elements.modalImageContainer.style.transform = 
-                    `translate(${state.zoom.translateX}px, ${state.zoom.translateY}px) scale(${state.zoom.scale})`;
-            }
-            if (elements.zoomLevel) {
-                elements.zoomLevel.textContent = Math.round(state.zoom.scale * 100) + '%';
-            }
-        }
-
-        function zoomIn() {
-            const newScale = Math.min(state.zoom.scale + config.zoom.step, config.zoom.max);
-            if (newScale !== state.zoom.scale) {
-                state.zoom.scale = newScale;
-                updateTransform();
-            }
-        }
-
-        function zoomOut() {
-            const newScale = Math.max(state.zoom.scale - config.zoom.step, config.zoom.min);
-            if (newScale !== state.zoom.scale) {
-                state.zoom.scale = newScale;
-                if (state.zoom.scale <= 1) {
-                    state.zoom.translateX = 0;
-                    state.zoom.translateY = 0;
-                }
-                updateTransform();
-            }
-        }
-
-        function resetZoom() {
-            state.zoom.scale = 1;
-            state.zoom.translateX = 0;
-            state.zoom.translateY = 0;
-            updateTransform();
-        }
-
-        function showZoomHint() {
-            if (elements.zoomHint) {
-                elements.zoomHint.classList.add('hint-show');
-                setTimeout(() => {
-                    elements.zoomHint.classList.remove('hint-show');
-                }, 3000);
-            }
-        }
-
-        // Keyboard Navigation
-        function handleKeydown(e) {
-            if (!state.currentGallery) return;
-
-            if (state.zoom.scale > 1) {
-                // Pan when zoomed
+            // 缩放状态下，左右键用于平移图片，不切换
+            if (currentScale > 1) {
                 const panStep = 50;
-                switch(e.key) {
-                    case 'ArrowLeft':
-                        state.zoom.translateX += panStep;
-                        limitPan();
-                        updateTransform();
-                        e.preventDefault();
-                        break;
-                    case 'ArrowRight':
-                        state.zoom.translateX -= panStep;
-                        limitPan();
-                        updateTransform();
-                        e.preventDefault();
-                        break;
-                    case 'ArrowUp':
-                        state.zoom.translateY += panStep;
-                        limitPan();
-                        updateTransform();
-                        e.preventDefault();
-                        break;
-                    case 'ArrowDown':
-                        state.zoom.translateY -= panStep;
-                        limitPan();
-                        updateTransform();
-                        e.preventDefault();
-                        break;
-                    case 'Escape':
+                if (e.key === 'ArrowLeft') {
+                    translateX += panStep;
+                    limitPan();
+                    updateTransform();
+                    e.preventDefault();
+                } else if (e.key === 'ArrowRight') {
+                    translateX -= panStep;
+                    limitPan();
+                    updateTransform();
+                    e.preventDefault();
+                } else if (e.key === 'ArrowUp') {
+                    translateY += panStep;
+                    limitPan();
+                    updateTransform();
+                    e.preventDefault();
+                } else if (e.key === 'ArrowDown') {
+                    translateY -= panStep;
+                    limitPan();
+                    updateTransform();
+                    e.preventDefault();
+                } else if (e.key === 'Escape') {
+                    // ESC 先重置缩放，再关闭
+                    if (currentScale > 1) {
                         resetZoom();
-                        break;
+                    } else {
+                        closeGallery();
+                    }
                 }
             } else {
-                // Navigate when not zoomed
-                switch(e.key) {
-                    case 'ArrowLeft':
-                        prevImage();
-                        break;
-                    case 'ArrowRight':
-                        nextImage();
-                        break;
-                    case 'Escape':
-                        closeGallery();
-                        break;
+                // 未缩放状态，正常切换
+                if (e.key === 'ArrowLeft') prevImage();
+                if (e.key === 'ArrowRight') nextImage();
+                if (e.key === 'Escape') closeGallery();
+            }
+        });
+
+        // 触摸滑动支持
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchEndX = 0;
+        let touchEndY = 0;
+        const modalBody = document.getElementById('modalBody');
+
+        modalBody?.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        }, { passive: true });
+
+        modalBody?.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            touchEndY = e.changedTouches[0].screenY;
+            handleSwipe();
+        }, { passive: true });
+
+        function handleSwipe() {
+            // 如果图片已缩放，不处理滑动切换
+            if (currentScale > 1) return;
+
+            const diffX = touchStartX - touchEndX;
+            const diffY = touchStartY - touchEndY;
+
+            // 水平滑动距离大于垂直滑动，且水平滑动超过50px才切换
+            if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+                if (diffX > 0) {
+                    nextImage();
+                } else {
+                    prevImage();
                 }
             }
         }
 
-        // PDF Download
+        // 点击模态框背景关闭（排除图片区域）
+        document.getElementById('galleryModal')?.addEventListener('click', (e) => {
+            // 如果点击的是图片容器或其子元素，不关闭
+            if (e.target.closest('#imageWrapper') || e.target.closest('#modalImageContainer')) {
+                return;
+            }
+            if (e.target === e.currentTarget) closeGallery();
+        });
+
+        // 点击左右区域切换图片（仅在未缩放时）
+        document.getElementById('imageWrapper')?.addEventListener('click', (e) => {
+            // 如果图片已缩放，不处理点击切换
+            if (currentScale > 1) return;
+
+            // 点击左半边上一张，右半边下一张
+            const rect = e.currentTarget.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            if (x < rect.width / 3) {
+                prevImage();
+            } else if (x > rect.width * 2 / 3) {
+                nextImage();
+            }
+            e.stopPropagation();
+        });
+
+        // 触摸起始位置记录
+
+        // PDF下载功能 - 移动端使用html2pdf，桌面端使用原生打印
         function downloadPDF() {
+            // 检测是否为移动端
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
             if (!isMobile) {
+                // 桌面端直接使用浏览器打印
                 window.print();
                 return;
             }
 
+            // 移动端使用 html2pdf.js 生成 PDF
             if (typeof html2pdf === 'undefined') {
-                window.print();
+                // 库未加载，尝试使用原生打印或提示用户
+                try {
+                    window.print();
+                } catch (e) {
+                    alert('PDF生成库加载中，请稍后再试，或使用浏览器分享功能保存页面');
+                }
                 return;
             }
 
-            const btn = document.getElementById('downloadPdfBtn');
+            // 显示生成中提示
+            const btn = document.querySelector('button[onclick="downloadPDF()"]');
             const originalContent = btn.innerHTML;
             btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span class="hidden sm:inline">生成中...</span>';
             btn.disabled = true;
 
+            // 准备打印内容（克隆body并移除不需要的元素）
             const element = document.body.cloneNode(true);
+
+            // 移除模态框、导航栏、脚本等不需要打印的元素
             const removeSelectors = ['.no-print', '#galleryModal', 'nav', 'script', 'dialog', '.page-loader'];
             removeSelectors.forEach(selector => {
                 const els = element.querySelectorAll(selector);
                 els.forEach(el => el.remove());
             });
 
+            // 添加打印优化样式
             const printStyles = document.createElement('style');
             printStyles.textContent = `
                 * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
@@ -1811,6 +1771,7 @@
             `;
             element.appendChild(printStyles);
 
+            // 配置 html2pdf 选项
             const opt = {
                 margin: [10, 10, 10, 10],
                 filename: '敖鑫-机械工程师简历.pdf',
@@ -1828,38 +1789,383 @@
                 }
             };
 
+            // 生成 PDF
             html2pdf().set(opt).from(element).save().then(() => {
+                // 恢复按钮状态
                 btn.innerHTML = originalContent;
                 btn.disabled = false;
-                if (typeof lucide !== 'undefined') lucide.createIcons();
+                lucide.createIcons();
             }).catch(err => {
                 console.error('PDF生成失败:', err);
                 btn.innerHTML = originalContent;
                 btn.disabled = false;
+                lucide.createIcons();
+                // 失败时尝试原生打印
                 window.print();
             });
         }
 
-        // Public API
-        return {
-            init,
-            openGallery,
-            closeGallery,
-            prevImage,
-            nextImage,
-            goToImage,
-            zoomIn,
-            zoomOut,
-            resetZoom
-        };
-    })();
+        // 性能优化：防抖函数
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
 
-    // Initialize when DOM is ready
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', PortfolioApp.init);
-    } else {
-        PortfolioApp.init();
-    }
-    </script>
+        // 优化滚动性能
+        const optimizedScroll = debounce(() => {
+            // 滚动相关的昂贵操作
+        }, 16);
+
+        window.addEventListener('scroll', optimizedScroll, { passive: true });
+
+        // 预加载下一页图片（如果用户在图库中）
+        function preloadNextImage() {
+            if (!currentGallery) return;
+            const nextIndex = (currentImageIndex + 1) % currentGallery.images.length;
+            const img = new Image();
+            img.src = currentGallery.images[nextIndex].src;
+        }
+
+        // 监听图片切换，预加载下一张
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'src') {
+                    preloadNextImage();
+                }
+            });
+        });
+
+        const modalImg = document.getElementById('modalImage');
+        if (modalImg) {
+            observer.observe(modalImg, { attributes: true });
+        }
+    
+        // ==================== 图片缩放功能 ====================
+        let currentScale = 1;
+        let isDragging = false;
+        let startX, startY, translateX = 0, translateY = 0;
+        let lastX, lastY;
+        const minScale = 0.5;
+        const maxScale = 5;
+        const zoomStep = 0.25;
+
+        // 触摸相关变量
+        let initialDistance = 0;
+        let initialScale = 1;
+        let isPinching = false;
+
+        function initZoom() {
+            const container = document.getElementById('modalImageContainer');
+            const image = document.getElementById('modalImage');
+            const wrapper = document.getElementById('imageWrapper');
+
+            if (!container || !image) return;
+
+            // 鼠标滚轮缩放
+            wrapper.addEventListener('wheel', handleWheel, { passive: false });
+
+            // 双击缩放
+            container.addEventListener('dblclick', handleDoubleClick);
+
+            // 拖拽功能
+            container.addEventListener('mousedown', handleMouseDown);
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', handleMouseUp);
+
+            // 触摸事件（双指缩放）
+            container.addEventListener('touchstart', handleTouchStart, { passive: false });
+            container.addEventListener('touchmove', handleTouchMove, { passive: false });
+            container.addEventListener('touchend', handleTouchEnd);
+
+            // 显示操作提示
+            showZoomHint();
+        }
+
+        function handleWheel(e) {
+            e.preventDefault();
+            const delta = e.deltaY > 0 ? -zoomStep : zoomStep;
+            const newScale = Math.min(Math.max(currentScale + delta, minScale), maxScale);
+
+            if (newScale !== currentScale) {
+                // 以鼠标位置为中心缩放
+                const rect = e.currentTarget.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+
+                if (currentScale === 1) {
+                    translateX = -x * (newScale - 1);
+                    translateY = -y * (newScale - 1);
+                } else {
+                    const scaleRatio = newScale / currentScale;
+                    translateX = translateX * scaleRatio;
+                    translateY = translateY * scaleRatio;
+                }
+
+                currentScale = newScale;
+                updateTransform();
+            }
+        }
+
+        function handleDoubleClick(e) {
+            e.preventDefault();
+            if (currentScale > 1) {
+                // 如果已放大，则重置
+                resetZoom();
+            } else {
+                // 放大到2倍，以点击位置为中心
+                const rect = e.currentTarget.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+
+                currentScale = 2;
+                translateX = -x;
+                translateY = -y;
+                updateTransform();
+            }
+        }
+
+        function handleMouseDown(e) {
+            // 记录起始位置用于点击检测
+            dragStartX = e.clientX;
+            dragStartY = e.clientY;
+            isDraggingForSwipe = false;
+
+            if (currentScale <= 1) {
+                // 未缩放时，记录可能开始拖拽
+                isDragging = false;
+                return;
+            }
+
+            isDragging = true;
+            startX = e.clientX - translateX;
+            startY = e.clientY - translateY;
+            lastX = e.clientX;
+            lastY = e.clientY;
+
+            const container = document.getElementById('modalImageContainer');
+            container.classList.add('grabbing');
+            e.preventDefault();
+        }
+
+        function handleMouseMove(e) {
+            if (!isDragging && currentScale <= 1) {
+                // 检测是否开始拖拽（未缩放状态）
+                const moveX = Math.abs(e.clientX - dragStartX);
+                const moveY = Math.abs(e.clientY - dragStartY);
+                if (moveX > dragThreshold || moveY > dragThreshold) {
+                    isDraggingForSwipe = true;
+                }
+                return;
+            }
+
+            if (!isDragging) return;
+
+            translateX = e.clientX - startX;
+            translateY = e.clientY - startY;
+
+            // 限制拖拽范围
+            limitPan();
+            updateTransform();
+        }
+
+        function handleMouseUp(e) {
+            isDragging = false;
+            const container = document.getElementById('modalImageContainer');
+            container?.classList.remove('grabbing');
+
+            // 检测是否为点击（未缩放状态）
+            if (currentScale <= 1 && !isDraggingForSwipe) {
+                const moveX = Math.abs(e.clientX - dragStartX);
+                const moveY = Math.abs(e.clientY - dragStartY);
+
+                if (moveX < dragThreshold && moveY < dragThreshold) {
+                    // 这是一个点击，不是拖拽
+                    const rect = document.getElementById('imageWrapper').getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+
+                    // 点击左1/3区域上一张，右1/3区域下一张，中间不操作
+                    if (x < rect.width / 3) {
+                        prevImage();
+                    } else if (x > rect.width * 2 / 3) {
+                        nextImage();
+                    }
+                }
+            }
+        }
+
+        // 双指缩放处理
+        function handleTouchStart(e) {
+            if (e.touches.length === 2) {
+                isPinching = true;
+                initialDistance = getDistance(e.touches[0], e.touches[1]);
+                initialScale = currentScale;
+            } else if (e.touches.length === 1 && currentScale > 1) {
+                // 单指拖拽
+                isDragging = true;
+                startX = e.touches[0].clientX - translateX;
+                startY = e.touches[0].clientY - translateY;
+            }
+        }
+
+        function handleTouchMove(e) {
+            if (isPinching && e.touches.length === 2) {
+                e.preventDefault();
+                const distance = getDistance(e.touches[0], e.touches[1]);
+                const scale = (distance / initialDistance) * initialScale;
+                currentScale = Math.min(Math.max(scale, minScale), maxScale);
+                updateTransform();
+            } else if (isDragging && e.touches.length === 1 && currentScale > 1) {
+                e.preventDefault();
+                translateX = e.touches[0].clientX - startX;
+                translateY = e.touches[0].clientY - startY;
+                limitPan();
+                updateTransform();
+            }
+        }
+
+        function handleTouchEnd(e) {
+            if (e.touches.length < 2) {
+                isPinching = false;
+            }
+            if (e.touches.length === 0) {
+                isDragging = false;
+            }
+        }
+
+        function getDistance(touch1, touch2) {
+            const dx = touch1.clientX - touch2.clientX;
+            const dy = touch1.clientY - touch2.clientY;
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+
+        function limitPan() {
+            const container = document.getElementById('modalImageContainer');
+            const image = document.getElementById('modalImage');
+            if (!container || !image) return;
+
+            const rect = container.getBoundingClientRect();
+            const maxTranslateX = (rect.width * (currentScale - 1)) / 2;
+            const maxTranslateY = (rect.height * (currentScale - 1)) / 2;
+
+            translateX = Math.max(-maxTranslateX, Math.min(maxTranslateX, translateX));
+            translateY = Math.max(-maxTranslateY, Math.min(maxTranslateY, translateY));
+        }
+
+        function updateTransform() {
+            const container = document.getElementById('modalImageContainer');
+            const zoomDisplay = document.getElementById('zoomLevel');
+
+            if (container) {
+                container.style.transform = `translate(${translateX}px, ${translateY}px) scale(${currentScale})`;
+            }
+
+            if (zoomDisplay) {
+                zoomDisplay.textContent = Math.round(currentScale * 100) + '%';
+            }
+        }
+
+        function zoomIn() {
+            const newScale = Math.min(currentScale + zoomStep, maxScale);
+            if (newScale !== currentScale) {
+                currentScale = newScale;
+                updateTransform();
+            }
+        }
+
+        function zoomOut() {
+            const newScale = Math.max(currentScale - zoomStep, minScale);
+            if (newScale !== currentScale) {
+                currentScale = newScale;
+                if (currentScale <= 1) {
+                    translateX = 0;
+                    translateY = 0;
+                }
+                updateTransform();
+            }
+        }
+
+        function resetZoom() {
+            currentScale = 1;
+            translateX = 0;
+            translateY = 0;
+            updateTransform();
+        }
+
+        function showZoomHint() {
+            const hint = document.getElementById('zoomHint');
+            if (hint) {
+                hint.classList.add('hint-show');
+                setTimeout(() => {
+                    hint.classList.remove('hint-show');
+                }, 3000);
+            }
+        }
+
+        function initImageDimensions() {
+            // 图片加载完成后初始化
+            if (currentScale !== 1) {
+                resetZoom();
+            }
+        }
+
+        // 修改原有的openGallery函数，添加缩放初始化
+        const originalOpenGallery = openGallery;
+        openGallery = function(projectId) {
+            currentGallery = galleryData[projectId];
+            if (!currentGallery) return;
+
+            currentImageIndex = 0;
+            resetZoom(); // 重置缩放
+
+            const modal = document.getElementById('galleryModal');
+
+            document.getElementById('modalTitle').textContent = currentGallery.title;
+            modal.classList.remove('hidden');
+            modal.showModal?.();
+            document.body.style.overflow = 'hidden';
+
+            updateModalImage();
+            generateThumbnails();
+
+            // 初始化缩放功能
+            setTimeout(initZoom, 100);
+        };
+
+        // 修改updateModalImage，切换图片时重置缩放
+        const originalUpdateModalImage = updateModalImage;
+        updateModalImage = function() {
+            if (!currentGallery) return;
+
+            const image = currentGallery.images[currentImageIndex];
+            const modalImg = document.getElementById('modalImage');
+            const caption = document.querySelector('#modalCaption p');
+            const counter = document.getElementById('imageCounter');
+
+            // 重置缩放状态
+            resetZoom();
+
+            modalImg.style.opacity = '0';
+
+            setTimeout(() => {
+                modalImg.src = image.src;
+                modalImg.alt = image.caption;
+                caption.textContent = image.caption;
+                counter.textContent = `${currentImageIndex + 1} / ${currentGallery.images.length}`;
+            }, 150);
+
+            setTimeout(() => {
+                document.getElementById('modalCaption').style.transform = 'translateY(0)';
+            }, 300);
+
+            updateThumbnails();
+        };
+</script>
 </body>
 </html>
