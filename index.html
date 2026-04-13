@@ -22,36 +22,139 @@
     
     <!-- 关键CSS内联（首屏渲染优化） -->
     <style>
-        /* 关键CSS - 首屏内容 */
-        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-        html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-        body{font-family:'Inter','Noto Sans SC',system-ui,-apple-system,sans-serif;background:#f8fafc;color:#1e293b;line-height:1.6;overflow-x:hidden}
-        .hero-bg{background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 100%);min-height:100vh;position:relative;overflow:hidden}
-        .page-loader{position:fixed;inset:0;background:#0f172a;z-index:9999;display:flex;align-items:center;justify-content:center;transition:opacity .5s,visibility .5s}
-        .page-loader.hidden{opacity:0;visibility:hidden;pointer-events:none}
-        .loader-spinner{width:50px;height:50px;border:3px solid rgba(255,255,255,.1);border-top-color:#3b82f6;border-radius:50%;animation:spin 1s linear infinite}
-        @keyframes spin{to{transform:rotate(360deg)}}
-        .gradient-text{background:linear-gradient(135deg,#60a5fa 0%,#22d3ee 50%,#38bdf8 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        /* 重置与基础样式 */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
         
-        /* 骨架屏优化CLS */
-        .skeleton{background:linear-gradient(90deg,#e2e8f0 25%,#cbd5e1 50%,#e2e8f0 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}
-        @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+        html {
+            scroll-behavior: smooth;
+            -webkit-text-size-adjust: 100%;
+        }
         
-        /* 内容可见性优化（长列表性能） */
-        .content-visibility-auto{content-visibility:auto;contain-intrinsic-size:0 500px}
+        body {
+            font-family: 'Inter', 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
         
-        /* 技能条动画优化 - GPU加速 */
-        .skill-track{background:#334155;height:8px;border-radius:9999px;overflow:hidden;transform:translateZ(0)}
-        .skill-fill{height:100%;background:linear-gradient(90deg,#3b82f6,#06b6d4);width:0;transform:translateZ(0);will-change:width;transition:width 1.2s cubic-bezier(0.22,1,0.36,1)}
-        .skill-fill.animate{width:var(--target-width)}
+        /* Hero区域 */
+        .hero-bg {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
         
-        /* 图片容器优化（防止CLS） */
-        .img-wrapper{position:relative;background:#e2e8f0;overflow:hidden}
-        .img-wrapper img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .3s,transform .5s}
-        .img-wrapper img.loaded{opacity:1}
-        .img-wrapper:hover img{transform:scale(1.05)}
-    
-        /* 图片缩放相关样式 */
+        /* 页面加载器 */
+        .page-loader {
+            position: fixed;
+            inset: 0;
+            background: #0f172a;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity .5s, visibility .5s;
+        }
+        
+        .page-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        
+        .loader-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, .1);
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* 渐变文字 */
+        .gradient-text {
+            background: linear-gradient(135deg, #60a5fa 0%, #22d3ee 50%, #38bdf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* 骨架屏 */
+        .skeleton {
+            background: linear-gradient(90deg, #e2e8f0 25%, #cbd5e1 50%, #e2e8f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        /* 内容可见性优化 */
+        .content-visibility-auto {
+            content-visibility: auto;
+            contain-intrinsic-size: 0 500px;
+        }
+        
+        /* 技能条 */
+        .skill-track {
+            background: #334155;
+            height: 8px;
+            border-radius: 9999px;
+            overflow: hidden;
+            transform: translateZ(0);
+        }
+        
+        .skill-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #06b6d4);
+            width: 0;
+            transform: translateZ(0);
+            will-change: width;
+            transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        
+        .skill-fill.animate {
+            width: var(--target-width);
+        }
+        
+        /* 图片容器 */
+        .img-wrapper {
+            position: relative;
+            background: #e2e8f0;
+            overflow: hidden;
+        }
+        
+        .img-wrapper img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity .3s, transform .5s;
+        }
+        
+        .img-wrapper img.loaded {
+            opacity: 1;
+        }
+        
+        .img-wrapper:hover img {
+            transform: scale(1.05);
+        }
+        
+        /* 模态框图片容器 - 合并重复定义 */
         #modalImageContainer {
             will-change: transform;
             touch-action: none;
@@ -61,16 +164,13 @@
             justify-content: center;
             width: 100%;
             height: 100%;
+            transform-origin: center center;
         }
-
+        
         #modalImageContainer.grabbing {
             cursor: grabbing !important;
         }
-
-        #modalImageContainer.grabbing {
-            cursor: grabbing !important;
-        }
-
+        
         #modalImage {
             user-select: none;
             -webkit-user-drag: none;
@@ -80,53 +180,40 @@
             width: auto;
             height: auto;
             object-fit: contain;
+            opacity: 0;
+            transition: opacity 0.3s;
         }
-
-        /* 缩放按钮动画 */
+        
+        /* 缩放按钮状态 */
         .zoom-btn-active {
             background: rgba(59, 130, 246, 0.5) !important;
         }
-
-        /* 提示文字动画 */
+        
+        /* 提示动画 */
         @keyframes hintFade {
             0%, 100% { opacity: 0; }
             20%, 80% { opacity: 1; }
         }
-
+        
         .hint-show {
             animation: hintFade 3s ease-in-out;
         }
-</style>
-    
-    <!-- 非关键CSS异步加载 -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" media="print" onload="this.media='all'">
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap"></noscript>
-    
-    <script src="https://cdn.tailwindcss.com" defer></script>
-    <script src="https://unpkg.com/lucide@latest" defer></script>
-    <!-- html2pdf.js for mobile PDF generation -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
-    
-    <!-- 扩展样式 -->
-    <style>
-        /* 设计系统变量 */
-        :root {
-            --primary: #3b82f6;
-            --secondary: #06b6d4;
-            --bg-dark: #0f172a;
-            --bg-card: #1e293b;
+        
+        /* 滚动触发动画 */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), 
+                        transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+            will-change: opacity, transform;
         }
         
-        /* 滚动行为优化 */
-        @media (prefers-reduced-motion: reduce) {
-            * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
         
-        /* 滚动触发动画 - 性能优化版 */
-        .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1); will-change: opacity, transform; }
-        .reveal.visible { opacity: 1; transform: translateY(0); }
-        
-        /* 玻璃拟态效果优化 */
+        /* 玻璃拟态 */
         .glass {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(12px) saturate(180%);
@@ -134,21 +221,29 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        /* 项目卡片优化 */
+        /* 项目卡片 */
         .project-card {
             contain: layout style paint;
             transform: translateZ(0);
-            transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
+            transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), 
+                        box-shadow 0.3s ease;
         }
-        .project-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.2); }
-        .project-card .img-wrapper { padding-bottom: 56.25%; }
         
-        /* 模态框动画优化 */
-        .modal-enter { opacity: 0; transform: scale(0.95); }
-        .modal-enter-active { opacity: 1; transform: scale(1); transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1); }
+        .project-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.2);
+        }
         
-        /* 时间线优化 */
-        .timeline-item { position: relative; padding-left: 2rem; }
+        .project-card .img-wrapper {
+            padding-bottom: 56.25%;
+        }
+        
+        /* 时间线 */
+        .timeline-item {
+            position: relative;
+            padding-left: 2rem;
+        }
+        
         .timeline-item::before {
             content: '';
             position: absolute;
@@ -156,18 +251,29 @@
             top: 0;
             bottom: 0;
             width: 2px;
-            background: linear-gradient(to bottom, var(--primary), var(--secondary));
+            background: linear-gradient(to bottom, var(--primary, #3b82f6), var(--secondary, #06b6d4));
         }
+        
         .timeline-dot {
             position: absolute;
             left: -5px;
             top: 0;
             width: 12px;
             height: 12px;
-            background: var(--primary);
+            background: var(--primary, #3b82f6);
             border-radius: 50%;
             border: 3px solid white;
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        
+        /* 减少动画偏好 */
+        @media (prefers-reduced-motion: reduce) {
+            * { 
+                animation-duration: 0.01ms !important; 
+                animation-iteration-count: 1 !important; 
+                transition-duration: 0.01ms !important; 
+                scroll-behavior: auto !important; 
+            }
         }
         
         /* 触摸设备优化 */
@@ -178,11 +284,23 @@
         
         /* 打印样式 */
         @media print {
-            .no-print, .page-loader, nav { display: none !important; }
-            .reveal { opacity: 1 !important; transform: none !important; }
-            body { background: white !important; color: black !important; }
-            a { text-decoration: none; color: #000 !important; }
-            .hero-bg { background: white !important; color: black !important; min-height: auto !important; padding: 2rem 0 !important; }
+            .no-print, .page-loader, nav, dialog { 
+                display: none !important; 
+            }
+            .reveal { 
+                opacity: 1 !important; 
+                transform: none !important; 
+            }
+            body { 
+                background: white !important; 
+                color: black !important; 
+            }
+            .hero-bg { 
+                background: white !important; 
+                color: black !important; 
+                min-height: auto !important; 
+                padding: 2rem 0 !important; 
+            }
         }
         
         /* 安全区域适配 */
@@ -190,56 +308,29 @@
             .safe-top { padding-top: env(safe-area-inset-top); }
             .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
         }
+        
+        /* 滚动条样式 */
+        .scrollbar-thin::-webkit-scrollbar {
+            height: 6px;
+        }
+        
+        .scrollbar-thin::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+    </style>
     
-        /* 图片缩放相关样式 */
-        #modalImageContainer {
-            will-change: transform;
-            touch-action: none;
-            cursor: grab;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            height: 100%;
-        }
-
-        #modalImageContainer.grabbing {
-            cursor: grabbing !important;
-        }
-
-        #modalImageContainer.grabbing {
-            cursor: grabbing !important;
-        }
-
-        #modalImage {
-            user-select: none;
-            -webkit-user-drag: none;
-            -webkit-user-select: none;
-            max-width: 90vw;
-            max-height: 80vh;
-            width: auto;
-            height: auto;
-            object-fit: contain;
-        }
-
-        /* 缩放按钮动画 */
-        .zoom-btn-active {
-            background: rgba(59, 130, 246, 0.5) !important;
-        }
-
-        /* 提示文字动画 */
-        @keyframes hintFade {
-            0%, 100% { opacity: 0; }
-            20%, 80% { opacity: 1; }
-        }
-
-        .hint-show {
-            animation: hintFade 3s ease-in-out;
-        }
-</style>
-<base target="_blank">
-<base target="_blank">
-<base target="_blank">
+    <!-- 非关键CSS异步加载 -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap"></noscript>
+    
+    <script src="https://cdn.tailwindcss.com" defer></script>
+    <script src="https://unpkg.com/lucide@latest" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
 </head>
 <body class="antialiased">
     <!-- 页面加载器 -->
@@ -1285,8 +1376,8 @@
                 </button>
 
                 <div class="relative w-full h-full flex items-center justify-center overflow-hidden" id="imageWrapper">
-                    <div id="modalImageContainer" class="relative cursor-grab active:cursor-grabbing transition-transform duration-200 ease-out" style="transform-origin: center center;">
-                        <img id="modalImage" src="" alt="" class="max-w-[90vw] max-h-[80vh] object-contain opacity-0 transition-opacity duration-300 select-none" onload="this.style.opacity=1; initImageDimensions();" draggable="false">
+                    <div id="modalImageContainer" style="transform: translate(0px, 0px) scale(1);">
+                        <img id="modalImage" src="" alt="" class="max-w-[90vw] max-h-[80vh] object-contain select-none" draggable="false" onload="this.style.opacity=1; initImageDimensions();">
                     </div>
                     <div id="modalCaption" class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-6 transform translate-y-full transition-transform duration-300 pointer-events-none">
                         <p class="text-white text-center font-medium text-lg"></p>
@@ -1304,7 +1395,7 @@
             </div>
 
             <div class="p-4 border-t border-white/10 bg-black/50 backdrop-blur-md safe-bottom">
-                <div id="thumbnailContainer" class="flex gap-2 overflow-x-auto pb-2 justify-center max-w-4xl mx-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
+                <div id="thumbnailContainer" class="flex gap-2 overflow-x-auto pb-2 justify-center max-w-4xl mx-auto scrollbar-thin">
                     <!-- 缩略图将通过JS动态生成 -->
                 </div>
             </div>
@@ -1312,83 +1403,16 @@
     </dialog>
 
     <script>
-        // 页面加载完成后隐藏加载器
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                document.getElementById('pageLoader').classList.add('hidden');
-                // 初始化Lucide图标
-                if (typeof lucide !== 'undefined') {
-                    lucide.createIcons();
-                }
-            }, 300);
-        });
+        // ==================== 配置与数据 ====================
+        const CONFIG = {
+            ZOOM_STEP: 0.25,
+            MIN_SCALE: 0.5,
+            MAX_SCALE: 5,
+            DRAG_THRESHOLD: 5,
+            SWIPE_THRESHOLD: 50
+        };
 
-        // 懒加载优化 - Intersection Observer
-        const imageObserver = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const img = entry.target;
-                    img.src = img.dataset.src || img.src;
-                    observer.unobserve(img);
-                }
-            });
-        }, { rootMargin: '50px' });
-
-        // 滚动触发动画
-        const revealObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    
-                    // 如果是技能部分，触发动画
-                    if (entry.target.querySelector('.skill-fill')) {
-                        entry.target.querySelectorAll('.skill-fill').forEach((bar, index) => {
-                            setTimeout(() => {
-                                bar.classList.add('animate');
-                            }, index * 100);
-                        });
-                    }
-                }
-            });
-        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-
-        // 观察所有需要动画的元素
-        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
-        
-        // 观察技能部分
-        const skillsSection = document.getElementById('skills');
-        if (skillsSection) {
-            revealObserver.observe(skillsSection);
-        }
-
-        // 导航栏滚动效果
-        let lastScroll = 0;
-        const navbar = document.getElementById('navbar');
-        
-        window.addEventListener('scroll', () => {
-            const currentScroll = window.pageYOffset;
-            
-            if (currentScroll > 100) {
-                navbar.classList.add('shadow-md');
-            } else {
-                navbar.classList.remove('shadow-md');
-            }
-            
-            lastScroll = currentScroll;
-        }, { passive: true });
-
-        // 平滑滚动
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-
-        // 图库数据配置 - 保留所有原始路径
+        // 图库数据配置 - 保持所有原始路径不变
         const galleryData = {
             'gallery1': {
                 title: '碟式钢包回转台',
@@ -1524,80 +1548,237 @@
             }
         };
 
-        let currentGallery = null;
-        let currentImageIndex = 0;
+        // ==================== 状态管理 ====================
+        const state = {
+            currentGallery: null,
+            currentImageIndex: 0,
+            currentScale: 1,
+            translateX: 0,
+            translateY: 0,
+            isDragging: false,
+            isDraggingForSwipe: false,
+            startX: 0,
+            startY: 0,
+            dragStartX: 0,
+            dragStartY: 0,
+            isPinching: false,
+            initialDistance: 0,
+            initialScale: 1
+        };
 
+        // ==================== DOM 元素缓存 ====================
+        const elements = {
+            modal: document.getElementById('galleryModal'),
+            modalTitle: document.getElementById('modalTitle'),
+            modalImage: document.getElementById('modalImage'),
+            modalImageContainer: document.getElementById('modalImageContainer'),
+            modalCaption: document.querySelector('#modalCaption p'),
+            imageCounter: document.getElementById('imageCounter'),
+            thumbnailContainer: document.getElementById('thumbnailContainer'),
+            zoomLevel: document.getElementById('zoomLevel'),
+            zoomHint: document.getElementById('zoomHint'),
+            imageWrapper: document.getElementById('imageWrapper'),
+            modalBody: document.getElementById('modalBody'),
+            navbar: document.getElementById('navbar'),
+            pageLoader: document.getElementById('pageLoader')
+        };
+
+        // ==================== 初始化 ====================
+        function init() {
+            // 页面加载完成后隐藏加载器
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    elements.pageLoader.classList.add('hidden');
+                    if (typeof lucide !== 'undefined') {
+                        lucide.createIcons();
+                    }
+                }, 300);
+            });
+
+            // 初始化滚动动画
+            initScrollAnimations();
+            
+            // 初始化导航栏效果
+            initNavbar();
+            
+            // 初始化平滑滚动
+            initSmoothScroll();
+            
+            // 初始化图库事件
+            initGalleryEvents();
+            
+            // 初始化触摸事件
+            initTouchEvents();
+        }
+
+        // ==================== 功能函数 ====================
+        
+        function initScrollAnimations() {
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        
+                        // 如果是技能部分，触发技能条动画
+                        if (entry.target.querySelector('.skill-fill')) {
+                            entry.target.querySelectorAll('.skill-fill').forEach((bar, index) => {
+                                setTimeout(() => {
+                                    bar.classList.add('animate');
+                                }, index * 100);
+                            });
+                        }
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+            document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+            
+            const skillsSection = document.getElementById('skills');
+            if (skillsSection) revealObserver.observe(skillsSection);
+        }
+
+        function initNavbar() {
+            let lastScroll = 0;
+            
+            window.addEventListener('scroll', () => {
+                const currentScroll = window.pageYOffset;
+                
+                if (currentScroll > 100) {
+                    elements.navbar.classList.add('shadow-md');
+                } else {
+                    elements.navbar.classList.remove('shadow-md');
+                }
+                
+                lastScroll = currentScroll;
+            }, { passive: true });
+        }
+
+        function initSmoothScroll() {
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        }
+
+        function initGalleryEvents() {
+            // 键盘导航
+            document.addEventListener('keydown', handleKeyDown);
+            
+            // 滚轮缩放
+            elements.imageWrapper?.addEventListener('wheel', handleWheel, { passive: false });
+            
+            // 双击缩放
+            elements.modalImageContainer?.addEventListener('dblclick', handleDoubleClick);
+            
+            // 鼠标拖拽
+            elements.modalImageContainer?.addEventListener('mousedown', handleMouseDown);
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', handleMouseUp);
+            
+            // 点击模态框背景关闭
+            elements.modal?.addEventListener('click', (e) => {
+                if (e.target === e.currentTarget) closeGallery();
+            });
+            
+            // 点击左右区域切换图片
+            elements.imageWrapper?.addEventListener('click', handleImageWrapperClick);
+        }
+
+        function initTouchEvents() {
+            elements.modalImageContainer?.addEventListener('touchstart', handleTouchStart, { passive: false });
+            elements.modalImageContainer?.addEventListener('touchmove', handleTouchMove, { passive: false });
+            elements.modalImageContainer?.addEventListener('touchend', handleTouchEnd);
+        }
+
+        // ==================== 图库控制 ====================
+        
         function openGallery(projectId) {
-            currentGallery = galleryData[projectId];
-            if (!currentGallery) return;
+            const gallery = galleryData[projectId];
+            if (!gallery) return;
             
-            currentImageIndex = 0;
-            const modal = document.getElementById('galleryModal');
+            state.currentGallery = gallery;
+            state.currentImageIndex = 0;
+            resetZoom();
             
-            document.getElementById('modalTitle').textContent = currentGallery.title;
-            modal.classList.remove('hidden');
-            modal.showModal?.();
+            elements.modalTitle.textContent = gallery.title;
+            elements.modal.classList.remove('hidden');
+            elements.modal.showModal?.();
             document.body.style.overflow = 'hidden';
             
             updateModalImage();
             generateThumbnails();
+            showZoomHint();
         }
 
         function closeGallery() {
-            const modal = document.getElementById('galleryModal');
-            modal.classList.add('hidden');
-            modal.close?.();
+            elements.modal.classList.add('hidden');
+            elements.modal.close?.();
             document.body.style.overflow = '';
-            currentGallery = null;
+            state.currentGallery = null;
+            resetZoom();
         }
 
         function updateModalImage() {
-            if (!currentGallery) return;
+            if (!state.currentGallery) return;
             
-            const image = currentGallery.images[currentImageIndex];
-            const modalImg = document.getElementById('modalImage');
-            const caption = document.querySelector('#modalCaption p');
-            const counter = document.getElementById('imageCounter');
+            const image = state.currentGallery.images[state.currentImageIndex];
             
-            modalImg.style.opacity = '0';
+            elements.modalImage.style.opacity = '0';
             
             setTimeout(() => {
-                modalImg.src = image.src;
-                modalImg.alt = image.caption;
-                caption.textContent = image.caption;
-                counter.textContent = `${currentImageIndex + 1} / ${currentGallery.images.length}`;
+                elements.modalImage.src = image.src;
+                elements.modalImage.alt = image.caption;
+                elements.modalCaption.textContent = image.caption;
+                elements.imageCounter.textContent = `${state.currentImageIndex + 1} / ${state.currentGallery.images.length}`;
             }, 150);
             
-            // 显示标题
             setTimeout(() => {
                 document.getElementById('modalCaption').style.transform = 'translateY(0)';
             }, 300);
             
             updateThumbnails();
+            preloadNextImage();
         }
 
         function generateThumbnails() {
-            const container = document.getElementById('thumbnailContainer');
-            container.innerHTML = '';
+            if (!state.currentGallery) return;
             
-            currentGallery.images.forEach((image, index) => {
+            elements.thumbnailContainer.innerHTML = '';
+            
+            state.currentGallery.images.forEach((image, index) => {
                 const btn = document.createElement('button');
-                btn.className = `flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${index === currentImageIndex ? 'border-blue-500 ring-2 ring-blue-500/50' : 'border-transparent opacity-60 hover:opacity-100'}`;
+                btn.className = `flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${index === state.currentImageIndex ? 'border-blue-500 ring-2 ring-blue-500/50' : 'border-transparent opacity-60 hover:opacity-100'}`;
                 btn.onclick = () => {
-                    currentImageIndex = index;
+                    state.currentImageIndex = index;
+                    resetZoom();
                     updateModalImage();
                 };
-                btn.innerHTML = `<img src="${image.src}" alt="" class="w-full h-full object-cover" loading="lazy" onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\\'w-full h-full bg-slate-700 flex items-center justify-center\\'><span class=\\'text-xs text-slate-400\\'>${index + 1}</span></div>'">`;
-                container.appendChild(btn);
+                
+                const img = document.createElement('img');
+                img.src = image.src;
+                img.alt = '';
+                img.className = 'w-full h-full object-cover';
+                img.loading = 'lazy';
+                img.onerror = function() {
+                    this.style.display = 'none';
+                    this.parentElement.innerHTML = `<div class="w-full h-full bg-slate-700 flex items-center justify-center"><span class="text-xs text-slate-400">${index + 1}</span></div>`;
+                };
+                
+                btn.appendChild(img);
+                elements.thumbnailContainer.appendChild(btn);
             });
         }
 
         function updateThumbnails() {
-            const container = document.getElementById('thumbnailContainer');
-            const buttons = container.children;
+            const buttons = elements.thumbnailContainer.children;
             
             for (let i = 0; i < buttons.length; i++) {
-                if (i === currentImageIndex) {
+                if (i === state.currentImageIndex) {
                     buttons[i].className = 'flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 border-blue-500 ring-2 ring-blue-500/50 transition-all';
                     buttons[i].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
                 } else {
@@ -1607,136 +1788,297 @@
         }
 
         function prevImage() {
-            if (!currentGallery) return;
-            currentImageIndex = (currentImageIndex - 1 + currentGallery.images.length) % currentGallery.images.length;
+            if (!state.currentGallery || state.currentScale > 1) return;
+            state.currentImageIndex = (state.currentImageIndex - 1 + state.currentGallery.images.length) % state.currentGallery.images.length;
+            resetZoom();
             updateModalImage();
         }
 
         function nextImage() {
-            if (!currentGallery) return;
-            currentImageIndex = (currentImageIndex + 1) % currentGallery.images.length;
+            if (!state.currentGallery || state.currentScale > 1) return;
+            state.currentImageIndex = (state.currentImageIndex + 1) % state.currentGallery.images.length;
+            resetZoom();
             updateModalImage();
         }
 
-        // 键盘导航
-        document.addEventListener('keydown', (e) => {
-            if (!currentGallery) return;
+        function preloadNextImage() {
+            if (!state.currentGallery) return;
+            const nextIndex = (state.currentImageIndex + 1) % state.currentGallery.images.length;
+            const img = new Image();
+            img.src = state.currentGallery.images[nextIndex].src;
+        }
 
-            // 缩放状态下，左右键用于平移图片，不切换
-            if (currentScale > 1) {
-                const panStep = 50;
-                if (e.key === 'ArrowLeft') {
-                    translateX += panStep;
-                    limitPan();
-                    updateTransform();
-                    e.preventDefault();
-                } else if (e.key === 'ArrowRight') {
-                    translateX -= panStep;
-                    limitPan();
-                    updateTransform();
-                    e.preventDefault();
-                } else if (e.key === 'ArrowUp') {
-                    translateY += panStep;
-                    limitPan();
-                    updateTransform();
-                    e.preventDefault();
-                } else if (e.key === 'ArrowDown') {
-                    translateY -= panStep;
-                    limitPan();
-                    updateTransform();
-                    e.preventDefault();
-                } else if (e.key === 'Escape') {
-                    // ESC 先重置缩放，再关闭
-                    if (currentScale > 1) {
-                        resetZoom();
-                    } else {
-                        closeGallery();
-                    }
-                }
-            } else {
-                // 未缩放状态，正常切换
-                if (e.key === 'ArrowLeft') prevImage();
-                if (e.key === 'ArrowRight') nextImage();
-                if (e.key === 'Escape') closeGallery();
-            }
-        });
+        // ==================== 缩放与拖拽控制 ====================
+        
+        function handleWheel(e) {
+            e.preventDefault();
+            const delta = e.deltaY > 0 ? -CONFIG.ZOOM_STEP : CONFIG.ZOOM_STEP;
+            const newScale = Math.min(Math.max(state.currentScale + delta, CONFIG.MIN_SCALE), CONFIG.MAX_SCALE);
 
-        // 触摸滑动支持
-        let touchStartX = 0;
-        let touchStartY = 0;
-        let touchEndX = 0;
-        let touchEndY = 0;
-        const modalBody = document.getElementById('modalBody');
+            if (newScale !== state.currentScale) {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
 
-        modalBody?.addEventListener('touchstart', (e) => {
-            touchStartX = e.changedTouches[0].screenX;
-            touchStartY = e.changedTouches[0].screenY;
-        }, { passive: true });
-
-        modalBody?.addEventListener('touchend', (e) => {
-            touchEndX = e.changedTouches[0].screenX;
-            touchEndY = e.changedTouches[0].screenY;
-            handleSwipe();
-        }, { passive: true });
-
-        function handleSwipe() {
-            // 如果图片已缩放，不处理滑动切换
-            if (currentScale > 1) return;
-
-            const diffX = touchStartX - touchEndX;
-            const diffY = touchStartY - touchEndY;
-
-            // 水平滑动距离大于垂直滑动，且水平滑动超过50px才切换
-            if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
-                if (diffX > 0) {
-                    nextImage();
+                if (state.currentScale === 1) {
+                    state.translateX = -x * (newScale - 1);
+                    state.translateY = -y * (newScale - 1);
                 } else {
-                    prevImage();
+                    const scaleRatio = newScale / state.currentScale;
+                    state.translateX = state.translateX * scaleRatio;
+                    state.translateY = state.translateY * scaleRatio;
+                }
+
+                state.currentScale = newScale;
+                updateTransform();
+            }
+        }
+
+        function handleDoubleClick(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            if (state.currentScale > 1) {
+                resetZoom();
+            } else {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+
+                state.currentScale = 2;
+                state.translateX = -x;
+                state.translateY = -y;
+                updateTransform();
+            }
+        }
+
+        function handleMouseDown(e) {
+            state.dragStartX = e.clientX;
+            state.dragStartY = e.clientY;
+            state.isDraggingForSwipe = false;
+
+            if (state.currentScale <= 1) return;
+
+            state.isDragging = true;
+            state.startX = e.clientX - state.translateX;
+            state.startY = e.clientY - state.translateY;
+            
+            elements.modalImageContainer.classList.add('grabbing');
+            e.preventDefault();
+        }
+
+        function handleMouseMove(e) {
+            if (!state.isDragging && state.currentScale <= 1) {
+                const moveX = Math.abs(e.clientX - state.dragStartX);
+                const moveY = Math.abs(e.clientY - state.dragStartY);
+                if (moveX > CONFIG.DRAG_THRESHOLD || moveY > CONFIG.DRAG_THRESHOLD) {
+                    state.isDraggingForSwipe = true;
+                }
+                return;
+            }
+
+            if (!state.isDragging) return;
+
+            state.translateX = e.clientX - state.startX;
+            state.translateY = e.clientY - state.startY;
+            limitPan();
+            updateTransform();
+        }
+
+        function handleMouseUp(e) {
+            state.isDragging = false;
+            elements.modalImageContainer?.classList.remove('grabbing');
+
+            if (state.currentScale <= 1 && !state.isDraggingForSwipe) {
+                const moveX = Math.abs(e.clientX - state.dragStartX);
+                const moveY = Math.abs(e.clientY - state.dragStartY);
+
+                if (moveX < CONFIG.DRAG_THRESHOLD && moveY < CONFIG.DRAG_THRESHOLD) {
+                    const rect = elements.imageWrapper.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+
+                    if (x < rect.width / 3) {
+                        prevImage();
+                    } else if (x > rect.width * 2 / 3) {
+                        nextImage();
+                    }
                 }
             }
         }
 
-        // 点击模态框背景关闭（排除图片区域）
-        document.getElementById('galleryModal')?.addEventListener('click', (e) => {
-            // 如果点击的是图片容器或其子元素，不关闭
-            if (e.target.closest('#imageWrapper') || e.target.closest('#modalImageContainer')) {
-                return;
+        function handleTouchStart(e) {
+            if (e.touches.length === 2) {
+                state.isPinching = true;
+                state.initialDistance = getDistance(e.touches[0], e.touches[1]);
+                state.initialScale = state.currentScale;
+            } else if (e.touches.length === 1 && state.currentScale > 1) {
+                state.isDragging = true;
+                state.startX = e.touches[0].clientX - state.translateX;
+                state.startY = e.touches[0].clientY - state.translateY;
             }
-            if (e.target === e.currentTarget) closeGallery();
-        });
+        }
 
-        // 点击左右区域切换图片（仅在未缩放时）
-        document.getElementById('imageWrapper')?.addEventListener('click', (e) => {
-            // 如果图片已缩放，不处理点击切换
-            if (currentScale > 1) return;
+        function handleTouchMove(e) {
+            if (state.isPinching && e.touches.length === 2) {
+                e.preventDefault();
+                const distance = getDistance(e.touches[0], e.touches[1]);
+                const scale = (distance / state.initialDistance) * state.initialScale;
+                state.currentScale = Math.min(Math.max(scale, CONFIG.MIN_SCALE), CONFIG.MAX_SCALE);
+                updateTransform();
+            } else if (state.isDragging && e.touches.length === 1 && state.currentScale > 1) {
+                e.preventDefault();
+                state.translateX = e.touches[0].clientX - state.startX;
+                state.translateY = e.touches[0].clientY - state.startY;
+                limitPan();
+                updateTransform();
+            }
+        }
 
-            // 点击左半边上一张，右半边下一张
+        function handleTouchEnd(e) {
+            if (e.touches.length < 2) {
+                state.isPinching = false;
+            }
+            if (e.touches.length === 0) {
+                state.isDragging = false;
+            }
+        }
+
+        function handleImageWrapperClick(e) {
+            if (state.currentScale > 1) return;
+            
             const rect = e.currentTarget.getBoundingClientRect();
             const x = e.clientX - rect.left;
+            
             if (x < rect.width / 3) {
                 prevImage();
             } else if (x > rect.width * 2 / 3) {
                 nextImage();
             }
             e.stopPropagation();
-        });
+        }
 
-        // 触摸起始位置记录
+        function handleKeyDown(e) {
+            if (!state.currentGallery) return;
 
-        // PDF下载功能 - 移动端使用html2pdf，桌面端使用原生打印
+            if (state.currentScale > 1) {
+                const panStep = 50;
+                if (e.key === 'ArrowLeft') {
+                    state.translateX += panStep;
+                    limitPan();
+                    updateTransform();
+                    e.preventDefault();
+                } else if (e.key === 'ArrowRight') {
+                    state.translateX -= panStep;
+                    limitPan();
+                    updateTransform();
+                    e.preventDefault();
+                } else if (e.key === 'ArrowUp') {
+                    state.translateY += panStep;
+                    limitPan();
+                    updateTransform();
+                    e.preventDefault();
+                } else if (e.key === 'ArrowDown') {
+                    state.translateY -= panStep;
+                    limitPan();
+                    updateTransform();
+                    e.preventDefault();
+                } else if (e.key === 'Escape') {
+                    if (state.currentScale > 1) {
+                        resetZoom();
+                    } else {
+                        closeGallery();
+                    }
+                }
+            } else {
+                if (e.key === 'ArrowLeft') prevImage();
+                if (e.key === 'ArrowRight') nextImage();
+                if (e.key === 'Escape') closeGallery();
+            }
+        }
+
+        function getDistance(touch1, touch2) {
+            const dx = touch1.clientX - touch2.clientX;
+            const dy = touch1.clientY - touch2.clientY;
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+
+        function limitPan() {
+            const container = elements.modalImageContainer;
+            const image = elements.modalImage;
+            if (!container || !image) return;
+
+            const rect = container.getBoundingClientRect();
+            const maxTranslateX = (rect.width * (state.currentScale - 1)) / 2;
+            const maxTranslateY = (rect.height * (state.currentScale - 1)) / 2;
+
+            state.translateX = Math.max(-maxTranslateX, Math.min(maxTranslateX, state.translateX));
+            state.translateY = Math.max(-maxTranslateY, Math.min(maxTranslateY, state.translateY));
+        }
+
+        function updateTransform() {
+            if (elements.modalImageContainer) {
+                elements.modalImageContainer.style.transform = 
+                    `translate(${state.translateX}px, ${state.translateY}px) scale(${state.currentScale})`;
+            }
+            if (elements.zoomLevel) {
+                elements.zoomLevel.textContent = Math.round(state.currentScale * 100) + '%';
+            }
+        }
+
+        function zoomIn() {
+            const newScale = Math.min(state.currentScale + CONFIG.ZOOM_STEP, CONFIG.MAX_SCALE);
+            if (newScale !== state.currentScale) {
+                state.currentScale = newScale;
+                updateTransform();
+            }
+        }
+
+        function zoomOut() {
+            const newScale = Math.max(state.currentScale - CONFIG.ZOOM_STEP, CONFIG.MIN_SCALE);
+            if (newScale !== state.currentScale) {
+                state.currentScale = newScale;
+                if (state.currentScale <= 1) {
+                    state.translateX = 0;
+                    state.translateY = 0;
+                }
+                updateTransform();
+            }
+        }
+
+        function resetZoom() {
+            state.currentScale = 1;
+            state.translateX = 0;
+            state.translateY = 0;
+            updateTransform();
+        }
+
+        function showZoomHint() {
+            if (elements.zoomHint) {
+                elements.zoomHint.style.opacity = '1';
+                setTimeout(() => {
+                    elements.zoomHint.style.opacity = '0';
+                }, 3000);
+            }
+        }
+
+        function initImageDimensions() {
+            // 图片加载完成后初始化
+            if (state.currentScale !== 1) {
+                resetZoom();
+            }
+        }
+
+        // ==================== PDF 下载 ====================
+        
         function downloadPDF() {
-            // 检测是否为移动端
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
             if (!isMobile) {
-                // 桌面端直接使用浏览器打印
                 window.print();
                 return;
             }
 
-            // 移动端使用 html2pdf.js 生成 PDF
             if (typeof html2pdf === 'undefined') {
-                // 库未加载，尝试使用原生打印或提示用户
                 try {
                     window.print();
                 } catch (e) {
@@ -1745,23 +2087,19 @@
                 return;
             }
 
-            // 显示生成中提示
             const btn = document.querySelector('button[onclick="downloadPDF()"]');
             const originalContent = btn.innerHTML;
             btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span class="hidden sm:inline">生成中...</span>';
             btn.disabled = true;
 
-            // 准备打印内容（克隆body并移除不需要的元素）
             const element = document.body.cloneNode(true);
-
-            // 移除模态框、导航栏、脚本等不需要打印的元素
             const removeSelectors = ['.no-print', '#galleryModal', 'nav', 'script', 'dialog', '.page-loader'];
+            
             removeSelectors.forEach(selector => {
                 const els = element.querySelectorAll(selector);
                 els.forEach(el => el.remove());
             });
 
-            // 添加打印优化样式
             const printStyles = document.createElement('style');
             printStyles.textContent = `
                 * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
@@ -1771,7 +2109,6 @@
             `;
             element.appendChild(printStyles);
 
-            // 配置 html2pdf 选项
             const opt = {
                 margin: [10, 10, 10, 10],
                 filename: '敖鑫-机械工程师简历.pdf',
@@ -1789,383 +2126,25 @@
                 }
             };
 
-            // 生成 PDF
             html2pdf().set(opt).from(element).save().then(() => {
-                // 恢复按钮状态
                 btn.innerHTML = originalContent;
                 btn.disabled = false;
-                lucide.createIcons();
+                if (typeof lucide !== 'undefined') lucide.createIcons();
             }).catch(err => {
                 console.error('PDF生成失败:', err);
                 btn.innerHTML = originalContent;
                 btn.disabled = false;
-                lucide.createIcons();
-                // 失败时尝试原生打印
+                if (typeof lucide !== 'undefined') lucide.createIcons();
                 window.print();
             });
         }
 
-        // 性能优化：防抖函数
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
+        // ==================== 启动应用 ====================
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
         }
-
-        // 优化滚动性能
-        const optimizedScroll = debounce(() => {
-            // 滚动相关的昂贵操作
-        }, 16);
-
-        window.addEventListener('scroll', optimizedScroll, { passive: true });
-
-        // 预加载下一页图片（如果用户在图库中）
-        function preloadNextImage() {
-            if (!currentGallery) return;
-            const nextIndex = (currentImageIndex + 1) % currentGallery.images.length;
-            const img = new Image();
-            img.src = currentGallery.images[nextIndex].src;
-        }
-
-        // 监听图片切换，预加载下一张
-        const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                if (mutation.type === 'attributes' && mutation.attributeName === 'src') {
-                    preloadNextImage();
-                }
-            });
-        });
-
-        const modalImg = document.getElementById('modalImage');
-        if (modalImg) {
-            observer.observe(modalImg, { attributes: true });
-        }
-    
-        // ==================== 图片缩放功能 ====================
-        let currentScale = 1;
-        let isDragging = false;
-        let startX, startY, translateX = 0, translateY = 0;
-        let lastX, lastY;
-        const minScale = 0.5;
-        const maxScale = 5;
-        const zoomStep = 0.25;
-
-        // 触摸相关变量
-        let initialDistance = 0;
-        let initialScale = 1;
-        let isPinching = false;
-
-        function initZoom() {
-            const container = document.getElementById('modalImageContainer');
-            const image = document.getElementById('modalImage');
-            const wrapper = document.getElementById('imageWrapper');
-
-            if (!container || !image) return;
-
-            // 鼠标滚轮缩放
-            wrapper.addEventListener('wheel', handleWheel, { passive: false });
-
-            // 双击缩放
-            container.addEventListener('dblclick', handleDoubleClick);
-
-            // 拖拽功能
-            container.addEventListener('mousedown', handleMouseDown);
-            document.addEventListener('mousemove', handleMouseMove);
-            document.addEventListener('mouseup', handleMouseUp);
-
-            // 触摸事件（双指缩放）
-            container.addEventListener('touchstart', handleTouchStart, { passive: false });
-            container.addEventListener('touchmove', handleTouchMove, { passive: false });
-            container.addEventListener('touchend', handleTouchEnd);
-
-            // 显示操作提示
-            showZoomHint();
-        }
-
-        function handleWheel(e) {
-            e.preventDefault();
-            const delta = e.deltaY > 0 ? -zoomStep : zoomStep;
-            const newScale = Math.min(Math.max(currentScale + delta, minScale), maxScale);
-
-            if (newScale !== currentScale) {
-                // 以鼠标位置为中心缩放
-                const rect = e.currentTarget.getBoundingClientRect();
-                const x = e.clientX - rect.left - rect.width / 2;
-                const y = e.clientY - rect.top - rect.height / 2;
-
-                if (currentScale === 1) {
-                    translateX = -x * (newScale - 1);
-                    translateY = -y * (newScale - 1);
-                } else {
-                    const scaleRatio = newScale / currentScale;
-                    translateX = translateX * scaleRatio;
-                    translateY = translateY * scaleRatio;
-                }
-
-                currentScale = newScale;
-                updateTransform();
-            }
-        }
-
-        function handleDoubleClick(e) {
-            e.preventDefault();
-            if (currentScale > 1) {
-                // 如果已放大，则重置
-                resetZoom();
-            } else {
-                // 放大到2倍，以点击位置为中心
-                const rect = e.currentTarget.getBoundingClientRect();
-                const x = e.clientX - rect.left - rect.width / 2;
-                const y = e.clientY - rect.top - rect.height / 2;
-
-                currentScale = 2;
-                translateX = -x;
-                translateY = -y;
-                updateTransform();
-            }
-        }
-
-        function handleMouseDown(e) {
-            // 记录起始位置用于点击检测
-            dragStartX = e.clientX;
-            dragStartY = e.clientY;
-            isDraggingForSwipe = false;
-
-            if (currentScale <= 1) {
-                // 未缩放时，记录可能开始拖拽
-                isDragging = false;
-                return;
-            }
-
-            isDragging = true;
-            startX = e.clientX - translateX;
-            startY = e.clientY - translateY;
-            lastX = e.clientX;
-            lastY = e.clientY;
-
-            const container = document.getElementById('modalImageContainer');
-            container.classList.add('grabbing');
-            e.preventDefault();
-        }
-
-        function handleMouseMove(e) {
-            if (!isDragging && currentScale <= 1) {
-                // 检测是否开始拖拽（未缩放状态）
-                const moveX = Math.abs(e.clientX - dragStartX);
-                const moveY = Math.abs(e.clientY - dragStartY);
-                if (moveX > dragThreshold || moveY > dragThreshold) {
-                    isDraggingForSwipe = true;
-                }
-                return;
-            }
-
-            if (!isDragging) return;
-
-            translateX = e.clientX - startX;
-            translateY = e.clientY - startY;
-
-            // 限制拖拽范围
-            limitPan();
-            updateTransform();
-        }
-
-        function handleMouseUp(e) {
-            isDragging = false;
-            const container = document.getElementById('modalImageContainer');
-            container?.classList.remove('grabbing');
-
-            // 检测是否为点击（未缩放状态）
-            if (currentScale <= 1 && !isDraggingForSwipe) {
-                const moveX = Math.abs(e.clientX - dragStartX);
-                const moveY = Math.abs(e.clientY - dragStartY);
-
-                if (moveX < dragThreshold && moveY < dragThreshold) {
-                    // 这是一个点击，不是拖拽
-                    const rect = document.getElementById('imageWrapper').getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-
-                    // 点击左1/3区域上一张，右1/3区域下一张，中间不操作
-                    if (x < rect.width / 3) {
-                        prevImage();
-                    } else if (x > rect.width * 2 / 3) {
-                        nextImage();
-                    }
-                }
-            }
-        }
-
-        // 双指缩放处理
-        function handleTouchStart(e) {
-            if (e.touches.length === 2) {
-                isPinching = true;
-                initialDistance = getDistance(e.touches[0], e.touches[1]);
-                initialScale = currentScale;
-            } else if (e.touches.length === 1 && currentScale > 1) {
-                // 单指拖拽
-                isDragging = true;
-                startX = e.touches[0].clientX - translateX;
-                startY = e.touches[0].clientY - translateY;
-            }
-        }
-
-        function handleTouchMove(e) {
-            if (isPinching && e.touches.length === 2) {
-                e.preventDefault();
-                const distance = getDistance(e.touches[0], e.touches[1]);
-                const scale = (distance / initialDistance) * initialScale;
-                currentScale = Math.min(Math.max(scale, minScale), maxScale);
-                updateTransform();
-            } else if (isDragging && e.touches.length === 1 && currentScale > 1) {
-                e.preventDefault();
-                translateX = e.touches[0].clientX - startX;
-                translateY = e.touches[0].clientY - startY;
-                limitPan();
-                updateTransform();
-            }
-        }
-
-        function handleTouchEnd(e) {
-            if (e.touches.length < 2) {
-                isPinching = false;
-            }
-            if (e.touches.length === 0) {
-                isDragging = false;
-            }
-        }
-
-        function getDistance(touch1, touch2) {
-            const dx = touch1.clientX - touch2.clientX;
-            const dy = touch1.clientY - touch2.clientY;
-            return Math.sqrt(dx * dx + dy * dy);
-        }
-
-        function limitPan() {
-            const container = document.getElementById('modalImageContainer');
-            const image = document.getElementById('modalImage');
-            if (!container || !image) return;
-
-            const rect = container.getBoundingClientRect();
-            const maxTranslateX = (rect.width * (currentScale - 1)) / 2;
-            const maxTranslateY = (rect.height * (currentScale - 1)) / 2;
-
-            translateX = Math.max(-maxTranslateX, Math.min(maxTranslateX, translateX));
-            translateY = Math.max(-maxTranslateY, Math.min(maxTranslateY, translateY));
-        }
-
-        function updateTransform() {
-            const container = document.getElementById('modalImageContainer');
-            const zoomDisplay = document.getElementById('zoomLevel');
-
-            if (container) {
-                container.style.transform = `translate(${translateX}px, ${translateY}px) scale(${currentScale})`;
-            }
-
-            if (zoomDisplay) {
-                zoomDisplay.textContent = Math.round(currentScale * 100) + '%';
-            }
-        }
-
-        function zoomIn() {
-            const newScale = Math.min(currentScale + zoomStep, maxScale);
-            if (newScale !== currentScale) {
-                currentScale = newScale;
-                updateTransform();
-            }
-        }
-
-        function zoomOut() {
-            const newScale = Math.max(currentScale - zoomStep, minScale);
-            if (newScale !== currentScale) {
-                currentScale = newScale;
-                if (currentScale <= 1) {
-                    translateX = 0;
-                    translateY = 0;
-                }
-                updateTransform();
-            }
-        }
-
-        function resetZoom() {
-            currentScale = 1;
-            translateX = 0;
-            translateY = 0;
-            updateTransform();
-        }
-
-        function showZoomHint() {
-            const hint = document.getElementById('zoomHint');
-            if (hint) {
-                hint.classList.add('hint-show');
-                setTimeout(() => {
-                    hint.classList.remove('hint-show');
-                }, 3000);
-            }
-        }
-
-        function initImageDimensions() {
-            // 图片加载完成后初始化
-            if (currentScale !== 1) {
-                resetZoom();
-            }
-        }
-
-        // 修改原有的openGallery函数，添加缩放初始化
-        const originalOpenGallery = openGallery;
-        openGallery = function(projectId) {
-            currentGallery = galleryData[projectId];
-            if (!currentGallery) return;
-
-            currentImageIndex = 0;
-            resetZoom(); // 重置缩放
-
-            const modal = document.getElementById('galleryModal');
-
-            document.getElementById('modalTitle').textContent = currentGallery.title;
-            modal.classList.remove('hidden');
-            modal.showModal?.();
-            document.body.style.overflow = 'hidden';
-
-            updateModalImage();
-            generateThumbnails();
-
-            // 初始化缩放功能
-            setTimeout(initZoom, 100);
-        };
-
-        // 修改updateModalImage，切换图片时重置缩放
-        const originalUpdateModalImage = updateModalImage;
-        updateModalImage = function() {
-            if (!currentGallery) return;
-
-            const image = currentGallery.images[currentImageIndex];
-            const modalImg = document.getElementById('modalImage');
-            const caption = document.querySelector('#modalCaption p');
-            const counter = document.getElementById('imageCounter');
-
-            // 重置缩放状态
-            resetZoom();
-
-            modalImg.style.opacity = '0';
-
-            setTimeout(() => {
-                modalImg.src = image.src;
-                modalImg.alt = image.caption;
-                caption.textContent = image.caption;
-                counter.textContent = `${currentImageIndex + 1} / ${currentGallery.images.length}`;
-            }, 150);
-
-            setTimeout(() => {
-                document.getElementById('modalCaption').style.transform = 'translateY(0)';
-            }, 300);
-
-            updateThumbnails();
-        };
-</script>
+    </script>
 </body>
 </html>
