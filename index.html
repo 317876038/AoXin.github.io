@@ -55,6 +55,16 @@
         #modalImageContainer {
             will-change: transform;
             touch-action: none;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        #modalImageContainer.grabbing {
+            cursor: grabbing !important;
         }
 
         #modalImageContainer.grabbing {
@@ -65,6 +75,11 @@
             user-select: none;
             -webkit-user-drag: none;
             -webkit-user-select: none;
+            max-width: 90vw;
+            max-height: 80vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
         }
 
         /* 缩放按钮动画 */
@@ -178,6 +193,16 @@
         #modalImageContainer {
             will-change: transform;
             touch-action: none;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        #modalImageContainer.grabbing {
+            cursor: grabbing !important;
         }
 
         #modalImageContainer.grabbing {
@@ -188,6 +213,11 @@
             user-select: none;
             -webkit-user-drag: none;
             -webkit-user-select: none;
+            max-width: 90vw;
+            max-height: 80vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
         }
 
         /* 缩放按钮动画 */
@@ -205,6 +235,7 @@
             animation: hintFade 3s ease-in-out;
         }
 </style>
+<base target="_blank">
 <base target="_blank">
 </head>
 <body class="antialiased">
