@@ -50,7 +50,38 @@
         .img-wrapper img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .3s,transform .5s}
         .img-wrapper img.loaded{opacity:1}
         .img-wrapper:hover img{transform:scale(1.05)}
-    </style>
+    
+        /* 图片缩放相关样式 */
+        #modalImageContainer {
+            will-change: transform;
+            touch-action: none;
+        }
+
+        #modalImageContainer.grabbing {
+            cursor: grabbing !important;
+        }
+
+        #modalImage {
+            user-select: none;
+            -webkit-user-drag: none;
+            -webkit-user-select: none;
+        }
+
+        /* 缩放按钮动画 */
+        .zoom-btn-active {
+            background: rgba(59, 130, 246, 0.5) !important;
+        }
+
+        /* 提示文字动画 */
+        @keyframes hintFade {
+            0%, 100% { opacity: 0; }
+            20%, 80% { opacity: 1; }
+        }
+
+        .hint-show {
+            animation: hintFade 3s ease-in-out;
+        }
+</style>
     
     <!-- 非关键CSS异步加载 -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" media="print" onload="this.media='all'">
@@ -142,7 +173,39 @@
             .safe-top { padding-top: env(safe-area-inset-top); }
             .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
         }
-    </style>
+    
+        /* 图片缩放相关样式 */
+        #modalImageContainer {
+            will-change: transform;
+            touch-action: none;
+        }
+
+        #modalImageContainer.grabbing {
+            cursor: grabbing !important;
+        }
+
+        #modalImage {
+            user-select: none;
+            -webkit-user-drag: none;
+            -webkit-user-select: none;
+        }
+
+        /* 缩放按钮动画 */
+        .zoom-btn-active {
+            background: rgba(59, 130, 246, 0.5) !important;
+        }
+
+        /* 提示文字动画 */
+        @keyframes hintFade {
+            0%, 100% { opacity: 0; }
+            20%, 80% { opacity: 1; }
+        }
+
+        .hint-show {
+            animation: hintFade 3s ease-in-out;
+        }
+</style>
+<base target="_blank">
 </head>
 <body class="antialiased">
     <!-- 页面加载器 -->
@@ -1161,28 +1224,49 @@
                     <h3 id="modalTitle" class="text-white text-lg font-bold truncate max-w-[200px] md:max-w-md">图集标题</h3>
                     <span id="imageCounter" class="text-slate-400 text-sm font-mono">1 / 8</span>
                 </div>
-                <button onclick="closeGallery()" class="text-white hover:bg-white/10 p-2 rounded-full transition-colors" aria-label="关闭">
-                    <i data-lucide="x" class="w-6 h-6"></i>
-                </button>
+
+                <!-- 缩放控制按钮组 -->
+                <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-1 bg-white/10 rounded-lg p-1 mr-2">
+                        <button onclick="zoomOut()" class="text-white hover:bg-white/20 p-2 rounded-md transition-colors" aria-label="缩小" title="缩小">
+                            <i data-lucide="zoom-out" class="w-5 h-5"></i>
+                        </button>
+                        <span id="zoomLevel" class="text-white text-sm font-mono w-12 text-center">100%</span>
+                        <button onclick="zoomIn()" class="text-white hover:bg-white/20 p-2 rounded-md transition-colors" aria-label="放大" title="放大">
+                            <i data-lucide="zoom-in" class="w-5 h-5"></i>
+                        </button>
+                        <button onclick="resetZoom()" class="text-white hover:bg-white/20 p-2 rounded-md transition-colors" aria-label="重置" title="重置">
+                            <i data-lucide="maximize" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                    <button onclick="closeGallery()" class="text-white hover:bg-white/10 p-2 rounded-full transition-colors" aria-label="关闭">
+                        <i data-lucide="x" class="w-6 h-6"></i>
+                    </button>
+                </div>
             </div>
 
-            <div class="flex-1 flex items-center justify-center relative p-4 touch-pan-y" id="modalBody">
-                <button onclick="prevImage()" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 text-white p-3 rounded-full backdrop-blur-md transition-all z-10 hidden md:flex hover:scale-110 active:scale-95" aria-label="上一张">
+            <div class="flex-1 flex items-center justify-center relative overflow-hidden" id="modalBody">
+                <button onclick="prevImage()" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 text-white p-3 rounded-full backdrop-blur-md transition-all z-20 hidden md:flex hover:scale-110 active:scale-95" aria-label="上一张">
                     <i data-lucide="chevron-left" class="w-8 h-8"></i>
                 </button>
 
-                <div class="relative max-w-5xl w-full h-full flex items-center justify-center">
-                    <div id="modalImageContainer" class="relative max-w-full max-h-[70vh] flex items-center justify-center rounded-lg overflow-hidden bg-slate-800/50">
-                        <img id="modalImage" src="" alt="" class="max-w-full max-h-[70vh] object-contain opacity-0 transition-opacity duration-300" onload="this.style.opacity=1">
+                <div class="relative w-full h-full flex items-center justify-center overflow-hidden" id="imageWrapper">
+                    <div id="modalImageContainer" class="relative cursor-grab active:cursor-grabbing transition-transform duration-200 ease-out" style="transform-origin: center center;">
+                        <img id="modalImage" src="" alt="" class="max-w-[90vw] max-h-[80vh] object-contain opacity-0 transition-opacity duration-300 select-none" onload="this.style.opacity=1; initImageDimensions();" draggable="false">
                     </div>
-                    <div id="modalCaption" class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-6 rounded-b-lg transform translate-y-full transition-transform duration-300">
+                    <div id="modalCaption" class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-6 transform translate-y-full transition-transform duration-300 pointer-events-none">
                         <p class="text-white text-center font-medium text-lg"></p>
                     </div>
                 </div>
 
-                <button onclick="nextImage()" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 text-white p-3 rounded-full backdrop-blur-md transition-all z-10 hidden md:flex hover:scale-110 active:scale-95" aria-label="下一张">
+                <button onclick="nextImage()" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 text-white p-3 rounded-full backdrop-blur-md transition-all z-20 hidden md:flex hover:scale-110 active:scale-95" aria-label="下一张">
                     <i data-lucide="chevron-right" class="w-8 h-8"></i>
                 </button>
+
+                <!-- 操作提示 -->
+                <div id="zoomHint" class="absolute bottom-20 left-1/2 -translate-x-1/2 bg-black/70 text-white px-4 py-2 rounded-full text-sm opacity-0 transition-opacity duration-500 pointer-events-none">
+                    滚轮缩放 · 拖拽移动 · 双击放大
+                </div>
             </div>
 
             <div class="p-4 border-t border-white/10 bg-black/50 backdrop-blur-md safe-bottom">
@@ -1575,6 +1659,288 @@
         if (modalImg) {
             observer.observe(modalImg, { attributes: true });
         }
-    </script>
+    
+        // ==================== 图片缩放功能 ====================
+        let currentScale = 1;
+        let isDragging = false;
+        let startX, startY, translateX = 0, translateY = 0;
+        let lastX, lastY;
+        const minScale = 0.5;
+        const maxScale = 5;
+        const zoomStep = 0.25;
+
+        // 触摸相关变量
+        let initialDistance = 0;
+        let initialScale = 1;
+        let isPinching = false;
+
+        function initZoom() {
+            const container = document.getElementById('modalImageContainer');
+            const image = document.getElementById('modalImage');
+            const wrapper = document.getElementById('imageWrapper');
+
+            if (!container || !image) return;
+
+            // 鼠标滚轮缩放
+            wrapper.addEventListener('wheel', handleWheel, { passive: false });
+
+            // 双击缩放
+            container.addEventListener('dblclick', handleDoubleClick);
+
+            // 拖拽功能
+            container.addEventListener('mousedown', handleMouseDown);
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', handleMouseUp);
+
+            // 触摸事件（双指缩放）
+            container.addEventListener('touchstart', handleTouchStart, { passive: false });
+            container.addEventListener('touchmove', handleTouchMove, { passive: false });
+            container.addEventListener('touchend', handleTouchEnd);
+
+            // 显示操作提示
+            showZoomHint();
+        }
+
+        function handleWheel(e) {
+            e.preventDefault();
+            const delta = e.deltaY > 0 ? -zoomStep : zoomStep;
+            const newScale = Math.min(Math.max(currentScale + delta, minScale), maxScale);
+
+            if (newScale !== currentScale) {
+                // 以鼠标位置为中心缩放
+                const rect = e.currentTarget.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+
+                if (currentScale === 1) {
+                    translateX = -x * (newScale - 1);
+                    translateY = -y * (newScale - 1);
+                } else {
+                    const scaleRatio = newScale / currentScale;
+                    translateX = translateX * scaleRatio;
+                    translateY = translateY * scaleRatio;
+                }
+
+                currentScale = newScale;
+                updateTransform();
+            }
+        }
+
+        function handleDoubleClick(e) {
+            e.preventDefault();
+            if (currentScale > 1) {
+                // 如果已放大，则重置
+                resetZoom();
+            } else {
+                // 放大到2倍，以点击位置为中心
+                const rect = e.currentTarget.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+
+                currentScale = 2;
+                translateX = -x;
+                translateY = -y;
+                updateTransform();
+            }
+        }
+
+        function handleMouseDown(e) {
+            if (currentScale <= 1) return;
+
+            isDragging = true;
+            startX = e.clientX - translateX;
+            startY = e.clientY - translateY;
+            lastX = e.clientX;
+            lastY = e.clientY;
+
+            const container = document.getElementById('modalImageContainer');
+            container.classList.add('grabbing');
+            e.preventDefault();
+        }
+
+        function handleMouseMove(e) {
+            if (!isDragging) return;
+
+            translateX = e.clientX - startX;
+            translateY = e.clientY - startY;
+
+            // 限制拖拽范围
+            limitPan();
+            updateTransform();
+        }
+
+        function handleMouseUp() {
+            isDragging = false;
+            const container = document.getElementById('modalImageContainer');
+            container?.classList.remove('grabbing');
+        }
+
+        // 双指缩放处理
+        function handleTouchStart(e) {
+            if (e.touches.length === 2) {
+                isPinching = true;
+                initialDistance = getDistance(e.touches[0], e.touches[1]);
+                initialScale = currentScale;
+            } else if (e.touches.length === 1 && currentScale > 1) {
+                // 单指拖拽
+                isDragging = true;
+                startX = e.touches[0].clientX - translateX;
+                startY = e.touches[0].clientY - translateY;
+            }
+        }
+
+        function handleTouchMove(e) {
+            if (isPinching && e.touches.length === 2) {
+                e.preventDefault();
+                const distance = getDistance(e.touches[0], e.touches[1]);
+                const scale = (distance / initialDistance) * initialScale;
+                currentScale = Math.min(Math.max(scale, minScale), maxScale);
+                updateTransform();
+            } else if (isDragging && e.touches.length === 1 && currentScale > 1) {
+                e.preventDefault();
+                translateX = e.touches[0].clientX - startX;
+                translateY = e.touches[0].clientY - startY;
+                limitPan();
+                updateTransform();
+            }
+        }
+
+        function handleTouchEnd(e) {
+            if (e.touches.length < 2) {
+                isPinching = false;
+            }
+            if (e.touches.length === 0) {
+                isDragging = false;
+            }
+        }
+
+        function getDistance(touch1, touch2) {
+            const dx = touch1.clientX - touch2.clientX;
+            const dy = touch1.clientY - touch2.clientY;
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+
+        function limitPan() {
+            const container = document.getElementById('modalImageContainer');
+            const image = document.getElementById('modalImage');
+            if (!container || !image) return;
+
+            const rect = container.getBoundingClientRect();
+            const maxTranslateX = (rect.width * (currentScale - 1)) / 2;
+            const maxTranslateY = (rect.height * (currentScale - 1)) / 2;
+
+            translateX = Math.max(-maxTranslateX, Math.min(maxTranslateX, translateX));
+            translateY = Math.max(-maxTranslateY, Math.min(maxTranslateY, translateY));
+        }
+
+        function updateTransform() {
+            const container = document.getElementById('modalImageContainer');
+            const zoomDisplay = document.getElementById('zoomLevel');
+
+            if (container) {
+                container.style.transform = `translate(${translateX}px, ${translateY}px) scale(${currentScale})`;
+            }
+
+            if (zoomDisplay) {
+                zoomDisplay.textContent = Math.round(currentScale * 100) + '%';
+            }
+        }
+
+        function zoomIn() {
+            const newScale = Math.min(currentScale + zoomStep, maxScale);
+            if (newScale !== currentScale) {
+                currentScale = newScale;
+                updateTransform();
+            }
+        }
+
+        function zoomOut() {
+            const newScale = Math.max(currentScale - zoomStep, minScale);
+            if (newScale !== currentScale) {
+                currentScale = newScale;
+                if (currentScale <= 1) {
+                    translateX = 0;
+                    translateY = 0;
+                }
+                updateTransform();
+            }
+        }
+
+        function resetZoom() {
+            currentScale = 1;
+            translateX = 0;
+            translateY = 0;
+            updateTransform();
+        }
+
+        function showZoomHint() {
+            const hint = document.getElementById('zoomHint');
+            if (hint) {
+                hint.classList.add('hint-show');
+                setTimeout(() => {
+                    hint.classList.remove('hint-show');
+                }, 3000);
+            }
+        }
+
+        function initImageDimensions() {
+            // 图片加载完成后初始化
+            if (currentScale !== 1) {
+                resetZoom();
+            }
+        }
+
+        // 修改原有的openGallery函数，添加缩放初始化
+        const originalOpenGallery = openGallery;
+        openGallery = function(projectId) {
+            currentGallery = galleryData[projectId];
+            if (!currentGallery) return;
+
+            currentImageIndex = 0;
+            resetZoom(); // 重置缩放
+
+            const modal = document.getElementById('galleryModal');
+
+            document.getElementById('modalTitle').textContent = currentGallery.title;
+            modal.classList.remove('hidden');
+            modal.showModal?.();
+            document.body.style.overflow = 'hidden';
+
+            updateModalImage();
+            generateThumbnails();
+
+            // 初始化缩放功能
+            setTimeout(initZoom, 100);
+        };
+
+        // 修改updateModalImage，切换图片时重置缩放
+        const originalUpdateModalImage = updateModalImage;
+        updateModalImage = function() {
+            if (!currentGallery) return;
+
+            const image = currentGallery.images[currentImageIndex];
+            const modalImg = document.getElementById('modalImage');
+            const caption = document.querySelector('#modalCaption p');
+            const counter = document.getElementById('imageCounter');
+
+            // 重置缩放状态
+            resetZoom();
+
+            modalImg.style.opacity = '0';
+
+            setTimeout(() => {
+                modalImg.src = image.src;
+                modalImg.alt = image.caption;
+                caption.textContent = image.caption;
+                counter.textContent = `${currentImageIndex + 1} / ${currentGallery.images.length}`;
+            }, 150);
+
+            setTimeout(() => {
+                document.getElementById('modalCaption').style.transform = 'translateY(0)';
+            }, 300);
+
+            updateThumbnails();
+        };
+</script>
 </body>
 </html>
